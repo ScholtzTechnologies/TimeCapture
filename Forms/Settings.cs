@@ -94,6 +94,34 @@ namespace TimeCapture.Forms
                     txtPassword.Text = setting.GetDataRowStringValue("Value");
                     toolTip.SetToolTip(txtPassword, setting.GetDataRowStringValue("Description"));
                 }
+                else if (ID == 7)
+                {
+                    chkIsSelenium.Checked = Convert.ToBoolean(setting.GetDataRowIntValue("Value"));
+                    toolTip.SetToolTip(chkIsSelenium, setting.GetDataRowStringValue("Description"));
+                }
+                else if (ID == 8)
+                {
+                    txtURL.Text = setting.GetDataRowStringValue("Value");
+                    toolTip.SetToolTip(txtURL, setting.GetDataRowStringValue("Description"));
+                }
+            }
+            if (!chkIsSelenium.Checked)
+            {
+                txtURL.Visible = false;
+                txtPassword.Visible = false;
+                txtUsername.Visible = false;
+                lblURL.Visible = false;
+                label2.Visible = false;
+                label3.Visible = false;
+            }
+            else
+            {
+                txtURL.Visible = true;
+                txtPassword.Visible = true;
+                txtUsername.Visible = true;
+                lblURL.Visible = true;
+                label2.Visible = true;
+                label3.Visible = true;
             }
         }
 
@@ -121,6 +149,11 @@ namespace TimeCapture.Forms
             // Password
             access.updSettings(6, -1, txtPassword.Text);
 
+            // Is Selenium
+            access.updSettings(7, chkIsSelenium.IsChecked(), "");
+
+            // URL
+            access.updSettings(8, -1, txtURL.Text);
         }
 
         private void btnAccept_Click(object sender, EventArgs e)
@@ -128,6 +161,28 @@ namespace TimeCapture.Forms
             UpdateSettings();
             timeCapture.CheckHidden();
             Dispose();
+        }
+
+        private void chkIsSelenium_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!chkIsSelenium.Checked)
+            {
+                txtURL.Visible = false;
+                txtPassword.Visible = false;
+                txtUsername.Visible = false;
+                lblURL.Visible = false;
+                label2.Visible = false;
+                label3.Visible = false;
+            }
+            else
+            {
+                txtURL.Visible = true;
+                txtPassword.Visible = true;
+                txtUsername.Visible = true;
+                lblURL.Visible = true;
+                label2.Visible = true;
+                label3.Visible = true;
+            }
         }
     }
 }

@@ -137,6 +137,12 @@ namespace TimeCapture.DB
             return ExecuteQuery(sSQL).Tables[0].Rows[0].GetDataRowBoolValue("Value");
         }
 
+        public string GetSettingsValue(int SettingID)
+        {
+            string sSQL = "Select Value from Settings where ID = " + SettingID;
+            return ExecuteQuery(sSQL).Tables[0].Rows[0].GetDataRowStringValue("Value");
+        }
+
         public DataSet GetTicketTypes()
         {
             string sSQL = "select ID, Name from TicketTypes";

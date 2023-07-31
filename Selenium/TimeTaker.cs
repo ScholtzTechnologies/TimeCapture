@@ -7,6 +7,7 @@ namespace TimeCapture.Selenium.TimeTaker
     {
         public string Username = new Access().GetUserName();
         public string Password = new Access().GetPassword();
+        public string URL = new Access().GetSettingsValue(8);
         public void CaptureTime(BrowserType browserType)
         {
             IJavaScriptExecutor js;
@@ -15,7 +16,7 @@ namespace TimeCapture.Selenium.TimeTaker
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 js = (IJavaScriptExecutor)driver;
 
-                driver.Navigate().GoToUrl("https://web3.searchlightsoftware.co.za/Tickets/Login.aspx");
+                driver.Navigate().GoToUrl(URL);
                 driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080);
 
                 CSVImport.CreateFolder();
@@ -128,6 +129,7 @@ namespace TimeCapture.Selenium.TimeTaker
     {
         public string Username = new Access().GetUserName();
         public string Password = new Access().GetPassword();
+        public string URL = new Access().GetSettingsValue(8);
         public void GetTicketURL(BrowserType browserType, string ticketNo, out string ticketURL)
         {
             IJavaScriptExecutor js;
@@ -136,7 +138,7 @@ namespace TimeCapture.Selenium.TimeTaker
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 js = (IJavaScriptExecutor)driver;
 
-                driver.Navigate().GoToUrl("https://web3.searchlightsoftware.co.za/Tickets/Login.aspx");
+                driver.Navigate().GoToUrl(URL);
                 driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080);
 
                 driver.FindElement(By.Id("UserName")).SendKeys(Username);

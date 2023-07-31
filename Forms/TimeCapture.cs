@@ -107,6 +107,7 @@ namespace TimeCapture
                 lblDesc.Location = lblDescLocal;
                 txtDesc.Location = txtDescLocal;
             }
+
             if (Access.GetSettingValue(2))                                  // Desc Hidden
             {
                 lblDesc.Hide();
@@ -123,6 +124,15 @@ namespace TimeCapture
                     lblDesc.Location = lblTypeLocal;
                     txtDesc.Location = drpTypeLocal;
                 }
+            }
+
+            if (Access.GetSettingValue(7))
+            {
+                btnCaptureTime.Visible = true;
+            }
+            else
+            {
+                btnCaptureTime.Visible = false;
             }
         }
 

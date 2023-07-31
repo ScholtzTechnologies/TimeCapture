@@ -41,6 +41,9 @@
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.txtURL = new System.Windows.Forms.TextBox();
+            this.lblURL = new System.Windows.Forms.Label();
+            this.chkIsSelenium = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
             this.containerControl1.SuspendLayout();
             this.SuspendLayout();
@@ -118,7 +121,7 @@
             // 
             // btnAccept
             // 
-            this.btnAccept.Location = new System.Drawing.Point(318, 243);
+            this.btnAccept.Location = new System.Drawing.Point(318, 285);
             this.btnAccept.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnAccept.Name = "btnAccept";
             this.btnAccept.Size = new System.Drawing.Size(75, 29);
@@ -129,7 +132,7 @@
             // 
             // txtUsername
             // 
-            this.txtUsername.Location = new System.Drawing.Point(211, 144);
+            this.txtUsername.Location = new System.Drawing.Point(212, 195);
             this.txtUsername.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(181, 27);
@@ -137,7 +140,7 @@
             // 
             // txtPassword
             // 
-            this.txtPassword.Location = new System.Drawing.Point(211, 208);
+            this.txtPassword.Location = new System.Drawing.Point(211, 250);
             this.txtPassword.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(181, 27);
@@ -146,7 +149,9 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(211, 116);
+            this.label2.Location = new System.Drawing.Point(211, 171);
+            this.label2.MaximumSize = new System.Drawing.Size(163, 20);
+            this.label2.MinimumSize = new System.Drawing.Size(163, 20);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(163, 20);
             this.label2.TabIndex = 15;
@@ -155,17 +160,51 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(211, 179);
+            this.label3.Location = new System.Drawing.Point(211, 226);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(158, 20);
             this.label3.TabIndex = 16;
             this.label3.Text = "Password for Selenium";
             // 
+            // txtURL
+            // 
+            this.txtURL.Location = new System.Drawing.Point(211, 140);
+            this.txtURL.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtURL.Name = "txtURL";
+            this.txtURL.Size = new System.Drawing.Size(181, 27);
+            this.txtURL.TabIndex = 17;
+            // 
+            // lblURL
+            // 
+            this.lblURL.AutoSize = true;
+            this.lblURL.Location = new System.Drawing.Point(211, 116);
+            this.lblURL.MaximumSize = new System.Drawing.Size(163, 20);
+            this.lblURL.MinimumSize = new System.Drawing.Size(163, 20);
+            this.lblURL.Name = "lblURL";
+            this.lblURL.Size = new System.Drawing.Size(163, 20);
+            this.lblURL.TabIndex = 18;
+            this.lblURL.Text = "URL for Selenium";
+            // 
+            // chkIsSelenium
+            // 
+            this.chkIsSelenium.AutoSize = true;
+            this.chkIsSelenium.Location = new System.Drawing.Point(11, 245);
+            this.chkIsSelenium.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkIsSelenium.Name = "chkIsSelenium";
+            this.chkIsSelenium.Size = new System.Drawing.Size(195, 24);
+            this.chkIsSelenium.TabIndex = 19;
+            this.chkIsSelenium.Text = "Automated TimeCapture";
+            this.chkIsSelenium.UseVisualStyleBackColor = true;
+            this.chkIsSelenium.CheckedChanged += new System.EventHandler(this.chkIsSelenium_CheckedChanged);
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(405, 276);
+            this.ClientSize = new System.Drawing.Size(405, 325);
+            this.Controls.Add(this.chkIsSelenium);
+            this.Controls.Add(this.lblURL);
+            this.Controls.Add(this.txtURL);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtPassword);
@@ -178,8 +217,8 @@
             this.Controls.Add(this.containerControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.MaximumSize = new System.Drawing.Size(423, 323);
-            this.MinimumSize = new System.Drawing.Size(423, 323);
+            this.MaximumSize = new System.Drawing.Size(423, 372);
+            this.MinimumSize = new System.Drawing.Size(423, 372);
             this.Name = "Settings";
             this.Text = "Settings";
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).EndInit();
@@ -204,5 +243,8 @@
         private Label label2;
         private TextBox txtPassword;
         private TextBox txtUsername;
+        private CheckBox chkIsSelenium;
+        private Label lblURL;
+        private TextBox txtURL;
     }
 }
