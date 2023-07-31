@@ -12,14 +12,18 @@ namespace TimeCapture.utils
     {
         public static bool HasRows(this DataSet ds)
         {
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            try
             {
-                return true;
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
-            {
-                return false;
-            }
+            catch { return false; }
         }
 
         public static string FixString(this string sString)

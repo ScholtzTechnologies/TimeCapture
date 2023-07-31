@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <Folder Include="DB\scripts\" />
-    <Folder Include="Forms\Shared\" />
     <Folder Include="utils\Scripts\" />
   </ItemGroup>
 

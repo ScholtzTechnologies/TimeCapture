@@ -1056,7 +1056,7 @@ namespace TimeCapture
             }
         }
 
-        private void ShowInputDialog(string sContext, out bool OK, out string sValue)
+        public void ShowInputDialog(string sContext, out bool OK, out string sValue)
         {
             // Create a custom input box form
             Form inputBoxForm = new Form();

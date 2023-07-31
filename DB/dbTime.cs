@@ -189,8 +189,41 @@ namespace TimeCapture.DB
             catch { return ""; }
         }
 
+        public bool Login(string Username, string Password)
+        {
+            string sSQL = "select 1 from SystemUsers where LOWER(Name) = '" + Username.ToLower() 
+                + "' and Password = '" + Password + "'";
+            try
+            {
+                if (ExecuteQuery(sSQL).HasRows())
+                    return true;
+                else
+                    return false;
+            }
+            catch { return false; }
+        }
+
+        public bool Register(string Username, string Password, string Email)
+        {
+            string sSQL = String.Format(@"if not exists (select 1 from SystemUsers where LOWER(SystemUsers.Name) = LOWER('{0}') and LOWER(Email) = LOWER('{2}'))
+	            Insert into SystemUsers VALUES
+	            (
+		            isnull((select MAX(ID) from SystemUsers), 0) + 1,
+		            '{0}',
+		            '{1}',
+		            '{2}',
+		            'u'
+	            )", Username, Password, Email);
+            try
+            {
+                ExecuteNonQuery(sSQL);
+                return true;
+            }
+            catch { return false; }
+        }
+
         #endregion
-        
+
         #region Save
         public void saveNote(int NoteID, string Name, string Note, string Date, int ParentID)
         {
