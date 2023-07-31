@@ -12,13 +12,24 @@ namespace TimeCapture.Forms
         public TimeCapture timeCapture { get; set; }
         public Settings(TimeCapture capture)
         {
-            timeCapture = capture;
             InitializeComponent();
+            this.Hide();
+            capture.ShowSpinner();
+            timeCapture = capture;
             isInitialized = false;
             GetSettings();
             SetSettings();
             isInitialized = true;
-
+            bool isDarkMode;
+            capture.generic_DarkMode(this, out isDarkMode);
+            if (isDarkMode)
+            {
+                this.label1.BackColor = Color.Gray;
+                this.label1.ForeColor = Color.White;
+                this.containerControl1.BackColor = Color.Gray;
+            }
+            capture.HideSpinner();
+            this.Show();
             this.FormClosed += OnClose;
         }
 

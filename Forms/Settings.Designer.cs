@@ -50,9 +50,9 @@
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(110, 8);
+            this.label1.Location = new System.Drawing.Point(126, 11);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(132, 37);
+            this.label1.Size = new System.Drawing.Size(164, 46);
             this.label1.TabIndex = 0;
             this.label1.Text = "Settings";
             // 
@@ -66,17 +66,19 @@
             this.containerControl1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.containerControl1.Controls.Add(this.label1);
             this.containerControl1.Location = new System.Drawing.Point(0, 0);
+            this.containerControl1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.containerControl1.Name = "containerControl1";
-            this.containerControl1.Size = new System.Drawing.Size(703, 67);
+            this.containerControl1.Size = new System.Drawing.Size(803, 89);
             this.containerControl1.TabIndex = 6;
             this.containerControl1.Text = "containerControl1";
             // 
             // cbRemoveTicketNo
             // 
             this.cbRemoveTicketNo.AutoSize = true;
-            this.cbRemoveTicketNo.Location = new System.Drawing.Point(10, 110);
+            this.cbRemoveTicketNo.Location = new System.Drawing.Point(11, 147);
+            this.cbRemoveTicketNo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cbRemoveTicketNo.Name = "cbRemoveTicketNo";
-            this.cbRemoveTicketNo.Size = new System.Drawing.Size(150, 19);
+            this.cbRemoveTicketNo.Size = new System.Drawing.Size(186, 24);
             this.cbRemoveTicketNo.TabIndex = 7;
             this.cbRemoveTicketNo.Text = "Remove Ticket Number";
             this.cbRemoveTicketNo.UseVisualStyleBackColor = true;
@@ -84,9 +86,10 @@
             // cbIsToasts
             // 
             this.cbIsToasts.AutoSize = true;
-            this.cbIsToasts.Location = new System.Drawing.Point(10, 87);
+            this.cbIsToasts.Location = new System.Drawing.Point(11, 116);
+            this.cbIsToasts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cbIsToasts.Name = "cbIsToasts";
-            this.cbIsToasts.Size = new System.Drawing.Size(66, 19);
+            this.cbIsToasts.Size = new System.Drawing.Size(82, 24);
             this.cbIsToasts.TabIndex = 8;
             this.cbIsToasts.Text = "IsToasts";
             this.cbIsToasts.UseVisualStyleBackColor = true;
@@ -94,9 +97,10 @@
             // cbHideDesc
             // 
             this.cbHideDesc.AutoSize = true;
-            this.cbHideDesc.Location = new System.Drawing.Point(10, 135);
+            this.cbHideDesc.Location = new System.Drawing.Point(11, 180);
+            this.cbHideDesc.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cbHideDesc.Name = "cbHideDesc";
-            this.cbHideDesc.Size = new System.Drawing.Size(132, 19);
+            this.cbHideDesc.Size = new System.Drawing.Size(165, 24);
             this.cbHideDesc.TabIndex = 9;
             this.cbHideDesc.Text = "Remove Description";
             this.cbHideDesc.UseVisualStyleBackColor = true;
@@ -104,18 +108,20 @@
             // cbWarning
             // 
             this.cbWarning.AutoSize = true;
-            this.cbWarning.Location = new System.Drawing.Point(10, 160);
+            this.cbWarning.Location = new System.Drawing.Point(11, 213);
+            this.cbWarning.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cbWarning.Name = "cbWarning";
-            this.cbWarning.Size = new System.Drawing.Size(148, 19);
+            this.cbWarning.Size = new System.Drawing.Size(183, 24);
             this.cbWarning.TabIndex = 10;
             this.cbWarning.Text = "Show warning on close";
             this.cbWarning.UseVisualStyleBackColor = true;
             // 
             // btnAccept
             // 
-            this.btnAccept.Location = new System.Drawing.Point(278, 185);
+            this.btnAccept.Location = new System.Drawing.Point(318, 243);
+            this.btnAccept.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnAccept.Name = "btnAccept";
-            this.btnAccept.Size = new System.Drawing.Size(66, 22);
+            this.btnAccept.Size = new System.Drawing.Size(75, 29);
             this.btnAccept.TabIndex = 12;
             this.btnAccept.Text = "Ok";
             this.btnAccept.UseVisualStyleBackColor = true;
@@ -123,41 +129,43 @@
             // 
             // txtUsername
             // 
-            this.txtUsername.Location = new System.Drawing.Point(185, 108);
+            this.txtUsername.Location = new System.Drawing.Point(211, 144);
+            this.txtUsername.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(159, 23);
+            this.txtUsername.Size = new System.Drawing.Size(181, 27);
             this.txtUsername.TabIndex = 13;
             // 
             // txtPassword
             // 
-            this.txtPassword.Location = new System.Drawing.Point(185, 156);
+            this.txtPassword.Location = new System.Drawing.Point(211, 208);
+            this.txtPassword.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(159, 23);
+            this.txtPassword.Size = new System.Drawing.Size(181, 27);
             this.txtPassword.TabIndex = 14;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(185, 87);
+            this.label2.Location = new System.Drawing.Point(211, 116);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(130, 15);
+            this.label2.Size = new System.Drawing.Size(163, 20);
             this.label2.TabIndex = 15;
             this.label2.Text = "Username for Selenium";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(185, 134);
+            this.label3.Location = new System.Drawing.Point(211, 179);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(127, 15);
+            this.label3.Size = new System.Drawing.Size(158, 20);
             this.label3.TabIndex = 16;
             this.label3.Text = "Password for Selenium";
             // 
             // Settings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(356, 215);
+            this.ClientSize = new System.Drawing.Size(405, 276);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtPassword);
@@ -169,8 +177,9 @@
             this.Controls.Add(this.cbRemoveTicketNo);
             this.Controls.Add(this.containerControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(372, 254);
-            this.MinimumSize = new System.Drawing.Size(372, 254);
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.MaximumSize = new System.Drawing.Size(423, 323);
+            this.MinimumSize = new System.Drawing.Size(423, 323);
             this.Name = "Settings";
             this.Text = "Settings";
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).EndInit();

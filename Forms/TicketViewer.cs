@@ -19,7 +19,10 @@ namespace TimeCapture.Forms
             InitializeComponent();
             string sURL;
             new TicketSystem().GetTicketURL(BrowserType.Chrome, sValue, out sURL);
-            this.webViewer1.Url = new System.Uri(sURL);
+            if (sURL != null)
+            {
+                this.webViewer1.Url = new System.Uri(sURL);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using TimeCapture.DB;
 using TimeCapture.Forms;
 using TimeCapture.utils;
 using TimeCapture.Forms.Shared;
+using System.Runtime.InteropServices;
 
 namespace TimeCapture
 {
@@ -1018,13 +1019,13 @@ namespace TimeCapture
             }
         }
 
-        private void ShowSpinner()
+        public void ShowSpinner()
         {
             Spinner = new();
             Spinner.Show();
         }
 
-        private void HideSpinner()
+        public void HideSpinner()
         {
             Spinner.Hide();
         }
@@ -1097,6 +1098,131 @@ namespace TimeCapture
                 OK = false;
                 sValue = "";
             }
+        }
+
+        public void generic_DarkMode(Form form, out bool isDarkMode)
+        {
+            ShowSpinner();
+            this.Hide();
+            Color bgDark = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            Color bgDarkSecondary = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            Color controlDark = Color.SlateGray;
+
+            if (toggleSwitch1.Checked)
+            {
+                isDarkMode = true;
+                // Set the text color of all objects to white
+                foreach (Control control in form.Controls)
+                {
+                    control.BackColor = bgDark;
+                    control.ForeColor = Color.White;
+
+                    if (control is Button button)
+                    {
+                        button.FlatStyle = FlatStyle.Flat; // Set the FlatStyle to Flat
+                        button.BackColor = bgDarkSecondary;
+                        button.FlatAppearance.BorderColor = bgDark; // Set the border color to the same as the background color
+                    }
+
+                    if (control is ComboBox comboBox)
+                    {
+                        comboBox.FlatStyle = FlatStyle.Flat;
+                        comboBox.BackColor = bgDark;
+                        comboBox.ForeColor = Color.White;
+                        comboBox.DrawMode = DrawMode.OwnerDrawFixed;
+                        if (comboBox.Name == txtTicketNo.Name)
+                        {
+                            comboBox.DrawItem += (s, eventArgs) =>
+                            {
+                                eventArgs.DrawBackground();
+                                eventArgs.Graphics.DrawString(lTickets[eventArgs.Index].Name.ToString(), eventArgs.Font, Brushes.White, eventArgs.Bounds);
+                            };
+                        }
+                        else if (comboBox.Name == drpType.Name)
+                        {
+                            comboBox.DrawItem += (s, eventArgs) =>
+                            {
+                                eventArgs.DrawBackground();
+                                eventArgs.Graphics.DrawString(comboBox.Items[eventArgs.Index].ToString(), eventArgs.Font, Brushes.White, eventArgs.Bounds);
+                            };
+                        }
+                    }
+
+                    if (control is RichTextBox richTextBox)
+                    {
+                        richTextBox.BorderStyle = BorderStyle.FixedSingle;
+                        richTextBox.BackColor = bgDark;
+                        richTextBox.ForeColor = Color.White;
+                    }
+
+                    if (control is TextBox textBox)
+                    {
+                        textBox.BorderStyle = BorderStyle.FixedSingle;
+                        textBox.BackColor = bgDark;
+                        textBox.ForeColor = Color.White;
+                    }
+                }
+
+                form.BackColor = bgDark;
+            }
+            else
+            {
+                isDarkMode = false;
+                foreach (Control control in form.Controls)
+                {
+                    control.BackColor = Color.White;
+                    control.ForeColor = Color.Black;
+
+                    if (control is Button button)
+                    {
+                        button.FlatStyle = FlatStyle.Flat; // Set the FlatStyle to Flat
+                        button.BackColor = Color.White;
+                        button.FlatAppearance.BorderColor = Color.Gray; // Set the border color to the same as the background color
+                    }
+
+                    if (control is ComboBox comboBox)
+                    {
+                        comboBox.FlatStyle = FlatStyle.Standard;
+                        comboBox.BackColor = Color.White;
+                        comboBox.ForeColor = Color.Black;
+                        comboBox.DrawMode = DrawMode.OwnerDrawFixed;
+                        if (comboBox.Name == txtTicketNo.Name)
+                        {
+                            comboBox.DrawItem += (s, eventArgs) =>
+                            {
+                                eventArgs.DrawBackground();
+                                eventArgs.Graphics.DrawString(lTickets[eventArgs.Index].Name.ToString(), eventArgs.Font, Brushes.Black, eventArgs.Bounds);
+                            };
+                        }
+                        else if (comboBox.Name == drpType.Name)
+                        {
+                            comboBox.DrawItem += (s, eventArgs) =>
+                            {
+                                eventArgs.DrawBackground();
+                                eventArgs.Graphics.DrawString(comboBox.Items[eventArgs.Index].ToString(), eventArgs.Font, Brushes.Black, eventArgs.Bounds);
+                            };
+                        }
+                    }
+
+                    if (control is RichTextBox richTextBox)
+                    {
+                        richTextBox.BorderStyle = BorderStyle.FixedSingle;
+                        richTextBox.BackColor = Color.White;
+                        richTextBox.ForeColor = Color.Black;
+                    }
+
+                    if (control is TextBox textBox)
+                    {
+                        textBox.BorderStyle = BorderStyle.FixedSingle;
+                        textBox.BackColor = Color.White;
+                        textBox.ForeColor = Color.Black;
+                    }
+                }
+
+                form.BackColor = Color.White;
+            }
+            this.Show();
+            HideSpinner();
         }
     }
 }

@@ -19,6 +19,34 @@ namespace TimeCapture.Forms
             InitializeComponent();
             GetTickets();
             frmCapture = timeCapture;
+            bool isDarkMode;
+            frmCapture.generic_DarkMode(this, out isDarkMode);
+            if (isDarkMode)
+            {
+                Color bgDark = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+                Color bgDarkSecondary = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+                
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    row.DefaultCellStyle.BackColor = bgDark;
+                    row.DefaultCellStyle.ForeColor = Color.White;
+                }
+
+                foreach (DataGridViewButtonCell buttonCell in dataGridView1.Rows.Cast<DataGridViewRow>()
+                                .SelectMany(row => row.Cells.OfType<DataGridViewButtonCell>()))
+                {
+                    buttonCell.Style.BackColor = bgDark;
+                    buttonCell.Style.ForeColor = Color.White;
+                }
+
+                dataGridView1.BackgroundColor = bgDarkSecondary;
+                dataGridView1.GridColor = Color.Black;
+                dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.Gray;
+                dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White; // Adjust the heading text color if needed
+                dataGridView1.EnableHeadersVisualStyles = false; // Disable the default visual styles for the headers
+                dataGridView1.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+                dataGridView1.CellPainting += DarkBorders;
+            }
         }
 
         public void GetTickets()
@@ -46,6 +74,24 @@ namespace TimeCapture.Forms
                 GetTickets();
                 frmCapture.getTickets();
                 MessageBox.Show(Name + " was deleted");
+            }
+        }
+
+        private void DarkBorders(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex == -1 && e.ColumnIndex >= 0)
+            {
+                e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
+
+                using (Pen borderPen = new Pen(Color.Black, 2))
+                {
+                    Rectangle rect = e.CellBounds;
+                    rect.Width -= 1;
+                    rect.Height -= 1;
+                    e.Graphics.DrawRectangle(borderPen, rect);
+                }
+
+                e.Handled = true;
             }
         }
     }

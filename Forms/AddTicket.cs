@@ -7,6 +7,8 @@
         {
             InitializeComponent();
             frmCapture = timeCapture;
+            bool isDarkMode;
+            frmCapture.generic_DarkMode(this, out isDarkMode);
         }
 
         private void button2_Click(object sender, EventArgs e)

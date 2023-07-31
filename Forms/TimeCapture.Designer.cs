@@ -63,6 +63,7 @@
             this.rbCharge = new System.Windows.Forms.RadioButton();
             this.rbSupport = new System.Windows.Forms.RadioButton();
             this.containerControl1 = new System.Windows.Forms.ContainerControl();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.loadAllResultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.allToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,6 +72,8 @@
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.csvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ticketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.txtTicketNo = new System.Windows.Forms.ComboBox();
             this.btnAddTicket = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -82,10 +85,9 @@
             this.btnDelTicket = new System.Windows.Forms.Button();
             this.lblDarkMode = new System.Windows.Forms.Label();
             this.toggleSwitch1 = new CustomControls.ToggleSwitch();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ticketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.containerControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -193,12 +195,12 @@
             this.Date,
             this.Button,
             this.Continue});
-            this.dataGridView1.Location = new System.Drawing.Point(359, 3);
+            this.dataGridView1.Location = new System.Drawing.Point(359, 13);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(523, 549);
+            this.dataGridView1.Size = new System.Drawing.Size(523, 539);
             this.dataGridView1.TabIndex = 23;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
@@ -425,6 +427,7 @@
             // containerControl1
             // 
             this.containerControl1.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.containerControl1.Controls.Add(this.pictureBox1);
             this.containerControl1.Controls.Add(this.Heading);
             this.containerControl1.Controls.Add(this.menuStrip1);
             this.containerControl1.Location = new System.Drawing.Point(0, -1);
@@ -433,6 +436,15 @@
             this.containerControl1.Size = new System.Drawing.Size(746, 99);
             this.containerControl1.TabIndex = 34;
             this.containerControl1.Text = "containerControl1";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::TimeCapture.Properties.Resources.TimeIcon_60x;
+            this.pictureBox1.Location = new System.Drawing.Point(28, 36);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(60, 63);
+            this.pictureBox1.TabIndex = 3;
+            this.pictureBox1.TabStop = false;
             // 
             // menuStrip1
             // 
@@ -502,6 +514,21 @@
             this.notesToolStripMenuItem.Size = new System.Drawing.Size(62, 24);
             this.notesToolStripMenuItem.Text = "Notes";
             this.notesToolStripMenuItem.Click += new System.EventHandler(this.notesToolStripMenuItem_Click);
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ticketToolStripMenuItem});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
+            this.viewToolStripMenuItem.Text = "View";
+            // 
+            // ticketToolStripMenuItem
+            // 
+            this.ticketToolStripMenuItem.Name = "ticketToolStripMenuItem";
+            this.ticketToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
+            this.ticketToolStripMenuItem.Text = "Ticket ...";
+            this.ticketToolStripMenuItem.Click += new System.EventHandler(this.ticketToolStripMenuItem_Click);
             // 
             // txtTicketNo
             // 
@@ -619,21 +646,6 @@
             this.toggleSwitch1.UseVisualStyleBackColor = true;
             this.toggleSwitch1.CheckedChanged += new System.EventHandler(this.toggleSwitch1_CheckedChanged_1);
             // 
-            // viewToolStripMenuItem
-            // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ticketToolStripMenuItem});
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
-            this.viewToolStripMenuItem.Text = "View";
-            // 
-            // ticketToolStripMenuItem
-            // 
-            this.ticketToolStripMenuItem.Name = "ticketToolStripMenuItem";
-            this.ticketToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.ticketToolStripMenuItem.Text = "Ticket ...";
-            this.ticketToolStripMenuItem.Click += new System.EventHandler(this.ticketToolStripMenuItem_Click);
-            // 
             // TimeCapture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -680,6 +692,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.containerControl1.ResumeLayout(false);
             this.containerControl1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -743,6 +756,7 @@
         private CustomControls.ToggleSwitch toggleSwitch1;
         private ToolStripMenuItem viewToolStripMenuItem;
         private ToolStripMenuItem ticketToolStripMenuItem;
+        private PictureBox pictureBox1;
     }
 }
 

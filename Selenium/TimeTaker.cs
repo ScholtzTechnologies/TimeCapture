@@ -118,8 +118,8 @@ namespace TimeCapture.Selenium.TimeTaker
                         {
                             WriteLog.writeFail(time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("TimeType"), time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), sDate);
                         }
-                        driver.Quit();
                     }
+                    driver.Quit();
             }
         }
     }
@@ -149,11 +149,17 @@ namespace TimeCapture.Selenium.TimeTaker
                 driver.FindElement(By.XPath("//div[1]/div[1]/div/div/div[3]/div[1]/input")).SendKeys(ticketNo);
                 js.ExecuteScript("arguments[0].click()", driver.FindElement(By.XPath("//div[1]/div/div/div[3]/div[4]/a")));
                 Thread.Sleep(1000);
-
-                js.ExecuteScript("arguments[0].click()", driver.FindElement(By.XPath("//tr[3]/td[1]/a[1]")));
-                Thread.Sleep(1000);
-
-                ticketURL = driver.Url;
+                try
+                {
+                    js.ExecuteScript("arguments[0].click()", driver.FindElement(By.XPath("//tr[3]/td[1]/a[1]")));
+                    Thread.Sleep(1000);
+                    ticketURL = driver.Url;
+                }
+                catch
+                {
+                    MessageBox.Show("No ticket found");
+                    ticketURL = null;
+                }
                 driver.Quit();
             }
         }
