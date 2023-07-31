@@ -17,7 +17,7 @@ This app is a WIP, but should cover the basics.
      - The topic of Automated capture is a fun one, as everyone will have different sites where they capture time (it will most likely be limited to websites)
        This does mean that in order to do it I will need to go through the process of writing the selenium cases Specifically for you. This will happen if the
        site has any updates to UI as well.
-     - This will most likely be a charged feature - but won't be more than R50 / $3 / €2.5
+     - This will most likely be a charged feature - but won't be more than R50 / $3 / €2.5 per hour
 
 # Side Notes
 
