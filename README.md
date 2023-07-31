@@ -11,7 +11,7 @@ This app is a WIP, but should cover the basics.
        reporting systems for the management teams
      The topic of license keys vs Flat Rate is still being decided - all opinions welcome
 2. The Individual / Master
-     This is free, and will most likely always be free. A buy me a coffee system will be setup incase you feel generous but this isn't to start my own
+     - This is free, and will most likely always be free. A buy me a coffee system will be setup incase you feel generous but this isn't to start my own
        company, this was created because I was sick and tired of cruddy time capture apps that still want to charge you for simple functionality
      Intend to Grow this more and more
 3. The Automated time capture
