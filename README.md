@@ -32,4 +32,11 @@ I do have a website available, where both a copy of the release for individuals 
 
   Users
     Method 1 - Repo RAR
-      1. Download 
+      1. Download TimeCapture.rar
+      2. Extract wherever you would like the app
+      3. Done
+    Method 2 - [Scholtz.web.epizy.com](http://scholtz-web.epizy.com)http://scholtz-web.epizy.com
+      1. Open the site, use the hamburger button to open apps
+      2. Download TimeCapture
+      3. Extract wherever you would like the app
+      4. Done
