@@ -24,3 +24,19 @@ This app is a WIP, but should cover the basics.
 I do have a website available, where both a copy of the release for individuals and a link to this GitHub repo will be available. once that is 
   done i will add the link to this readme
     Any bugs or ideas for that page can be emailed or commented here as well... this is all a hobby for me, there's probably alot of things I should do better
+
+# How to Install
+  - Developers
+    1. Download this repo, extract the DB.rar file into the DB Folder
+    2. Done... no seriously that should be it
+
+  - Users
+    - Method 1 - Repo RAR
+      1. Download TimeCapture.rar
+      2. Extract wherever you would like the app
+      3. Done
+    - Method 2 - [Scholtz.web.epizy.com](http://scholtz-web.epizy.com)
+      1. Open the site, use the hamburger button to open apps
+      2. Download TimeCapture
+      3. Extract wherever you would like the app
+      4. Done
