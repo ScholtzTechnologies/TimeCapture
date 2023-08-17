@@ -12,17 +12,22 @@ namespace TimeCapture.Forms.Shared
 {
     public partial class Login : Form
     {
-        public Login()
+        public TimeCapture time { get; set; }
+        public Login(TimeCapture timeCapture)
         {
             InitializeComponent();
+            time = timeCapture;
+            timeCapture.Hide();
             this.textBox2.PasswordChar = '*';
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (new Access().Login(textBox1.Text.ToString(), textBox2.Text.ToString()))
+            int UserID;
+            if (new Access().Login(textBox1.Text.ToString(), textBox2.Text.ToString(), out UserID))
             {
-                new TimeCapture().Show();
+                time.UserID = UserID;
+                time.CompleteLogin();
                 this.Dispose();
             }
             else
@@ -35,20 +40,29 @@ namespace TimeCapture.Forms.Shared
         {
             bool isOK;
             string Email;
-            new TimeCapture().ShowInputDialog("Please provide your email", out isOK, out Email);
-            if (isOK && !string.IsNullOrEmpty(Email))
-                if (new Access().Register(textBox1.Text.ToString(), textBox2.Text.ToString(), Email))
-                    if (new Access().Login(textBox1.Text.ToString(), textBox2.Text.ToString()))
-                    {
-                        new TimeCapture().Show();
-                        this.Dispose();
-                    }
+            int UserID;
+            if (!string.IsNullOrEmpty(textBox1.Text.ToString()) && !string.IsNullOrEmpty(textBox2.Text.ToString()))
+            {
+                new TimeCapture().ShowInputDialog("Please provide your email", out isOK, out Email);
+                if (isOK && !string.IsNullOrEmpty(Email))
+                    if (new Access().Register(textBox1.Text.ToString(), textBox2.Text.ToString(), Email))
+                        if (new Access().Login(textBox1.Text.ToString(), textBox2.Text.ToString(), out UserID))
+                        {
+                            time.UserID = UserID;
+                            time.CompleteLogin();
+                            this.Dispose();
+                        }
+                        else
+                            MessageBox.Show("Error when signing in. Please try again");
                     else
-                        MessageBox.Show("Error when signing in. Please try again");
-                else
-                    MessageBox.Show("Failed to register, please try again or contact support");
-            else if (isOK && string.IsNullOrEmpty(Email))
-                MessageBox.Show("Please provide a valid email");
+                        MessageBox.Show("Failed to register, please try again or contact support");
+                else if (isOK && string.IsNullOrEmpty(Email))
+                    MessageBox.Show("Please provide a valid email");
+            }
+            else
+            {
+                MessageBox.Show("Please provide a username and password on the login form first");
+            }
 
         }
     }

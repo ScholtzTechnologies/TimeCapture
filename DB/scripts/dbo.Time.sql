@@ -10,6 +10,7 @@
     [TicketType]  VARCHAR (50)  NOT NULL,
     [Date]        VARCHAR (50)  NOT NULL,
     [IsCaptured]  INT           NULL,
+    [SystemUserID]INT           NULL,
     PRIMARY KEY CLUSTERED ([TimeID] ASC),
     CONSTRAINT [CK_Time_TimeID] CHECK ([TimeID]<>NULL AND [TimeID]>(0))
 );

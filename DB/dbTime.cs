@@ -202,6 +202,12 @@ namespace TimeCapture.DB
             return ExecuteQuery(sSQL).Tables[0].Rows[0].GetDataRowBoolValue("Value");
         }
 
+        public bool IsBusinessModel()
+        {
+            string sSQL = "Select Value from Settings where ID = -1";
+            return ExecuteQuery(sSQL).Tables[0].Rows[0].GetDataRowBoolValue("Value");
+        }
+
         public string GetSettingsValue(int SettingID)
         {
             string sSQL = "Select Value from Settings where ID = " + SettingID;
@@ -254,18 +260,24 @@ namespace TimeCapture.DB
             catch { return ""; }
         }
 
-        public bool Login(string Username, string Password)
+        public bool Login(string Username, string Password, out int UserID)
         {
-            string sSQL = "select 1 from SystemUsers where LOWER(Name) = '" + Username.ToLower() 
+            string sSQL = "select ID from SystemUsers where LOWER(Name) = '" + Username.ToLower() 
                 + "' and Password = '" + Password + "'";
             try
             {
                 if (ExecuteQuery(sSQL).HasRows())
+                {
+                    UserID = ExecuteQuery(sSQL).Tables[0].Rows[0].GetDataRowIntValue("ID");
                     return true;
+                }
                 else
+                {
+                    UserID = -1;
                     return false;
+                }
             }
-            catch { return false; }
+            catch { UserID = -1; return false; }
         }
 
         public bool Register(string Username, string Password, string Email)
@@ -339,7 +351,7 @@ namespace TimeCapture.DB
         }
 
         public void SaveTime(int TimeID, string Item, int TicketNo, string Start, string End
-            , string Total, string TimeType, string Desc, string TicketType, string Date)
+            , string Total, string TimeType, string Desc, string TicketType, string Date, int UserID)
         {
             string sSQL = String.Format(@"if Exists (select * from Time where TimeID = {0})
 	                update Time set Item = '{1}', TicketNo = {2}, Start = '{3}', [End] = '{4}',
@@ -349,10 +361,10 @@ namespace TimeCapture.DB
                     insert into 
                         Time 
                             (Item, TicketNo, Start, [End],
-                            Total, TimeType, Description, TicketType, Date)
+                            Total, TimeType, Description, TicketType, Date, SystemUserID)
                         VALUES (
-                            '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}'
-                        )", TimeID, Item, TicketNo, Start, End, Total, TimeType, Desc, TicketType, Date);
+                            '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', {10}
+                        )", TimeID, Item, TicketNo, Start, End, Total, TimeType, Desc, TicketType, Date, UserID);
             ExecuteNonQuery(sSQL);
             Logger.Log(LogType.Info, "Time Added to DB");
         }

@@ -37,12 +37,63 @@ namespace TimeCapture
 
         public Selenium.TimeTaker.TimeCapture timeCapture = new();
         public _Spinner Spinner { get; set; }
+        public int UserID { get; set; }
         #endregion Properties
         
         public TimeCapture()
         {
             InitializeComponent();
 
+            if (new Access().IsBusinessModel())
+            {
+                new Login(this).Show();
+            }
+            else
+            {
+                UserID = -1;
+                string response;
+                new Access().TestConnection(out response);
+                responseMessage.Text = response;
+
+                CreateTable();
+                getTypes();
+                getTickets();
+
+                lblTypeLocal = lblType.Location;
+                drpTypeLocal = drpType.Location;
+                drpTypeSize = drpType.Size;
+
+                lblDescLocal = lblDesc.Location;
+                txtDescLocal = txtDesc.Location;
+                txtDescSize = txtDesc.Size;
+
+                CheckHidden();
+
+                var lTypesColumn = lTypes.Select(x => x.Name).ToList();
+                drpType.DataSource = lTypesColumn;
+
+                txtStartTime.Enabled = false;
+                responseMessage.Enabled = false;
+
+                lblStop.Enabled = false;
+
+                TimeID = -1;
+                isInitialized = true;
+
+                dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+                string path = Path.Combine(CSVImport.root, "TimeCapture_log_sql.txt");
+                if (!File.Exists(path))
+                {
+                    File.Create(path);
+                }
+
+                dataGridView1.RowsAdded += PaintRows;
+            }
+        }
+
+        public void CompleteLogin()
+        {
             string response;
             new Access().TestConnection(out response);
             responseMessage.Text = response;
@@ -81,6 +132,7 @@ namespace TimeCapture
             }
 
             dataGridView1.RowsAdded += PaintRows;
+            this.Show();
         }
 
         #region CheckBoxes
@@ -457,7 +509,7 @@ namespace TimeCapture
             {
                 i++;
                 Access.SaveTime(time.TimeID, time.Item, time.TicketNo, time.Start, time.End,
-                    time.Total, time.TimeType, time.Description, time.Type, time.Date);
+                    time.Total, time.TimeType, time.Description, time.Type, time.Date, UserID);
                 if (i == Count)
                 {
                     last = "End " + '@' + " " + time.End;
