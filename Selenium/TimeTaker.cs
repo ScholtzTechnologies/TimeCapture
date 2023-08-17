@@ -8,6 +8,9 @@ namespace TimeCapture.Selenium.TimeTaker
         public string Username = new Access().GetUserName();
         public string Password = new Access().GetPassword();
         public string URL = new Access().GetSettingsValue(8);
+        public bool Success { get; set; }
+        public bool HasTime { get; set; }
+        public List<String> Failed { get; set; }
         public void CaptureTime(BrowserType browserType)
         {
             IJavaScriptExecutor js;
@@ -33,6 +36,8 @@ namespace TimeCapture.Selenium.TimeTaker
 
                 DataSet records = new Access().GetTimeToCapture();
                 if (records.HasRows())
+                {
+                    HasTime = true;
                     foreach (DataRow time in records.Tables[0].Rows)
                     {
                         string sDate = time.GetDataRowStringValue("Date");
@@ -114,13 +119,41 @@ namespace TimeCapture.Selenium.TimeTaker
                             new Access().MarkTimeAsCaptured(time.GetDataRowIntValue("TimeID"));
                             WriteLog.writePass(time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("TimeType"), time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), sDate);
                             Thread.Sleep(2000);
+                            Success = true;
                         }
-                        catch (Exception ex)
+                        catch
                         {
+                            Success = false;
+                            Failed.Add(time.GetDataRowStringValue("Item") + " | " + time.GetDataRowStringValue("TicketNo"));
                             WriteLog.writeFail(time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("TimeType"), time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), sDate);
                         }
                     }
-                    driver.Quit();
+                }
+                else
+                {
+                    HasTime = false;
+                }
+
+                if (Success && HasTime)
+                {
+                    MessageBox.Show("Time has been captured");
+                }
+                else if (!HasTime)
+                {
+                    MessageBox.Show("No time to capture");
+                }
+                else if (!Success)
+                {
+                    StringBuilder sMessage = new();
+                    sMessage.Append("Failed to capture time. see list below:");
+                    foreach (var item in Failed)
+                    {
+                        sMessage.Append(item.ToString());
+                    }
+                    MessageBox.Show(sMessage.ToString());
+                }
+
+                driver.Quit();
             }
         }
     }

@@ -1,14 +1,13 @@
-﻿using Microsoft.Data.SqlClient;
-using TimeCapture.DB;
+﻿using TimeCapture.DB;
 using TimeCapture.Forms;
 using TimeCapture.utils;
 using TimeCapture.Forms.Shared;
-using System.Runtime.InteropServices;
 
 namespace TimeCapture
 {
     public partial class TimeCapture : Form
     {
+        #region Properties
         public DataTable tblTime { get; set; }
         public List<Time> lTime = new List<Time>();
         public List<CSVImport.Types> lTypes = new List<CSVImport.Types>();
@@ -34,13 +33,20 @@ namespace TimeCapture
         public string ptDesc { get; set; }
         public int TimeID { get; set; }
         public bool isInitialized { get; set; }
-        #endregion
+        #endregion PriorTime
 
         public Selenium.TimeTaker.TimeCapture timeCapture = new();
         public _Spinner Spinner { get; set; }
+        #endregion Properties
+        
         public TimeCapture()
         {
             InitializeComponent();
+
+            string response;
+            new Access().TestConnection(out response);
+            responseMessage.Text = response;
+
             CreateTable();
             getTypes();
             getTickets();
@@ -63,7 +69,7 @@ namespace TimeCapture
 
             lblStop.Enabled = false;
 
-            TimeID = 999999;
+            TimeID = -1;
             isInitialized = true;
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -75,65 +81,6 @@ namespace TimeCapture
             }
 
             dataGridView1.RowsAdded += PaintRows;
-        }
-
-        public void CheckHidden()
-        {
-            if (Access.GetSettingValue(3))                                      // TNo hidden
-            {
-                label1.Hide();
-                txtTicketNo.Hide();
-                dataGridView1.Columns["TicketNumber"].Visible = false;
-                lblTypeLocal = lblType.Location;
-                drpTypeLocal = drpType.Location;
-                drpTypeSize = drpType.Size;
-                lblType.Location = label1.Location;
-                drpType.Location = txtTicketNo.Location;
-                drpType.Size = txtTicketNo.Size;
-                if (!Access.GetSettingValue(2))                                // TNo hidden and Desc not hidden
-                {
-                    lblDesc.Location = lblTypeLocal;
-                    txtDesc.Location = drpTypeLocal;
-                }
-            }
-            else                                                               // TNo not hidden
-            {
-                label1.Show();
-                txtTicketNo.Show();
-                dataGridView1.Columns["TicketNumber"].Visible = true;
-                lblType.Location = lblTypeLocal;
-                drpType.Location = drpTypeLocal;
-                drpType.Size = drpTypeSize;
-                lblDesc.Location = lblDescLocal;
-                txtDesc.Location = txtDescLocal;
-            }
-
-            if (Access.GetSettingValue(2))                                  // Desc Hidden
-            {
-                lblDesc.Hide();
-                txtDesc.Hide();
-                dataGridView1.Columns["Description"].Visible = false;
-            }
-            else                                                            // Desc not hidden
-            {
-                lblDesc.Show();
-                txtDesc.Show();
-                dataGridView1.Columns["Description"].Visible = true;
-                if (Access.GetSettingValue(3))
-                {
-                    lblDesc.Location = lblTypeLocal;
-                    txtDesc.Location = drpTypeLocal;
-                }
-            }
-
-            if (Access.GetSettingValue(7))
-            {
-                btnCaptureTime.Visible = true;
-            }
-            else
-            {
-                btnCaptureTime.Visible = false;
-            }
         }
 
         #region CheckBoxes
@@ -195,9 +142,17 @@ namespace TimeCapture
         public void btnExport_Click(object sender, EventArgs e)
         {
             exportProgress.Value = 15;
-            StoreTime();
+            string last;
+            StoreTime(out last);
             exportProgress.Value = 100;
-            sendToast("Your time for " + DateTime.Now.ToString("dd MMM yyyy") + " has been exported");
+            if (!string.IsNullOrEmpty(last))
+            {
+                sendToast("Your time for " + DateTime.Now.ToString("dd MMM yyyy") + " has been exported | " + last);
+            }
+            else
+            {
+                sendToast("No time to capture");
+            }
         }
 
         private void lblPlay_Click(object sender, EventArgs e)
@@ -280,10 +235,9 @@ namespace TimeCapture
             {
                 TimeSpan preTotal = DateTime.Now.Subtract(dtStart);
                 string Total = preTotal.ToString().Substring(0, 5);
-                TimeID--;
 
                 Time time = new Time();
-                time.TimeID = TimeID;
+                time.TimeID = -1;
                 time.Item = ptName;
                 time.TicketNo = ptTicketNumber;
                 time.Start = ptStart;
@@ -314,41 +268,6 @@ namespace TimeCapture
             }
         }
 
-        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            if (isInitialized)
-            {
-                // Get the edited values from the DataGridView row
-                int selectedTimeID = dataGridView1.CurrentRow.GetDataGridViewIntValue("iTimeID");
-                string editedPtName = dataGridView1.CurrentRow.GetDataGridViewStringValue("tName");
-                string editedPtTicketNumber = dataGridView1.CurrentRow.GetDataGridViewStringValue("TicketNumber");
-                string editedPtStart = dataGridView1.CurrentRow.GetDataGridViewStringValue("StartTime");
-                string editedPtEnd = dataGridView1.CurrentRow.GetDataGridViewStringValue("EndTime");
-                string editedTotal = dataGridView1.CurrentRow.GetDataGridViewStringValue("Total");
-                string editedPtTimeType = dataGridView1.CurrentRow.GetDataGridViewStringValue("TimeType");
-                string editedPtDesc = dataGridView1.CurrentRow.GetDataGridViewStringValue("Description");
-                string editedPtTicketType = dataGridView1.CurrentRow.GetDataGridViewStringValue("TicketType");
-                string editedPtDate = dataGridView1.CurrentRow.GetDataGridViewStringValue("Date");
-
-                // Find the item in the list with the matching TimeID
-                Time itemToUpdate = lTime.FirstOrDefault(t => t.TimeID == selectedTimeID);
-
-                if (itemToUpdate != null)
-                {
-                    // Update the item properties with the edited values
-                    itemToUpdate.Item = editedPtName;
-                    itemToUpdate.TicketNo = Convert.ToInt32(editedPtTicketNumber);
-                    itemToUpdate.Start = editedPtStart;
-                    itemToUpdate.End = editedPtEnd;
-                    itemToUpdate.Total = editedTotal;
-                    itemToUpdate.TimeType = editedPtTimeType;
-                    itemToUpdate.Description = editedPtDesc;
-                    itemToUpdate.Type = editedPtTicketType;
-                    itemToUpdate.Date = editedPtDate;
-                }
-            }
-        }
-
         private void btnClear_Click(object sender, EventArgs e)
         {
             lTime.Clear();
@@ -356,9 +275,125 @@ namespace TimeCapture
             sendToast("All recently captured time cleared");
             exportProgress.Value = 0;
         }
-        #endregion
+
+        private void btnCaptureTime_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Would you like to export the current time first?", "", MessageBoxButtons.YesNoCancel);
+
+            if (result == DialogResult.Yes)
+            {
+                ShowSpinner();
+                this.Hide();
+                try
+                {
+                    btnExport_Click(sender, e);
+                    timeCapture.CaptureTime(BrowserType.Chrome);
+                    sendToast("Time has been captured");
+                    new _logger().Log(LogType.Info, "Time captured");
+                }
+                catch (Exception ex)
+                {
+                    new _logger().Log(LogType.Error, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
+                    MessageBox.Show("Failed to capture time, please try again");
+                    DialogResult error = MessageBox.Show("Failed to capture time, see exception message?", "", MessageBoxButtons.YesNo);
+                    if (error == DialogResult.Yes)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                    }
+                }
+            }
+            else
+            {
+                ShowSpinner();
+                this.Hide();
+                try
+                {
+                    timeCapture.CaptureTime(BrowserType.Chrome);
+                    new _logger().Log(LogType.Info, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
+                }
+                catch (Exception ex)
+                {
+                    new _logger().Log(LogType.Error, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
+                    MessageBox.Show("Failed to capture time, please try again");
+                    DialogResult error = MessageBox.Show("Failed to capture time, see exception message?", "", MessageBoxButtons.YesNo);
+                    if (error == DialogResult.Yes)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                    }
+                }
+            }
+            HideSpinner();
+            this.Show();
+        }
+
+        private void btnDelTicket_Click(object sender, EventArgs e)
+        {
+            DeleteTicket frmDelete = new(this);
+            frmDelete.Show();
+        }
+
+        #endregion Buttons
 
         #region Actions
+
+        public void CheckHidden()
+        {
+            if (Access.GetSettingValue(3))                                      // TNo hidden
+            {
+                label1.Hide();
+                txtTicketNo.Hide();
+                dataGridView1.Columns["TicketNumber"].Visible = false;
+                lblTypeLocal = lblType.Location;
+                drpTypeLocal = drpType.Location;
+                drpTypeSize = drpType.Size;
+                lblType.Location = label1.Location;
+                drpType.Location = txtTicketNo.Location;
+                drpType.Size = txtTicketNo.Size;
+                if (!Access.GetSettingValue(2))                                // TNo hidden and Desc not hidden
+                {
+                    lblDesc.Location = lblTypeLocal;
+                    txtDesc.Location = drpTypeLocal;
+                }
+            }
+            else                                                               // TNo not hidden
+            {
+                label1.Show();
+                txtTicketNo.Show();
+                dataGridView1.Columns["TicketNumber"].Visible = true;
+                lblType.Location = lblTypeLocal;
+                drpType.Location = drpTypeLocal;
+                drpType.Size = drpTypeSize;
+                lblDesc.Location = lblDescLocal;
+                txtDesc.Location = txtDescLocal;
+            }
+
+            if (Access.GetSettingValue(2))                                  // Desc Hidden
+            {
+                lblDesc.Hide();
+                txtDesc.Hide();
+                dataGridView1.Columns["Description"].Visible = false;
+            }
+            else                                                            // Desc not hidden
+            {
+                lblDesc.Show();
+                txtDesc.Show();
+                dataGridView1.Columns["Description"].Visible = true;
+                if (Access.GetSettingValue(3))
+                {
+                    lblDesc.Location = lblTypeLocal;
+                    txtDesc.Location = drpTypeLocal;
+                }
+            }
+
+            if (Access.GetSettingValue(7))
+            {
+                btnCaptureTime.Visible = true;
+            }
+            else
+            {
+                btnCaptureTime.Visible = false;
+            }
+        }
 
         public void CreateTable()
         {
@@ -413,12 +448,20 @@ namespace TimeCapture
             lTime.Clear();
         }
 
-        public void StoreTime()
+        public void StoreTime(out string last)
         {
+            last = null;
+            int i = 0;
+            int Count = lTime.Count;
             foreach (var time in lTime)
             {
+                i++;
                 Access.SaveTime(time.TimeID, time.Item, time.TicketNo, time.Start, time.End,
                     time.Total, time.TimeType, time.Description, time.Type, time.Date);
+                if (i == Count)
+                {
+                    last = "End " + '@' + " " + time.End;
+                }
             }
             lTime.Clear();
         }
@@ -456,7 +499,7 @@ namespace TimeCapture
             else
             {
                 MessageBox.Show(msg);
-                responseMessage.Text = DateTime.Now.ToString("[hh:mm]") + msg;
+                responseMessage.Text = DateTime.Now.ToString("[hh:mm]") + " " + msg;
             }
         }
 
@@ -499,17 +542,218 @@ namespace TimeCapture
             txtTicketNo.ValueMember = "ID";
         }
 
-        public void CaptureTime()
-        {
-            //Create Selenium Case
-        }
-
-        public void DeleteTime(int rowIndex)
+        public void DeleteTime(int rowIndex, int iTimeID)
         {
             dataGridView1.Rows.Remove(dataGridView1.Rows[rowIndex]);
+            if (iTimeID != -1)
+            {
+                DialogResult result = MessageBox.Show("Would you like to delete the record entirely?", "", MessageBoxButtons.YesNoCancel);
+                if (result == DialogResult.Yes)
+                {
+                    new Access().DeleteTime(iTimeID);
+                }
+            }
         }
 
-        #endregion
+        public void ShowSpinner()
+        {
+            Spinner = new();
+            Spinner.Show();
+        }
+
+        public void HideSpinner()
+        {
+            Spinner.Hide();
+        }
+
+        public void ShowInputDialog(string sContext, out bool OK, out string sValue)
+        {
+            // Create a custom input box form
+            Form inputBoxForm = new Form();
+            inputBoxForm.Text = "";
+            inputBoxForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+            inputBoxForm.StartPosition = FormStartPosition.CenterParent;
+            inputBoxForm.Width = 240;
+            inputBoxForm.Height = 150;
+
+            // Create the label and text box for input
+            Label label = new Label();
+            label.Text = sContext;
+            label.AutoSize = true;
+            label.Location = new System.Drawing.Point(10, 10);
+
+            TextBox textBox = new TextBox();
+            textBox.Location = new System.Drawing.Point(10, 30);
+            textBox.Size = new System.Drawing.Size(200, 20);
+
+            // Create the OK and Cancel buttons
+            Button okButton = new Button();
+            okButton.Text = "OK";
+            okButton.DialogResult = DialogResult.OK;
+            okButton.Location = new System.Drawing.Point(10, 60);
+            okButton.Height = 25;
+            okButton.Click += (sender, e) => inputBoxForm.Close();
+
+            Button cancelButton = new Button();
+            cancelButton.Text = "Cancel";
+            cancelButton.DialogResult = DialogResult.Cancel;
+            cancelButton.Location = new System.Drawing.Point(90, 60);
+            cancelButton.Height = 25;
+            cancelButton.Click += (sender, e) => inputBoxForm.Close();
+
+            // Add the controls to the form
+            inputBoxForm.Controls.AddRange(new Control[] { label, textBox, okButton, cancelButton });
+
+            // Show the input box form as a dialog
+            if (inputBoxForm.ShowDialog() == DialogResult.OK)
+            {
+                OK = true;
+                if (!string.IsNullOrEmpty(textBox.Text))
+                {
+                    sValue = textBox.Text.ToString();
+                }
+                else
+                {
+                    sValue = "";
+                }
+            }
+            else
+            {
+                OK = false;
+                sValue = "";
+            }
+        }
+
+        public void ShowDateInputDialog(string sContext, out bool OK, out string sValue)
+        {
+            // Create a custom input box form
+            Form inputBoxForm = new Form();
+            inputBoxForm.Text = "";
+            inputBoxForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+            inputBoxForm.StartPosition = FormStartPosition.CenterParent;
+            inputBoxForm.Width = 240;
+            inputBoxForm.Height = 150;
+
+            // Create the label and text box for input
+            Label label = new Label();
+            label.Text = sContext;
+            label.AutoSize = true;
+            label.Location = new System.Drawing.Point(10, 10);
+
+            DateTimePicker textBox = new DateTimePicker();
+            textBox.Format = DateTimePickerFormat.Custom;
+            textBox.CustomFormat = "dd MMM yyyy";
+            textBox.Location = new System.Drawing.Point(10, 30);
+            textBox.Size = new System.Drawing.Size(200, 20);
+
+            // Create the OK and Cancel buttons
+            Button okButton = new Button();
+            okButton.Text = "OK";
+            okButton.DialogResult = DialogResult.OK;
+            okButton.Location = new System.Drawing.Point(10, 60);
+            okButton.Height = 25;
+            okButton.Click += (sender, e) => inputBoxForm.Close();
+
+            Button cancelButton = new Button();
+            cancelButton.Text = "Cancel";
+            cancelButton.DialogResult = DialogResult.Cancel;
+            cancelButton.Location = new System.Drawing.Point(90, 60);
+            cancelButton.Height = 25;
+            cancelButton.Click += (sender, e) => inputBoxForm.Close();
+
+            // Add the controls to the form
+            inputBoxForm.Controls.AddRange(new Control[] { label, textBox, okButton, cancelButton });
+
+            // Show the input box form as a dialog
+            if (inputBoxForm.ShowDialog() == DialogResult.OK)
+            {
+                OK = true;
+                if (!string.IsNullOrEmpty(textBox.Text))
+                {
+                    sValue = textBox.Text.ToString();
+                }
+                else
+                {
+                    sValue = "";
+                }
+            }
+            else
+            {
+                OK = false;
+                sValue = "";
+            }
+        }
+
+        public void ShowDateRangeInputDialog(string sContext, out bool OK, out string Start, out string End)
+        {
+            // Create a custom input box form
+            Form inputBoxForm = new Form();
+            inputBoxForm.Text = "";
+            inputBoxForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+            inputBoxForm.StartPosition = FormStartPosition.CenterParent;
+            inputBoxForm.Width = 240;
+            inputBoxForm.Height = 200;
+
+            // Create the label and text box for input
+            Label label = new Label();
+            label.Text = sContext;
+            label.AutoSize = true;
+            label.Location = new System.Drawing.Point(10, 10);
+
+            DateTimePicker textBox = new DateTimePicker();
+            textBox.Format = DateTimePickerFormat.Custom;
+            textBox.CustomFormat = "dd MMM yyyy";
+            textBox.Location = new System.Drawing.Point(10, 30);
+            textBox.Size = new System.Drawing.Size(200, 20);
+
+            DateTimePicker txtEnd = new DateTimePicker();
+            txtEnd.Format = DateTimePickerFormat.Custom;
+            txtEnd.CustomFormat = "dd MMM yyyy";
+            txtEnd.Location = new System.Drawing.Point(10, 60);
+            txtEnd.Size = new System.Drawing.Size(200, 20);
+
+            // Create the OK and Cancel buttons
+            Button okButton = new Button();
+            okButton.Text = "OK";
+            okButton.DialogResult = DialogResult.OK;
+            okButton.Location = new System.Drawing.Point(10, 90);
+            okButton.Height = 25;
+            okButton.Click += (sender, e) => inputBoxForm.Close();
+
+            Button cancelButton = new Button();
+            cancelButton.Text = "Cancel";
+            cancelButton.DialogResult = DialogResult.Cancel;
+            cancelButton.Location = new System.Drawing.Point(90, 90);
+            cancelButton.Height = 25;
+            cancelButton.Click += (sender, e) => inputBoxForm.Close();
+
+            // Add the controls to the form
+            inputBoxForm.Controls.AddRange(new Control[] { label, textBox, txtEnd, okButton, cancelButton });
+
+            // Show the input box form as a dialog
+            if (inputBoxForm.ShowDialog() == DialogResult.OK)
+            {
+                OK = true;
+                if (!string.IsNullOrEmpty(textBox.Text))
+                {
+                    Start = textBox.Text.ToString();
+                    End = txtEnd.Text.ToString();
+                }
+                else
+                {
+                    Start = "";
+                    End = "";
+                }
+            }
+            else
+            {
+                OK = false;
+                Start = "";
+                End = "";
+            }
+        }
+
+        #endregion Actions
 
         #region NavMenu
 
@@ -535,9 +779,8 @@ namespace TimeCapture
                         var Count = records.Count();
                         foreach (var user in records)
                         {
-                            Lists.Time time = new Lists.Time();
                             i++;
-                            TimeID++;
+                            Lists.Time time = new Lists.Time();
                             time.TimeID = TimeID;
                             time.Item = user.Item;
                             time.TicketNo = user.TicketNo;
@@ -563,12 +806,230 @@ namespace TimeCapture
                 }
             }
         }
-        #endregion
 
         private void notesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Forms.Notes notes = new Forms.Notes();
             notes.Show();
+        }
+
+                private void allToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataSet dsTime = new Access().getTime(1);
+            if (dsTime.HasRows())
+            {
+                foreach (DataRow time in dsTime.Tables[0].Rows)
+                {
+                    dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"), 
+                        time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"), 
+                        time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
+                }
+            }
+        }
+
+        private void uncapturedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataSet dsTime = new Access().getTime(2);
+            if (dsTime.HasRows())
+            {
+                foreach (DataRow time in dsTime.Tables[0].Rows)
+                {
+                    dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
+                        time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
+                        time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
+                }
+            }
+        }
+
+        private void capturedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataSet dsTime = new Access().getTime(3);
+            if (dsTime.HasRows())
+            {
+                foreach (DataRow time in dsTime.Tables[0].Rows)
+                {
+                    dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
+                        time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
+                        time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
+                }
+            }
+        }
+
+        private void ticketToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string sContext = "Please provide a ticket number to view";
+            bool OKResult;
+            string sValue;
+            ShowInputDialog(sContext, out OKResult, out sValue);
+
+            if (OKResult)
+            {
+                ShowSpinner();
+                TicketViewer ticketViewer = new(sValue);
+                ticketViewer.Show();
+                HideSpinner();
+            }
+        }
+
+        private void byDayToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bool OK;
+            string sDate;
+            ShowDateInputDialog("Please provide a date", out OK, out sDate);
+            if (OK && !string.IsNullOrEmpty(sDate))
+            {
+                DataSet dsTime = new Access().getTimeByDay(sDate);
+                if (dsTime.HasRows())
+                {
+                    foreach (DataRow time in dsTime.Tables[0].Rows)
+                    {
+                        dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
+                            time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
+                            time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
+                    }
+                }
+            }
+        }
+
+        private void byDateRangeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bool OK;
+            string sStart;
+            string sEnd;
+            ShowDateRangeInputDialog("Please provide a start and End Date", out OK, out sStart, out sEnd);
+            if (OK && !string.IsNullOrEmpty(sStart))
+            {
+                DataSet dsTime = new Access().GetTimeByDateRange(sStart, sEnd);
+                if (dsTime.HasRows())
+                {
+                    foreach (DataRow time in dsTime.Tables[0].Rows)
+                    {
+                        dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
+                            time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
+                            time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
+                    }
+                }
+            }
+        }
+
+        private void fromDateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bool OK;
+            string sStart;
+            string sEnd;
+            ShowDateInputDialog("Please provide a date", out OK, out sStart);
+            if (OK && !string.IsNullOrEmpty(sStart))
+            {
+                DataSet dsTime = new Access().GetTimeByDateRange(sStart, null);
+                if (dsTime.HasRows())
+                {
+                    foreach (DataRow time in dsTime.Tables[0].Rows)
+                    {
+                        dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
+                            time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
+                            time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
+                    }
+                }
+            }
+        }
+
+        #endregion Nav
+
+        #region DataGridView
+
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (isInitialized)
+            {
+                // Get the edited values from the DataGridView row
+                int selectedTimeID = dataGridView1.CurrentRow.GetDataGridViewIntValue("iTimeID");
+                string selectedStart = dataGridView1.CurrentRow.GetDataGridViewStringValue("StartTime");
+                string selectedEnd = dataGridView1.CurrentRow.GetDataGridViewStringValue("EndTime");
+                string editedPtName = dataGridView1.CurrentRow.GetDataGridViewStringValue("tName");
+                string editedPtTicketNumber = dataGridView1.CurrentRow.GetDataGridViewStringValue("TicketNumber");
+                string editedPtStart = dataGridView1.CurrentRow.GetDataGridViewStringValue("StartTime");
+                string editedPtEnd = dataGridView1.CurrentRow.GetDataGridViewStringValue("EndTime");
+                string editedTotal = dataGridView1.CurrentRow.GetDataGridViewStringValue("Total");
+                string editedPtTimeType = dataGridView1.CurrentRow.GetDataGridViewStringValue("TimeType");
+                string editedPtDesc = dataGridView1.CurrentRow.GetDataGridViewStringValue("Description");
+                string editedPtTicketType = dataGridView1.CurrentRow.GetDataGridViewStringValue("TicketType");
+                string editedPtDate = dataGridView1.CurrentRow.GetDataGridViewStringValue("Date");
+
+                // Find the item in the list with the matching TimeID
+                Time itemToUpdate = lTime.FirstOrDefault(t => t.Start == selectedStart || t.End == selectedEnd);
+
+                if (itemToUpdate != null)
+                {
+                    // Update the item properties with the edited values
+                    itemToUpdate.Item = editedPtName;
+                    itemToUpdate.TicketNo = Convert.ToInt32(editedPtTicketNumber);
+                    if (itemToUpdate.Start != editedPtStart || itemToUpdate.End != editedPtEnd)
+                    {
+                        try
+                        {
+                            TimeSpan preTotal = Convert.ToDateTime(editedPtEnd).Subtract(Convert.ToDateTime(editedPtStart));
+                            string Total = preTotal.ToString().Substring(0, 5);
+                            itemToUpdate.Total = Total;
+                            dataGridView1.CurrentRow.Cells["Total"].Value = Total;
+                        }
+                        catch
+                        {
+                            itemToUpdate.Total = editedTotal;
+                        }
+                    }
+                    else
+                    {
+                        itemToUpdate.Total = editedTotal;
+                    }
+                    itemToUpdate.Start = editedPtStart;
+                    itemToUpdate.End = editedPtEnd;
+                    itemToUpdate.TimeType = editedPtTimeType;
+                    itemToUpdate.Description = editedPtDesc;
+                    itemToUpdate.Type = editedPtTicketType;
+                    itemToUpdate.Date = editedPtDate;
+                }
+                else if (selectedTimeID != -1)
+                {
+                    Time time = new Time();
+                    time.TimeID = selectedTimeID;
+                    time.Item = editedPtName;
+                    try
+                    {
+                        time.TicketNo = Convert.ToInt32(editedPtTicketNumber);
+                    }
+                    catch
+                    {
+                        time.TicketNo = -1;
+                    }
+                    try
+                    {
+                        TimeSpan preTotal = Convert.ToDateTime(editedPtEnd).Subtract(Convert.ToDateTime(editedPtStart));
+                        string Total = preTotal.ToString().Substring(0, 5);
+                        time.Total = Total;
+                        dataGridView1.CurrentRow.Cells["Total"].Value = Total;
+                    }
+                    catch
+                    {
+                        time.Total = editedTotal;
+                    }
+
+                    time.Start = editedPtStart;
+                    time.End = editedPtEnd;
+                    time.TimeType = editedPtTimeType;
+                    time.Description = editedPtDesc;
+                    time.Type = editedPtTicketType;
+                    time.Date = editedPtDate;
+
+                    if (time.TicketNo == -1)
+                    {
+                        sendToast("Please provide a valid ticket number");
+                    }
+                    else
+                    {
+                        new Access().UpdateTime(time);
+                    }
+                }
+            }
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -580,13 +1041,14 @@ namespace TimeCapture
                 int timeID = dataGridView1.Rows[e.RowIndex].GetDataGridViewIntValue("iTimeID");
 
                 // Call the public void method that accepts the TimeID value
-                DeleteTime(e.RowIndex);
+
+                DeleteTime(e.RowIndex, timeID);
                 sendToast("Time Deleted");
             }
-            if (dataGridView1.Columns[e.ColumnIndex] is DataGridViewButtonColumn 
+            if (dataGridView1.Columns[e.ColumnIndex] is DataGridViewButtonColumn
                 && e.RowIndex >= 0 && e.ColumnIndex == 11)
             {
-                txtCurrent.Text = txtName.Text;
+                txtCurrent.Text = dataGridView1.Rows[e.RowIndex].GetDataGridViewStringValue("tName");
                 txtStartTime.Text = DateTime.Now.ToString("HH:mm");
 
                 ptName = dataGridView1.Rows[e.RowIndex].GetDataGridViewStringValue("tName");
@@ -635,8 +1097,6 @@ namespace TimeCapture
             else
             {
                 txtCurrent.Text = txtName.Text;
-                txtStartTime.Text = DateTime.Now.ToString("HH:mm");
-
                 ptName = txtName.Text;
 
                 if (Access.GetSettingValue(3))
@@ -694,101 +1154,9 @@ namespace TimeCapture
             }
         }
 
-        private void btnCaptureTime_Click(object sender, EventArgs e)
-        {
-            DialogResult result = MessageBox.Show("Would you like to export the current time first?", "", MessageBoxButtons.YesNoCancel);
+        #endregion DataGridView
 
-            if (result == DialogResult.Yes)
-            {
-                ShowSpinner();
-                try
-                {
-                    btnExport_Click(sender, e);
-                    timeCapture.CaptureTime(BrowserType.Chrome);
-                    MessageBox.Show("Time has been captured");
-                    new _logger().Log(LogType.Info, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
-                }
-                catch (Exception ex)
-                {
-                    new _logger().Log(LogType.Error, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
-                    MessageBox.Show("Failed to capture time, please try again");
-                    DialogResult error = MessageBox.Show("Failed to capture time, see exception message?", "", MessageBoxButtons.YesNo);
-                    if (error == DialogResult.Yes)
-                    {
-                        MessageBox.Show(ex.Message.ToString());
-                    }
-                }
-            }
-            else
-            {
-                ShowSpinner();
-                try
-                {
-                    timeCapture.CaptureTime(BrowserType.Chrome);
-                    MessageBox.Show("Time has been captured");
-                    new _logger().Log(LogType.Info, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
-                }
-                catch (Exception ex)
-                {
-                    new _logger().Log(LogType.Error, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
-                    MessageBox.Show("Failed to capture time, please try again");
-                    DialogResult error = MessageBox.Show("Failed to capture time, see exception message?", "", MessageBoxButtons.YesNo);
-                    if (error == DialogResult.Yes)
-                    {
-                        MessageBox.Show(ex.Message.ToString());
-                    }
-                }
-            }
-            HideSpinner();
-        }
-
-        private void allToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DataSet dsTime = new Access().getTime(1);
-            if (dsTime.HasRows())
-            {
-                foreach (DataRow time in dsTime.Tables[0].Rows)
-                {
-                    dataGridView1.Rows.Add(0, time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"), 
-                        time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"), 
-                        time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
-                }
-            }
-        }
-
-        private void uncapturedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DataSet dsTime = new Access().getTime(2);
-            if (dsTime.HasRows())
-            {
-                foreach (DataRow time in dsTime.Tables[0].Rows)
-                {
-                    dataGridView1.Rows.Add(0, time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
-                        time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
-                        time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
-                }
-            }
-        }
-
-        private void capturedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DataSet dsTime = new Access().getTime(3);
-            if (dsTime.HasRows())
-            {
-                foreach (DataRow time in dsTime.Tables[0].Rows)
-                {
-                    dataGridView1.Rows.Add(0, time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
-                        time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
-                        time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
-                }
-            }
-        }
-
-        private void btnDelTicket_Click(object sender, EventArgs e)
-        {
-            DeleteTicket frmDelete = new(this);
-            frmDelete.Show();
-        }
+        #region DarkMode
 
         private void toggleSwitch1_CheckedChanged_1(object sender, EventArgs e)
         {
@@ -864,7 +1232,7 @@ namespace TimeCapture
                     buttonCell.Style.BackColor = bgDark;
                     buttonCell.Style.ForeColor = Color.White;
                 }
-                
+
                 this.BackColor = bgDark;
 
                 dataGridView1.BackgroundColor = bgDarkSecondary;
@@ -872,9 +1240,9 @@ namespace TimeCapture
                 dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.Gray;
                 dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White; // Adjust the heading text color if needed
                 dataGridView1.EnableHeadersVisualStyles = false; // Disable the default visual styles for the headers
-                
+
                 containerControl1.BackColor = bgDarkSecondary;
-                
+
                 Heading.BackColor = bgDarkSecondary;
 
                 menuStrip1.BackColor = bgDark;
@@ -1029,87 +1397,6 @@ namespace TimeCapture
             }
         }
 
-        public void ShowSpinner()
-        {
-            Spinner = new();
-            Spinner.Show();
-        }
-
-        public void HideSpinner()
-        {
-            Spinner.Hide();
-        }
-
-        private void ticketToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string sContext = "Please provide a ticket number to view";
-            bool OKResult;
-            string sValue;
-            ShowInputDialog(sContext, out OKResult, out sValue);
-
-            if (OKResult)
-            {
-                ShowSpinner();
-                TicketViewer ticketViewer = new(sValue);
-                ticketViewer.Show();
-                HideSpinner();
-            }
-        }
-
-        public void ShowInputDialog(string sContext, out bool OK, out string sValue)
-        {
-            // Create a custom input box form
-            Form inputBoxForm = new Form();
-            inputBoxForm.Text = "";
-            inputBoxForm.FormBorderStyle = FormBorderStyle.FixedDialog;
-            inputBoxForm.StartPosition = FormStartPosition.CenterParent;
-
-            // Create the label and text box for input
-            Label label = new Label();
-            label.Text = sContext;
-            label.AutoSize = true;
-            label.Location = new System.Drawing.Point(10, 20);
-
-            TextBox textBox = new TextBox();
-            textBox.Location = new System.Drawing.Point(10, 50);
-            textBox.Size = new System.Drawing.Size(200, 20);
-
-            // Create the OK and Cancel buttons
-            Button okButton = new Button();
-            okButton.Text = "OK";
-            okButton.DialogResult = DialogResult.OK;
-            okButton.Location = new System.Drawing.Point(10, 80);
-            okButton.Click += (sender, e) => inputBoxForm.Close();
-
-            Button cancelButton = new Button();
-            cancelButton.Text = "Cancel";
-            cancelButton.DialogResult = DialogResult.Cancel;
-            cancelButton.Location = new System.Drawing.Point(90, 80);
-            cancelButton.Click += (sender, e) => inputBoxForm.Close();
-
-            // Add the controls to the form
-            inputBoxForm.Controls.AddRange(new Control[] { label, textBox, okButton, cancelButton });
-
-            // Show the input box form as a dialog
-            if (inputBoxForm.ShowDialog() == DialogResult.OK)
-            {
-                OK = true;
-                if (!string.IsNullOrEmpty(textBox.Text))
-                {
-                    sValue = textBox.Text.ToString();
-                }
-                else
-                {
-                    sValue = "";
-                }
-            }
-            else
-            {
-                OK = false;
-                sValue = "";
-            }
-        }
-
         public void generic_DarkMode(Form form, out bool isDarkMode)
         {
             ShowSpinner();
@@ -1234,5 +1521,8 @@ namespace TimeCapture
             this.Show();
             HideSpinner();
         }
+
+        #endregion DarkMode
+
     }
 }

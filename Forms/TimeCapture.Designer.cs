@@ -69,6 +69,9 @@
             this.allToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uncapturedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.capturedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.byDayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.byDateRangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fromDateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.csvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -466,7 +469,10 @@
             this.loadAllResultsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.allToolStripMenuItem,
             this.uncapturedToolStripMenuItem,
-            this.capturedToolStripMenuItem});
+            this.capturedToolStripMenuItem,
+            this.byDayToolStripMenuItem,
+            this.byDateRangeToolStripMenuItem,
+            this.fromDateToolStripMenuItem});
             this.loadAllResultsToolStripMenuItem.Name = "loadAllResultsToolStripMenuItem";
             this.loadAllResultsToolStripMenuItem.Size = new System.Drawing.Size(106, 24);
             this.loadAllResultsToolStripMenuItem.Text = "Load Results";
@@ -475,23 +481,44 @@
             // allToolStripMenuItem
             // 
             this.allToolStripMenuItem.Name = "allToolStripMenuItem";
-            this.allToolStripMenuItem.Size = new System.Drawing.Size(169, 26);
+            this.allToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.allToolStripMenuItem.Text = "All";
             this.allToolStripMenuItem.Click += new System.EventHandler(this.allToolStripMenuItem_Click);
             // 
             // uncapturedToolStripMenuItem
             // 
             this.uncapturedToolStripMenuItem.Name = "uncapturedToolStripMenuItem";
-            this.uncapturedToolStripMenuItem.Size = new System.Drawing.Size(169, 26);
+            this.uncapturedToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.uncapturedToolStripMenuItem.Text = "Uncaptured";
             this.uncapturedToolStripMenuItem.Click += new System.EventHandler(this.uncapturedToolStripMenuItem_Click);
             // 
             // capturedToolStripMenuItem
             // 
             this.capturedToolStripMenuItem.Name = "capturedToolStripMenuItem";
-            this.capturedToolStripMenuItem.Size = new System.Drawing.Size(169, 26);
+            this.capturedToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.capturedToolStripMenuItem.Text = "Captured";
             this.capturedToolStripMenuItem.Click += new System.EventHandler(this.capturedToolStripMenuItem_Click);
+            // 
+            // byDayToolStripMenuItem
+            // 
+            this.byDayToolStripMenuItem.Name = "byDayToolStripMenuItem";
+            this.byDayToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.byDayToolStripMenuItem.Text = "By Date...";
+            this.byDayToolStripMenuItem.Click += new System.EventHandler(this.byDayToolStripMenuItem_Click);
+            // 
+            // byDateRangeToolStripMenuItem
+            // 
+            this.byDateRangeToolStripMenuItem.Name = "byDateRangeToolStripMenuItem";
+            this.byDateRangeToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.byDateRangeToolStripMenuItem.Text = "By Date Range...";
+            this.byDateRangeToolStripMenuItem.Click += new System.EventHandler(this.byDateRangeToolStripMenuItem_Click);
+            // 
+            // fromDateToolStripMenuItem
+            // 
+            this.fromDateToolStripMenuItem.Name = "fromDateToolStripMenuItem";
+            this.fromDateToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.fromDateToolStripMenuItem.Text = "From Date...";
+            this.fromDateToolStripMenuItem.Click += new System.EventHandler(this.fromDateToolStripMenuItem_Click);
             // 
             // importToolStripMenuItem
             // 
@@ -757,6 +784,9 @@
         private ToolStripMenuItem viewToolStripMenuItem;
         private ToolStripMenuItem ticketToolStripMenuItem;
         private PictureBox pictureBox1;
+        private ToolStripMenuItem byDayToolStripMenuItem;
+        private ToolStripMenuItem byDateRangeToolStripMenuItem;
+        private ToolStripMenuItem fromDateToolStripMenuItem;
     }
 }
 

@@ -8,9 +8,13 @@
             {
                 case BrowserType.Chrome:
                     ChromeOptions chromeOptions = new ChromeOptions();
+                    ChromeDriverService chromeService = ChromeDriverService.CreateDefaultService();
+                    chromeService.SuppressInitialDiagnosticInformation = true;
+                    chromeService.HideCommandPromptWindow = true;
                     chromeOptions.AddArgument("headless");
+                    chromeOptions.AddArgument("silent");
                     chromeOptions.AcceptInsecureCertificates = true;
-                    return new ChromeDriver(chromeOptions);
+                    return new ChromeDriver(chromeService, chromeOptions);
 
                 default:
                     return (null);

@@ -12,7 +12,6 @@ namespace TimeCapture.Forms.Shared
 {
     public partial class _Spinner : Form
     {
-        private Image _image;
         public _Spinner()
         {
             InitializeComponent();

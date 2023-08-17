@@ -36,7 +36,7 @@
                     frmCapture.getTickets();
                     this.Dispose();
                 }
-                catch (Exception ex)
+                catch
                 {
                     MessageBox.Show("Please provide a valid number for the ID");
                 }

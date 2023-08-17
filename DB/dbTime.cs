@@ -11,6 +11,22 @@ namespace TimeCapture.DB
             return "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=" + dbFile + ";Integrated Security=True";
         }
 
+        public void TestConnection(out string Response)
+        {
+            try
+            {
+                SqlConnection connection = new SqlConnection(GetConnectionString());
+                connection.Open();
+                connection.Close();
+                Response = "Connected - Welcome to TimeCapture";
+            }
+            catch
+            {
+                MessageBox.Show("Failed to connect, please ensure the database file has been created and restart the app.");
+                Response = "Failed to connect, please correct and restart";
+            }
+        }
+
         #region dbAccess
         public DataSet ExecuteQuery(string SQL)
         {
@@ -29,7 +45,7 @@ namespace TimeCapture.DB
             catch (Exception ex)
             {
                 Logger.Log(LogType.Error, ex.Message.ToString());
-                return null;
+                return new DataSet();
             }
         }
 
@@ -118,6 +134,55 @@ namespace TimeCapture.DB
             {
                 sSQL = @"select TimeID, Item, TicketNo, Start, [End], Total, TimeType, Description, TicketType, Date from Time
                             where ISNULL(IsCaptured,0) = 1";
+            }
+            return ExecuteQuery(sSQL);
+        }
+
+        public void DeleteTime(int iTimeID)
+        {
+            string sSQL = "delete from Time where TimeID = " + iTimeID;
+            ExecuteNonQuery(sSQL);
+        }
+
+        public bool UpdateTime(Time time)
+        {
+            string check = "select 1 from Time where TimeID = " + time.TimeID + " and ISNULL(IsCaptured, 0) = 0";
+            if (ExecuteQuery(check).HasRows())
+            {
+                string sSQL = string.Format(@"update Time set
+	                Item = '{1}', TicketNo = '{2}', time.[Start] = '{3}', time.[End] = '{4}', Total = '{5}', 
+	                TimeType = '{6}', Description = '{7}', TicketType = '{8}', time.Date = '{9}'
+	                where TimeID = {0}"
+                    ,time.TimeID, time.Item, time.TicketNo, time.Start, time.End, time.Total, 
+                    time.TimeType, time.Description, time.Type, time.Date);
+                ExecuteNonQuery(sSQL);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public DataSet getTimeByDay(string Date)
+        {
+            string sSQL = @"select TimeID, Item, TicketNo, Start, [End], Total, TimeType, Description, TicketType, Date from Time
+                            where Date = '" + Date + "'";
+            return ExecuteQuery(sSQL);
+        }
+
+        public DataSet GetTimeByDateRange(string sStart, string sEnd)
+        {
+            string sSQL;
+            if (string.IsNullOrEmpty(sEnd))
+            {
+                sSQL = String.Format(@"select TimeID, Item, TicketNo, Start, [End], Total, TimeType, Description, TicketType, Date from Time
+                            where Date > DATEADD(day,-1,'{0}')", sStart);
+            }
+            else
+            {
+                sSQL = String.Format(@"select TimeID, Item, TicketNo, Start, [End], Total, TimeType, Description, TicketType, Date from Time
+                            where Date > DATEADD(day,-1,'{0}') and Date < '{1}'", sStart, sEnd);
             }
             return ExecuteQuery(sSQL);
         }
