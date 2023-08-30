@@ -45,15 +45,15 @@ namespace TimeCapture
         public TimeCapture()
         {
             InitializeComponent();
+            CheckDB();
+            string response;
+            new Access().TestConnection(out response);
             if (new Access().IsBusinessModel())
             {
                 new Login(this).Show();
             }
             else
             {
-                CheckDB();
-                string response;
-                new Access().TestConnection(out response);
                 UserID = -1;
                 responseMessage.Text = response;
                 bool updatedNeeded = false;
