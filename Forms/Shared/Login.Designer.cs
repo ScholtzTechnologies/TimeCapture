@@ -47,7 +47,7 @@
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.pictureBox1.Image = global::TimeCapture.Properties.Resources.TimeIcon_60x;
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(199, 15);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(60, 63);
@@ -80,7 +80,6 @@
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Image = global::TimeCapture.Properties.Resources.TimeIcon_60x;
             this.pictureBox2.Location = new System.Drawing.Point(28, 36);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(60, 63);
