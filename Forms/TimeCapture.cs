@@ -51,9 +51,10 @@ namespace TimeCapture
             }
             else
             {
+                CheckDB();
+                new Access().TestConnection(out response);
                 UserID = -1;
                 string response;
-                new Access().TestConnection(out response);
                 responseMessage.Text = response;
                 bool updatedNeeded = false;
                 bool isSuccess = true;
@@ -64,7 +65,6 @@ namespace TimeCapture
                 getTickets();
                 SetLocations();
                 CheckHidden();
-                CheckDB();
 
                 //if (isSelenium)
                 //    new _nuget().CheckChromeDriver(out updatedNeeded, out isSuccess);
