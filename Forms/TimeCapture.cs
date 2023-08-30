@@ -63,16 +63,16 @@ namespace TimeCapture
                 SetLocations();
                 CheckHidden();
 
-                if (isSelenium)
-                    new _nuget().CheckChromeDriver(out updatedNeeded, out isSuccess);
+                //if (isSelenium)
+                //    new _nuget().CheckChromeDriver(out updatedNeeded, out isSuccess);
 
-                if (updatedNeeded && isSuccess && isSelenium)
-                    MessageBox.Show("Latest drivers for selenium have been installed successfully");
-                else if (updatedNeeded && !isSuccess && isSelenium)
-                    MessageBox.Show(@"Failed to update Selium drivers. 
-                            Please ensure you are connected to the internet. 
-                            You may continue without updating it but will not be 
-                            able to use the automated time capture.");
+                //if (updatedNeeded && isSuccess && isSelenium)
+                //    MessageBox.Show("Latest drivers for selenium have been installed successfully");
+                //else if (updatedNeeded && !isSuccess && isSelenium)
+                //    MessageBox.Show(@"Failed to update Selium drivers. 
+                //            Please ensure you are connected to the internet. 
+                //            You may continue without updating it but will not be 
+                //            able to use the automated time capture.");
 
                 var lTypesColumn = lTypes.Select(x => x.Name).ToList();
                 drpType.DataSource = lTypesColumn;
