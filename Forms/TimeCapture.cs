@@ -52,9 +52,9 @@ namespace TimeCapture
             else
             {
                 CheckDB();
+                string response;
                 new Access().TestConnection(out response);
                 UserID = -1;
-                string response;
                 responseMessage.Text = response;
                 bool updatedNeeded = false;
                 bool isSuccess = true;
