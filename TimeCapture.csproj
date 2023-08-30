@@ -28,6 +28,7 @@
     <PackageReference Include="NuGet.Commands" Version="6.7.0" />
     <PackageReference Include="OpenQA.Selenium.Chrome.ChromeDriverExtensions" Version="1.2.0" />
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="116.0.5845.9600" />
+    <PackageReference Include="SharpCompress" Version="0.33.0" />
     <PackageReference Include="Uno.Core" Version="4.0.1" />
     <PackageReference Include="Uno.UI" Version="4.8.33" />
     <PackageReference Include="WinForms.DataVisualization" Version="1.8.0" />

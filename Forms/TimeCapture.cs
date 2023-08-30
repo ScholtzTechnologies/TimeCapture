@@ -2,6 +2,8 @@
 using TimeCapture.Forms;
 using TimeCapture.utils;
 using TimeCapture.Forms.Shared;
+using SharpCompress.Archives;
+using SharpCompress.Common;
 
 namespace TimeCapture
 {
@@ -62,6 +64,7 @@ namespace TimeCapture
                 getTickets();
                 SetLocations();
                 CheckHidden();
+                CheckDB();
 
                 //if (isSelenium)
                 //    new _nuget().CheckChromeDriver(out updatedNeeded, out isSuccess);
@@ -1621,5 +1624,35 @@ namespace TimeCapture
 
         #endregion DarkMode
 
+        #region RAR Handler
+
+        public void CheckDB()
+        {
+            string rarFilePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "DB.rar"));
+            string extractPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "DB"));
+            string existingDB = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "DB", "Time.mdf"));
+
+            if (!File.Exists(existingDB))
+            {
+                using (var archive = ArchiveFactory.Open(rarFilePath))
+                {
+                    foreach (var entry in archive.Entries)
+                    {
+                        if (!entry.IsDirectory)
+                        {
+                            entry.WriteToDirectory(extractPath, new ExtractionOptions()
+                            {
+                                ExtractFullPath = true,
+                                Overwrite = false
+                            });
+                        }
+                    }
+                }
+                new _logger().Log(LogType.Info, "Database Extracted");
+                new Access().FillSettings();
+            }
+        }
+
+        #endregion RAR Handler
     }
 }
