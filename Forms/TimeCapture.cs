@@ -43,7 +43,6 @@ namespace TimeCapture
         public TimeCapture()
         {
             InitializeComponent();
-
             if (new Access().IsBusinessModel())
             {
                 new Login(this).Show();
@@ -54,20 +53,26 @@ namespace TimeCapture
                 string response;
                 new Access().TestConnection(out response);
                 responseMessage.Text = response;
+                bool updatedNeeded = false;
+                bool isSuccess = true;
+                bool isSelenium = Access.GetSettingValue(7);
 
                 CreateTable();
                 getTypes();
                 getTickets();
-
-                lblTypeLocal = lblType.Location;
-                drpTypeLocal = drpType.Location;
-                drpTypeSize = drpType.Size;
-
-                lblDescLocal = lblDesc.Location;
-                txtDescLocal = txtDesc.Location;
-                txtDescSize = txtDesc.Size;
-
+                SetLocations();
                 CheckHidden();
+
+                if (isSelenium)
+                    new _nuget().CheckChromeDriver(out updatedNeeded, out isSuccess);
+
+                if (updatedNeeded && isSuccess && isSelenium)
+                    MessageBox.Show("Latest drivers for selenium have been installed successfully");
+                else if (updatedNeeded && !isSuccess && isSelenium)
+                    MessageBox.Show(@"Failed to update Selium drivers. 
+                            Please ensure you are connected to the internet. 
+                            You may continue without updating it but will not be 
+                            able to use the automated time capture.");
 
                 var lTypesColumn = lTypes.Select(x => x.Name).ToList();
                 drpType.DataSource = lTypesColumn;
@@ -90,6 +95,17 @@ namespace TimeCapture
 
                 dataGridView1.RowsAdded += PaintRows;
             }
+        }
+
+        public void SetLocations()
+        {
+            lblTypeLocal = lblType.Location;
+            drpTypeLocal = drpType.Location;
+            drpTypeSize = drpType.Size;
+
+            lblDescLocal = lblDesc.Location;
+            txtDescLocal = txtDesc.Location;
+            txtDescSize = txtDesc.Size;
         }
 
         public void CompleteLogin()
@@ -330,16 +346,31 @@ namespace TimeCapture
 
         private void btnCaptureTime_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Would you like to export the current time first?", "", MessageBoxButtons.YesNoCancel);
-
-            if (result == DialogResult.Yes)
+            bool ready = false;
+            if (lTime.Count > 0)
             {
-                ShowSpinner();
+                DialogResult result = MessageBox.Show("Would you like to export the current time first?", "", MessageBoxButtons.YesNoCancel);
+                if (result == DialogResult.Yes)
+                {
+                    ready = true;
+                }
+            }
+            else
+            {
+                ready = true;
+            }
+
+            if (ready)
+            {
+                Control lblAction;
+                ShowSpinner(out lblAction);
                 this.Hide();
                 try
                 {
                     btnExport_Click(sender, e);
+                    lblAction.Text = "Capturing Time";
                     timeCapture.CaptureTime(BrowserType.Chrome);
+                    lblAction.Text = "Done!";
                     sendToast("Time has been captured");
                     new _logger().Log(LogType.Info, "Time captured");
                 }
@@ -353,6 +384,7 @@ namespace TimeCapture
                         MessageBox.Show(ex.Message.ToString());
                     }
                 }
+                HideSpinner();
             }
             else
             {
@@ -373,8 +405,8 @@ namespace TimeCapture
                         MessageBox.Show(ex.Message.ToString());
                     }
                 }
+                HideSpinner();
             }
-            HideSpinner();
             this.Show();
         }
 
@@ -502,12 +534,15 @@ namespace TimeCapture
 
         public void StoreTime(out string last)
         {
+            Control lblAction;
+            ShowSpinner(out lblAction);
             last = null;
             int i = 0;
             int Count = lTime.Count;
             foreach (var time in lTime)
             {
                 i++;
+                lblAction.Text = "Current: " + time.Item + " from @" + time.Start + " to @" + time.End;
                 Access.SaveTime(time.TimeID, time.Item, time.TicketNo, time.Start, time.End,
                     time.Total, time.TimeType, time.Description, time.Type, time.Date, UserID);
                 if (i == Count)
@@ -516,6 +551,7 @@ namespace TimeCapture
                 }
             }
             lTime.Clear();
+            HideSpinner();
         }
 
         public void getTypes()
@@ -610,6 +646,12 @@ namespace TimeCapture
         public void ShowSpinner()
         {
             Spinner = new();
+            Spinner.Show();
+        }
+
+        public void ShowSpinner(out Control lblAction)
+        {
+            Spinner = new(out lblAction);
             Spinner.Show();
         }
 
@@ -1212,7 +1254,8 @@ namespace TimeCapture
 
         private void toggleSwitch1_CheckedChanged_1(object sender, EventArgs e)
         {
-            ShowSpinner();
+            Control lblAction;
+            ShowSpinner(out lblAction);
             this.Hide();
             Color bgDark = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             Color bgDarkSecondary = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
@@ -1220,6 +1263,7 @@ namespace TimeCapture
 
             if (toggleSwitch1.Checked)
             {
+                lblAction.Text = "Setting up DarkMode";
                 // Set the text color of all objects to white
                 foreach (Control control in this.Controls)
                 {
@@ -1305,6 +1349,7 @@ namespace TimeCapture
             }
             else
             {
+                lblAction.Text = "Setting up LightMode";
                 foreach (Control control in this.Controls)
                 {
                     control.BackColor = Color.White;

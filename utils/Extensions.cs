@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TimeCapture;
 
 namespace TimeCapture.utils
 {
@@ -98,33 +99,40 @@ namespace TimeCapture.utils
 
         public static bool GetDataRowBoolValue(this DataRow dataRow, string sColumn)
         {
-            bool iValue = false;
-            if (dataRow[sColumn] != null)
+            try
             {
-                try
+                bool iValue = false;
+                if (dataRow[sColumn] != null)
                 {
                     try
                     {
-                        int x = Convert.ToInt32(dataRow[sColumn].ToString());
-                        if (x == 1)
+                        try
                         {
-                            iValue = true;
+                            int x = Convert.ToInt32(dataRow[sColumn].ToString());
+                            if (x == 1)
+                            {
+                                iValue = true;
+                            }
+                        }
+                        catch
+                        {
+                            if (dataRow[sColumn].ToString().ToLower() == "true")
+                            {
+                                iValue = true;
+                            }
                         }
                     }
-                    catch 
-                    { 
-                        if (dataRow[sColumn].ToString().ToLower() == "true")
-                        {
-                            iValue = true;
-                        }
+                    catch
+                    {
+                        
                     }
                 }
-                catch
-                {
-
-                }
+                return iValue;
             }
-            return iValue;
+            catch
+            {
+                return false;
+            }
         }
 
         public static string GetDataGridViewStringValue(this DataGridViewRow dvRow, string sColumn)
@@ -211,6 +219,44 @@ namespace TimeCapture.utils
             {
                 return 0;
             }
+        }
+
+        public static int ConvertTimeTypeToInt(string sTimeType)
+        {
+            int Type = 1;
+            if (sTimeType.Contains(TimeType.General))
+            {
+                Type = 1;
+            }
+            else if (sTimeType.Contains(TimeType.Investigation))
+            {
+                Type = 2;
+            }
+            else if (sTimeType.Contains(TimeType.Report))
+            {
+                Type = 3;
+            }
+            else if (sTimeType.Contains(TimeType.Bug))
+            {
+                Type = 4;
+            }
+            else if (sTimeType.Contains(TimeType.Dev.Split(',')[0]) || sTimeType.Contains(TimeType.Dev.Split(',')[1]) || sTimeType.Contains(TimeType.Dev.Split(',')[2]))
+            {
+                Type = 5;
+            }
+            else if (sTimeType.Contains(TimeType.Meetings.Split(',')[0]) || sTimeType.Contains(TimeType.Meetings.Split(',')[1]))
+            {
+                Type = 10;
+            }
+            else if (sTimeType.Contains(TimeType.Training))
+            {
+                Type = 12;
+            }
+            else if (sTimeType.Contains(TimeType.Testing.Split(',')[0]) || sTimeType.Contains(TimeType.Testing.Split(',')[1]))
+            {
+                Type = 13;
+            }
+            return Type;
         }
 
     }

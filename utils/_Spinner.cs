@@ -15,8 +15,32 @@ namespace TimeCapture.Forms.Shared
         public _Spinner()
         {
             InitializeComponent();
+            lblAction2.Visible = false;
 
             this.FormBorderStyle = FormBorderStyle.None;
+            int radius = 20;
+
+            GraphicsPath path = new GraphicsPath();
+            Rectangle rect = new Rectangle(0, 0, this.Width, this.Height);
+            path.AddArc(rect.X, rect.Y, radius, radius, 180, 90);
+            path.AddArc(rect.X + rect.Width - radius, rect.Y, radius, radius, 270, 90);
+            path.AddArc(rect.X + rect.Width - radius, rect.Y + rect.Height - radius, radius, radius, 0, 90);
+            path.AddArc(rect.X, rect.Y + rect.Height - radius, radius, radius, 90, 90);
+            this.Region = new Region(path);
+        }
+
+        public _Spinner(out Control Action)
+        {
+            InitializeComponent();
+            Action = this.lblAction2;
+            this.lblAction2.BorderStyle = BorderStyle.None;
+            this.lblAction2.Enabled = false;
+            this.lblAction2.BackColor = Color.White;
+            this.lblAction2.TextAlign = HorizontalAlignment.Center;
+            this.lblAction2.ForeColor = Color.Gray;
+
+            this.FormBorderStyle = FormBorderStyle.None;
+
             int radius = 20;
 
             GraphicsPath path = new GraphicsPath();

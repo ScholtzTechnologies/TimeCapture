@@ -46,6 +46,25 @@ public static class TimeFormat
     public static int HHMMSS = 4;
 }
 
+public static class TimeType
+{
+    public static string General = "General";
+    public static string Investigation = "Investigation";
+    public static string Report = "Report";
+    public static string Bug = "Bug";
+    public static string Dev = "Dev,Develop,Development";
+    public static string Meetings = "Meeting,Meetings";
+    public static string Training = "Training";
+    public static string Testing = "Testing,Test";
+}
+
+public static class TicketType
+{
+    public static string NonChargeable = "Non-Chargeable,Non-Chargable";
+    public static string Chargeable = "Chargeable,Chargable";
+    public static string Support = "Support Contract,Support";
+}
+
 public enum LogType
 {
     Info,
