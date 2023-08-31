@@ -7,12 +7,13 @@ namespace TimeCapture.Selenium.TimeTaker
     {
         public string Username = new Access().GetUserName();
         public string Password = new Access().GetPassword();
-        public string URL = new Access().GetSettingsValue(8);
+        public string URL { get; set; }
         public bool Success { get; set; }
         public bool HasTime { get; set; }
         public List<String> Failed { get; set; }
         public void CaptureTime(BrowserType browserType)
         {
+            URL = new Access().GetSettingsValue(8);
             Failed = new();
             IJavaScriptExecutor js;
             using (var driver = WebDriverInfra.Create_Browser(browserType))

@@ -205,13 +205,13 @@ namespace TimeCapture.DB
 
         public bool IsBusinessModel()
         {
-            string sSQL = "Select Value from Settings where ID = -1";
+            string sSQL = "Select ISNULL(Value, 0) as Value from Settings where ID = -1";
             return ExecuteQuery(sSQL).Tables[0].Rows[0].GetDataRowBoolValue("Value");
         }
 
         public string GetSettingsValue(int SettingID)
         {
-            string sSQL = "Select Value from Settings where ID = " + SettingID;
+            string sSQL = "Select ISNULL(Value, 0) as Value from Settings where ID = " + SettingID;
             return ExecuteQuery(sSQL).Tables[0].Rows[0].GetDataRowStringValue("Value");
         }
 
