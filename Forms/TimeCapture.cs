@@ -1038,15 +1038,16 @@ namespace TimeCapture
         {
             if (isInitialized)
             {
+                int error;
                 // Get the edited values from the DataGridView row
                 int selectedTimeID = dataGridView1.CurrentRow.GetDataGridViewIntValue("iTimeID");
                 string selectedStart = dataGridView1.CurrentRow.GetDataGridViewStringValue("StartTime");
                 string selectedEnd = dataGridView1.CurrentRow.GetDataGridViewStringValue("EndTime");
                 string editedPtName = dataGridView1.CurrentRow.GetDataGridViewStringValue("tName");
                 string editedPtTicketNumber = dataGridView1.CurrentRow.GetDataGridViewStringValue("TicketNumber");
-                string editedPtStart = dataGridView1.CurrentRow.GetDataGridViewStringValue("StartTime");
-                string editedPtEnd = dataGridView1.CurrentRow.GetDataGridViewStringValue("EndTime");
-                string editedTotal = dataGridView1.CurrentRow.GetDataGridViewStringValue("Total");
+                string editedPtStart = dataGridView1.CurrentRow.GetDataGridViewStringValue("StartTime").ValidateTimeString(out error);
+                string editedPtEnd = dataGridView1.CurrentRow.GetDataGridViewStringValue("EndTime").ValidateTimeString(out error);
+                string editedTotal = dataGridView1.CurrentRow.GetDataGridViewStringValue("Total").ValidateTimeString(out error);
                 string editedPtTimeType = dataGridView1.CurrentRow.GetDataGridViewStringValue("TimeType");
                 string editedPtDesc = dataGridView1.CurrentRow.GetDataGridViewStringValue("Description");
                 string editedPtTicketType = dataGridView1.CurrentRow.GetDataGridViewStringValue("TicketType");

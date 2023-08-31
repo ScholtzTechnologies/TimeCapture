@@ -224,41 +224,72 @@ namespace TimeCapture.utils
         public static int ConvertTimeTypeToInt(string sTimeType)
         {
             int Type = 1;
-            if (sTimeType.Contains(TimeType.General))
+
+            switch (sTimeType)
             {
-                Type = 1;
-            }
-            else if (sTimeType.Contains(TimeType.Investigation))
-            {
-                Type = 2;
-            }
-            else if (sTimeType.Contains(TimeType.Report))
-            {
-                Type = 3;
-            }
-            else if (sTimeType.Contains(TimeType.Bug))
-            {
-                Type = 4;
-            }
-            else if (sTimeType.Contains(TimeType.Dev.Split(',')[0]) || sTimeType.Contains(TimeType.Dev.Split(',')[1]) || sTimeType.Contains(TimeType.Dev.Split(',')[2]))
-            {
-                Type = 5;
-            }
-            else if (sTimeType.Contains(TimeType.Meetings.Split(',')[0]) || sTimeType.Contains(TimeType.Meetings.Split(',')[1]))
-            {
-                Type = 10;
-            }
-            else if (sTimeType.Contains(TimeType.Training))
-            {
-                Type = 12;
-            }
-            else if (sTimeType.Contains(TimeType.Testing.Split(',')[0]) || sTimeType.Contains(TimeType.Testing.Split(',')[1]))
-            {
-                Type = 13;
+                case var t when t.Contains(TimeType.General):
+                    Type = 1;
+                    break;
+                case var t when t.Contains(TimeType.Investigation):
+                    Type = 2;
+                    break;
+                case var t when t.Contains(TimeType.Report):
+                    Type = 3;
+                    break;
+                case var t when t.Contains(TimeType.Bug):
+                    Type = 4;
+                    break;
+                case var t when t.Contains(TimeType.Dev.Split(',')[0]) || t.Contains(TimeType.Dev.Split(',')[1]) || t.Contains(TimeType.Dev.Split(',')[2]):
+                    Type = 5;
+                    break;
+                case var t when t.Contains(TimeType.Meetings.Split(',')[0]) || t.Contains(TimeType.Meetings.Split(',')[1]):
+                    Type = 10;
+                    break;
+                case var t when t.Contains(TimeType.Training):
+                    Type = 12;
+                    break;
+                case var t when t.Contains(TimeType.Testing.Split(',')[0]) || t.Contains(TimeType.Testing.Split(',')[1]):
+                    Type = 13;
+                    break;
             }
             return Type;
         }
 
+        public static string ValidateTimeString(this string TimeStamp, out int errorType)
+        {
+            ErrorType e = new();
+            errorType = e.None;
+            List<string> invalidCharacters = new Invalid().Characters();
+            CultureInfo enUS = new CultureInfo("en-US");
+            DateTime x;
+
+            if (TimeStamp.Length == 5)
+            {
+                foreach (var Char in invalidCharacters)
+                {
+                    TimeStamp.Replace(Char.ToCharArray()[0], ':');
+                }
+                try
+                {
+                    DateTime.TryParseExact(TimeStamp, "hh:mm", enUS, DateTimeStyles.None, out x);
+                }
+                catch
+                {
+                    errorType = e.Format;
+                }
+            }
+            else
+                errorType = e.Length;
+
+            return TimeStamp;
+        }
+
+        public class ErrorType
+        {
+            public int None = 0;
+            public int Format = 1;
+            public int Length = 2;
+        }
     }
 
     public class NoteTreeNode : TreeNode
@@ -272,6 +303,21 @@ namespace TimeCapture.utils
             Name = text;
             Date = sDate;
             ParentID = iParentID;
+        }
+    }
+
+    public class Invalid
+    {
+        public List<string> Characters()
+        {
+            List<string> lCharacters = new();
+            lCharacters.Add(";");
+            lCharacters.Add("'");
+            lCharacters.Add('"'.ToString());
+            lCharacters.Add("/");
+            lCharacters.Add(".");
+            lCharacters.Add(",");
+            return lCharacters;
         }
     }
 }
