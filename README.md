@@ -43,7 +43,7 @@ I do have a website available, where both a copy of the release for individuals 
 
 # Requirements
   - Hardware Requirements
-    - RAM Usage: 1Gb MAX
+    - RAM Usage: 20mb - 100mb on average
     - Disk Space: 110mb MIN
     - Internet Connection: Not Required unless Automated TimeCapture is required
   - Software Requirements
