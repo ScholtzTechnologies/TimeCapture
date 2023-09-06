@@ -100,6 +100,8 @@ namespace TimeCapture
                 dataGridView1.RowsAdded += PaintRows;
                 PushNofication("Time Capture", "Welcome to Time Capture");
             }
+            if (Spinner != null)
+                HideSpinner();
         }
 
         public void SetLocations()
