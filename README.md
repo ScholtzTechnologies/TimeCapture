@@ -40,3 +40,13 @@ I do have a website available, where both a copy of the release for individuals 
       2. Download TimeCapture
       3. Extract wherever you would like the app
       4. Done
+
+# Requirements
+  - Hardware Requirements
+    - RAM Usage: 1Gb MAX
+    - Disk Space: 110mb MIN
+    - Internet Connection: Not Required unless Automated TimeCapture is required
+  - Software Requirements
+    - Developed on Windows 10 and 11
+        - works on Windows 7 up
+    - Anitivirus may mark app as virus due to Selenium as well as the exe itself. You can see the code, there are no viruses.
