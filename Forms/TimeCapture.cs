@@ -4,13 +4,14 @@ using TimeCapture.utils;
 using TimeCapture.Forms.Shared;
 using SharpCompress.Archives;
 using SharpCompress.Common;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace TimeCapture
 {
     public partial class TimeCapture : Form
     {
         #region Properties
-        public DataTable tblTime { get; set; }
+        //public DataTable tblTime { get; set; }
         public List<Time> lTime = new List<Time>();
         public List<CSVImport.Types> lTypes = new List<CSVImport.Types>();
         public List<CSVImport.Clients> lClients = new List<CSVImport.Clients>();
@@ -60,7 +61,7 @@ namespace TimeCapture
                 bool isSuccess = true;
                 bool isSelenium = Access.GetSettingValue(7);
 
-                CreateTable();
+                //CreateTable();
                 getTypes();
                 getTickets();
                 SetLocations();
@@ -97,6 +98,7 @@ namespace TimeCapture
                 }
 
                 dataGridView1.RowsAdded += PaintRows;
+                PushNofication("Time Capture", "Welcome to Time Capture");
             }
         }
 
@@ -117,7 +119,7 @@ namespace TimeCapture
             new Access().TestConnection(out response);
             responseMessage.Text = response;
 
-            CreateTable();
+            //CreateTable();
             getTypes();
             getTickets();
 
@@ -303,7 +305,7 @@ namespace TimeCapture
         private void lblStop_Click(object sender, EventArgs e)
         {
             if (lblStop.Enabled)
-            {
+            {   
                 TimeSpan preTotal = DateTime.Now.Subtract(dtStart);
                 string Total = preTotal.ToString().Substring(0, 5);
 
@@ -318,21 +320,23 @@ namespace TimeCapture
                 time.Description = ptDesc;
                 time.Type = ptTicketType;
                 time.Date = DateTime.Now.ToString("dd MMM yyyy");
-                lTime.Add(time);
+                //lTime.Add(time);
 
-                DataRow row = tblTime.NewRow();
-                row["tName"] = ptName;
-                row["TicketNumber"] = ptTicketNumber;
-                row["StartTime"] = ptStart;
-                row["EndTime"] = DateTime.Now.ToString("HH:mm");
-                row["Total"] = Total;
-                row["TimeType"] = ptTimeType;
-                row["Description"] = ptDesc;
-                row["TicketType"] = ptTicketType;
-                row["Date"] = DateTime.Now.ToString("dd MMM yyyy");
-                tblTime.Rows.Add(row);
+                int iTimeID = new Access().InsertTime(time, UserID);
 
-                dataGridView1.Rows.Add(TimeID, ptName, ptTicketNumber, ptStart, DateTime.Now.ToString("HH:mm"),
+                //DataRow row = tblTime.NewRow();
+                //row["tName"] = ptName;
+                //row["TicketNumber"] = ptTicketNumber;
+                //row["StartTime"] = ptStart;
+                //row["EndTime"] = DateTime.Now.ToString("HH:mm");
+                //row["Total"] = Total;
+                //row["TimeType"] = ptTimeType;
+                //row["Description"] = ptDesc;
+                //row["TicketType"] = ptTicketType;
+                //row["Date"] = DateTime.Now.ToString("dd MMM yyyy");
+                //tblTime.Rows.Add(row);
+
+                dataGridView1.Rows.Add(iTimeID, ptName, ptTicketNumber, ptStart, DateTime.Now.ToString("HH:mm"),
                     Total, ptTimeType, ptDesc, ptTicketType, DateTime.Now.ToString("dd MMM yyyy"), "Delete", "Continue");
                 lblStop.Enabled = false;
                 lblPlay.Enabled = true;
@@ -482,19 +486,19 @@ namespace TimeCapture
             }
         }
 
-        public void CreateTable()
-        {
-            tblTime = new DataTable();
-            tblTime.Columns.Add("tName");
-            tblTime.Columns.Add("TicketNumber");
-            tblTime.Columns.Add("StartTime");
-            tblTime.Columns.Add("EndTime");
-            tblTime.Columns.Add("Total");
-            tblTime.Columns.Add("TimeType");
-            tblTime.Columns.Add("Description");
-            tblTime.Columns.Add("TicketType");
-            tblTime.Columns.Add("Date");
-        }
+        //public void CreateTable()
+        //{
+        //    tblTime = new DataTable();
+        //    tblTime.Columns.Add("tName");
+        //    tblTime.Columns.Add("TicketNumber");
+        //    tblTime.Columns.Add("StartTime");
+        //    tblTime.Columns.Add("EndTime");
+        //    tblTime.Columns.Add("Total");
+        //    tblTime.Columns.Add("TimeType");
+        //    tblTime.Columns.Add("Description");
+        //    tblTime.Columns.Add("TicketType");
+        //    tblTime.Columns.Add("Date");
+        //}
 
         public void WriteDataToCsv()
         {
@@ -1655,5 +1659,29 @@ namespace TimeCapture
         }
 
         #endregion RAR Handler
+
+        #region Notifications
+
+        public void PushNofication(string Title, string Message)
+        {
+            
+            Uri img = new Uri(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "Images", "TimeIcon.png")));
+
+            ToastContent toastContent = new ToastContentBuilder()
+                .AddToastActivationInfo("action=viewConversation&conversationId=5", ToastActivationType.Foreground)
+                .AddText(Title)
+                .AddText(Message)
+                .GetToastContent();
+            
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(toastContent.GetContent());
+            
+            var toast = new ToastNotification(xml);
+            new ToastNotifier().Show(toast);
+
+            //ToastNotificationManager.CreateToastNotifier().Show(toast);
+        }
+
+        #endregion Notifications
     }
 }

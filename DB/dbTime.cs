@@ -455,5 +455,31 @@ namespace TimeCapture.DB
 	                )";
             ExecuteNonQuery(sSQL);
         }
+
+        public int InsertTime(Time time, int UserID)
+        {
+            int ret = 0;
+
+            string sSQL = String.Format(@"insert into Time 
+                (Item, TicketNo, Start, [End],
+                    Total, TimeType, Description, TicketType, Date, SystemUserID)
+                VALUES ( '{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', {9} )
+
+                select MAX(TimeID) as ID from Time", time.Item, time.TicketNo, time.Start, time.End, time.Total, 
+                time.TimeType, time.Description, time.Type, time.Date, UserID);
+
+            DataSet ds = ExecuteQuery(sSQL);
+
+            try
+            {
+                ret = ds.Tables[0].Rows[0].GetDataRowIntValue("ID");
+            }
+            catch {
+                string retSQL = "select MAX(TimeID) as ID from Time";
+                ret = ExecuteQuery(retSQL).Tables[0].Rows[0].GetDataRowIntValue("ID");
+            }
+
+            return ret;
+        }
     }
 }
