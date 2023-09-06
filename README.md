@@ -57,19 +57,3 @@ I do have a website available, where both a copy of the release for individuals 
     https://paypal.me/BscholtzFreelance?country.x=ZA&locale.x=en_US
 
   THE APP IS FREE... but all donations are welcome and make this viable :)
-
-
-# Images
-- Light Mode
- ![image](https://github.com/Bgls-html/TimeCapture/assets/83670555/e6831fc0-1412-447a-8b87-ecf340a04ba2)
-
-- Dark mode WIP
-  ![image](https://github.com/Bgls-html/TimeCapture/assets/83670555/3ed1e84e-3cbe-4920-a47d-b39662e37064)
-
-- Settings
-
-  ![image](https://github.com/Bgls-html/TimeCapture/assets/83670555/d876401c-2d8e-48d4-9c34-e04469ff803f)
-
-- Notes
-
- ![image](https://github.com/Bgls-html/TimeCapture/assets/83670555/3f025ec3-f87d-4e5c-9eb4-bd5f76f2b7cf)
