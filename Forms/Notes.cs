@@ -22,7 +22,8 @@ namespace TimeCapture.Forms
         public static string fTasks = Path.Combine(root, "Data", "Todo.csv");
         public DB.Access Access = new DB.Access();
         public List<CSVImport.Tasks> lTasks = new List<CSVImport.Tasks>();
-        public Notes()
+        public bool isDarkMode { get; set; }
+        public Notes(TimeCapture timeCapture)
         {
             InitializeComponent();
 
@@ -35,10 +36,50 @@ namespace TimeCapture.Forms
             this.btnSave.MouseClick += btnSave_Click;
             treeNotes.NodeMouseDoubleClick += qAddEdit;
             treeNotes.NodeMouseClick += GetNote;
+            treeNotes.AllowDrop = true;
             dgTasks.RowsAdded += SetNewTaskID;
+
+            treeNotes.ItemDrag += new ItemDragEventHandler(NoteNodeDrag);
+            treeNotes.DragEnter += new DragEventHandler(NoteNodeDragEnter);
+            treeNotes.DragOver += new DragEventHandler(NoteNodeDragOver);
+            treeNotes.DragDrop += new DragEventHandler(NoteNodeDragDrop);
 
             txtParentID.Visible = false;
             txtNoteID.Visible = false;
+
+            bool isDark;
+            timeCapture.generic_DarkMode(this, out isDark);
+            isDarkMode = isDark;
+
+            if (isDark)
+                dgTasks.CellPainting += DarkBorders;
+            else
+                dgTasks.CellPainting += LightBorders;
+
+            Color bgDark = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            Color bgDarkSecondary = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            Color controlDark = Color.SlateGray;
+
+            if (isDark)
+            {
+                foreach (DataGridViewRow row in dgTasks.Rows)
+                {
+                    row.DefaultCellStyle.BackColor = bgDark;
+                    row.DefaultCellStyle.ForeColor = Color.White;
+                }
+
+                foreach (DataGridViewButtonCell buttonCell in dgTasks.Rows.Cast<DataGridViewRow>()
+                                .SelectMany(row => row.Cells.OfType<DataGridViewButtonCell>()))
+                {
+                    buttonCell.Style.BackColor = bgDark;
+                    buttonCell.Style.ForeColor = Color.White;
+                }
+                dgTasks.BackgroundColor = bgDarkSecondary;
+                dgTasks.GridColor = Color.Black;
+                dgTasks.ColumnHeadersDefaultCellStyle.BackColor = Color.Gray;
+                dgTasks.ColumnHeadersDefaultCellStyle.ForeColor = Color.White; // Adjust the heading text color if needed
+                dgTasks.EnableHeadersVisualStyles = false; // Disable the default visual styles for the headers
+            }
         }
 
         public void qAddEdit(object sender, TreeNodeMouseClickEventArgs e)
@@ -135,6 +176,14 @@ namespace TimeCapture.Forms
                 rtxtNote.Text = note.GetDataRowStringValue("Note");
                 lblNote.Text = "Note: " + note.GetDataRowStringValue("Name");
             }
+
+            if (NoteID == 0 || NoteID == -1)
+            {
+                lblNote.Text = "";
+                rtxtNote.Text = "This is not a note. This is where all the notes come from.";
+            }
+            else
+                rtxtNote.Enabled = true;
         }
 
         public void updateNotes()
@@ -152,7 +201,7 @@ namespace TimeCapture.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            string Note = rtxtNote.Text;
+            string Note = rtxtNote.Text.ToString();
             int NoteID = Convert.ToInt32(txtNoteID.Text);
             int ParentID = Convert.ToInt32(txtParentID.Text);
             Access access = new();
@@ -187,6 +236,138 @@ namespace TimeCapture.Forms
                 {
                     MessageBox.Show("Please select a row");
                 }
+            }
+        }
+
+        private void NoteNodeDrag(object sender, ItemDragEventArgs e)
+        {
+            // Move the dragged node when the left mouse button is used.  
+            if (e.Button == MouseButtons.Left)
+            {
+                DoDragDrop(e.Item, DragDropEffects.Move);
+            }
+
+            // Copy the dragged node when the right mouse button is used.  
+            else if (e.Button == MouseButtons.Right)
+            {
+                DoDragDrop(e.Item, DragDropEffects.Copy);
+            }
+        }
+
+        private void NoteNodeDragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = e.AllowedEffect;
+        }
+
+        private void NoteNodeDragOver(object sender, DragEventArgs e)
+        {
+            // Retrieve the client coordinates of the mouse position.  
+            Point targetPoint = treeNotes.PointToClient(new Point(e.X, e.Y));
+
+            // Select the node at the mouse position.  
+            treeNotes.SelectedNode = treeNotes.GetNodeAt(targetPoint);
+        }
+
+        private void NoteNodeDragDrop(object sender, DragEventArgs e)
+        {
+            // Retrieve the client coordinates of the drop location.  
+            Point targetPoint = treeNotes.PointToClient(new Point(e.X, e.Y));
+
+            // Retrieve the node at the drop location.  
+            TreeNode targetNode = treeNotes.GetNodeAt(targetPoint);
+
+            // Retrieve the node that was dragged.  
+            NoteTreeNode draggedNode = (NoteTreeNode)e.Data.GetData(typeof(NoteTreeNode));
+
+            // Confirm that the node at the drop location is not   
+            // the dragged node or a descendant of the dragged node.  
+            if (!draggedNode.Equals(targetNode) && !ContainsNode(draggedNode, targetNode))
+            {
+                // If it is a move operation, remove the node from its current   
+                // location and add it to the node at the drop location.  
+                if (e.Effect == DragDropEffects.Move)
+                {
+                    bool isSuccess = new Access().MoveNote(draggedNode.NodeID, draggedNode.ParentID);
+                    if (isSuccess)
+                    {
+                        draggedNode.Remove();
+                        targetNode.Nodes.Add(draggedNode);
+                    }
+                    else
+                        MessageBox.Show("Failed to move note");
+                }
+
+                // Expand the node at the location   
+                // to show the dropped node.  
+                targetNode.Expand();
+            }
+        }
+
+        private bool ContainsNode(TreeNode node1, TreeNode node2)
+        {
+            // Check the parent node of the second node.  
+            if (node2.Parent == null) return false;
+            if (node2.Parent.Equals(node1)) return true;
+
+            // If the parent node is not null or equal to the first node,   
+            // call the ContainsNode method recursively using the parent of   
+            // the second node.  
+            return ContainsNode(node1, node2.Parent);
+        }
+
+        private void PaintRows(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            if (isDarkMode)
+            {
+                for (int i = e.RowIndex; i < e.RowIndex + e.RowCount; i++)
+                {
+                    dgTasks.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+                    dgTasks.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+                }
+            }
+            else
+            {
+                for (int i = e.RowIndex; i < e.RowIndex + e.RowCount; i++)
+                {
+                    dgTasks.Rows[i].DefaultCellStyle.BackColor = Color.White;
+                    dgTasks.Rows[i].DefaultCellStyle.ForeColor = Color.Black;
+                }
+            }
+        }
+
+        private void DarkBorders(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex == -1 && e.ColumnIndex >= 0)
+            {
+                e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
+
+                using (Pen borderPen = new Pen(Color.Black, 2))
+                {
+                    Rectangle rect = e.CellBounds;
+                    rect.Width -= 1;
+                    rect.Height -= 1;
+                    e.Graphics.DrawRectangle(borderPen, rect);
+                }
+
+                e.Handled = true;
+            }
+        }
+
+        private void LightBorders(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex == -1 && e.ColumnIndex >= 0)
+            {
+                e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
+
+                using (Pen borderPen = new Pen(Color.Gray, 2))
+                {
+                    Rectangle rect = e.CellBounds;
+                    rect.Width -= 1;
+                    rect.Height -= 1;
+                    e.Graphics.DrawRectangle(borderPen, rect);
+                }
+
+                e.Handled = true;
             }
         }
     }

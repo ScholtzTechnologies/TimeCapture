@@ -35,7 +35,7 @@ namespace TimeCapture.Forms
         #region Add
         private void btnSave_Click(object sender, EventArgs e)
         {
-            access.saveNote(0, txtName.Text.FixString(), "", DateTime.Now.ToString("dd MMM yyyy"), NoteID);
+            access.AddNote(-1, txtName.Text.FixString(), "", DateTime.Now.ToString("dd MMM yyyy"), NoteID);
             frmNotes.updateNotes();
             Dispose();
         }
@@ -50,15 +50,16 @@ namespace TimeCapture.Forms
 
         private void btnEditSave_Click(object sender, EventArgs e)
         {
-            access.saveNote(NoteID, txtName.Text.FixString(), "", Date, NoteID);
+            access.UpdateNoteName(NoteID, txtEditName.Text.ToString().FixString());
             frmNotes.updateNotes();
             Dispose();
         }
 
         private void btnYes_Click(object sender, EventArgs e)
         {
-            access.DeleteNote(NoteID);
-            frmNotes.updateNotes(1);
+            bool isDeleted = access.DeleteNote(NoteID);
+            if (isDeleted)
+                frmNotes.updateNotes();
             Dispose();
         }
     }

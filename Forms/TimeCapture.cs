@@ -912,11 +912,11 @@ namespace TimeCapture
 
         private void notesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Forms.Notes notes = new Forms.Notes();
+            Forms.Notes notes = new Forms.Notes(this);
             notes.Show();
         }
 
-                private void allToolStripMenuItem_Click(object sender, EventArgs e)
+        private void allToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DataSet dsTime = new Access().getTime(1);
             if (dsTime.HasRows())
@@ -1570,61 +1570,7 @@ namespace TimeCapture
                 form.BackColor = bgDark;
             }
             else
-            {
                 isDarkMode = false;
-                foreach (Control control in form.Controls)
-                {
-                    control.BackColor = Color.White;
-                    control.ForeColor = Color.Black;
-
-                    if (control is Button button)
-                    {
-                        button.FlatStyle = FlatStyle.Flat; // Set the FlatStyle to Flat
-                        button.BackColor = Color.White;
-                        button.FlatAppearance.BorderColor = Color.Gray; // Set the border color to the same as the background color
-                    }
-
-                    if (control is ComboBox comboBox)
-                    {
-                        comboBox.FlatStyle = FlatStyle.Standard;
-                        comboBox.BackColor = Color.White;
-                        comboBox.ForeColor = Color.Black;
-                        comboBox.DrawMode = DrawMode.OwnerDrawFixed;
-                        if (comboBox.Name == txtTicketNo.Name)
-                        {
-                            comboBox.DrawItem += (s, eventArgs) =>
-                            {
-                                eventArgs.DrawBackground();
-                                eventArgs.Graphics.DrawString(lTickets[eventArgs.Index].Name.ToString(), eventArgs.Font, Brushes.Black, eventArgs.Bounds);
-                            };
-                        }
-                        else if (comboBox.Name == drpType.Name)
-                        {
-                            comboBox.DrawItem += (s, eventArgs) =>
-                            {
-                                eventArgs.DrawBackground();
-                                eventArgs.Graphics.DrawString(comboBox.Items[eventArgs.Index].ToString(), eventArgs.Font, Brushes.Black, eventArgs.Bounds);
-                            };
-                        }
-                    }
-
-                    if (control is RichTextBox richTextBox)
-                    {
-                        richTextBox.BorderStyle = BorderStyle.FixedSingle;
-                        richTextBox.BackColor = Color.White;
-                        richTextBox.ForeColor = Color.Black;
-                    }
-
-                    if (control is TextBox textBox)
-                    {
-                        textBox.BorderStyle = BorderStyle.FixedSingle;
-                        textBox.BackColor = Color.White;
-                        textBox.ForeColor = Color.Black;
-                    }
-                }
-
-                form.BackColor = Color.White;
-            }
             this.Show();
             HideSpinner();
         }

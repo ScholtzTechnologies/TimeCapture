@@ -303,40 +303,74 @@ namespace TimeCapture.DB
         #endregion
 
         #region Save
+        public void AddNote(int NoteID, string Name, string Note, string Date, int ParentID)
+        {
+            string sSQL = String.Format(@"IF EXISTS (SELECT * FROM Notes where NoteID = {0})
+	                        update Notes
+		                        set Note = '{1}', Date = '{2}'
+			                        where NoteID = {0}
+                            else
+	                        insert into Notes (NoteID, Note, Date, ParentID, Name)
+		                        VALUES
+                                    ((SELECT ISNULL(MAX(NoteID) + 1, 1) from Notes), '{1}', '{2}', {3}, '{4}')",
+                                    NoteID, Note.FixString(), Date, ParentID, Name);
+            ExecuteNonQuery(sSQL);
+        }
+
         public void saveNote(int NoteID, string Name, string Note, string Date, int ParentID)
         {
             string sSQL;
             if (Note.IsNullOrEmpty())
             {
-                sSQL = String.Format(@"IF EXISTS (SELECT * FROM Notes where NoteID = {0})
+                Note = "";
+            }
+
+            sSQL = String.Format(@"IF EXISTS (SELECT * FROM Notes where NoteID = {0})
 	                        update Notes
-		                        set Name = '{1}', Date = '{2}'
+		                        set Note = '{1}', Date = '{2}'
 			                        where NoteID = {0}
                             else
-	                        insert into Notes (NoteID, Name, Date, ParentID, Note)
+	                        insert into Notes (NoteID, Note, Date, ParentID)
 		                        VALUES
-                                    ((SELECT ISNULL(MAX(NoteID) + 1, 1) from Notes), '{1}', '{2}', {3}, '')",
-                                        NoteID, Name, Date, ParentID);
-            }
-            else
-            {
-                sSQL = String.Format(@"IF EXISTS (SELECT * FROM Notes where NoteID = {0})
-	                        update Notes
-		                        set Name = '{1}', Note = '{2}', Date = '{3}'
-			                        where NoteID = {0}
-                            else
-	                        insert into Notes (NoteID, Name, Note, Date, ParentID)
-		                        VALUES
-                                    ((SELECT ISNULL(MAX(NoteID) + 1, 1) from Notes), '{1}', '{2}', '{3}', {4})",
-                                        NoteID, Name, Note.FixString(), Date, ParentID);
-            }
+                                    ((SELECT ISNULL(MAX(NoteID) + 1, 1) from Notes), '{1}', '{2}', {3})",
+                                    NoteID, Note.FixString(), Date, ParentID);
             ExecuteNonQuery(sSQL);
         }
 
-        public void DeleteNote(int NoteID)
+        public void UpdateNoteName(int NoteID, string Name)
         {
-            string sSQL = String.Format("Delete From Notes where NoteID = {0}", NoteID);
-            ExecuteNonQuery(sSQL);
+            string sSQl = String.Format("Update Notes set Name = '{1}' where NoteID = {0}", NoteID, Name);
+            ExecuteNonQuery(sSQl);
+        }
+
+        public bool DeleteNote(int NoteID)
+        {
+            string sSQL = String.Format(@"Delete from Notes where NoteID = {0}", NoteID);
+            string checkSQL = String.Format("select 1 from Notes where ParentID = {0}", NoteID);
+            if (!ExecuteQuery(checkSQL).HasRows())
+            {
+                ExecuteNonQuery(sSQL);
+                return true;
+            }
+            else
+            {
+                MessageBox.Show("Please delete Child Nodes first");
+                return false;
+            }
+        }
+
+        public bool MoveNote(int NoteID, int ParentID)
+        {
+            try
+            {
+                string sSQL = String.Format("update Notes set ParentID = {1} where NoteID = {0}", NoteID, ParentID);
+                ExecuteNonQuery(sSQL);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public void saveTask(int TaskID, string Task, int Status)
