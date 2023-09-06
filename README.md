@@ -51,6 +51,14 @@ I do have a website available, where both a copy of the release for individuals 
         - works on Windows 7 up
     - Anitivirus may mark app as virus due to Selenium as well as the exe itself. You can see the code, there are no viruses.
 
+# 'Donations'
+  - Due to me being South African, BuyMeACoffee failed me, and the only one that kind of works is paypal
+  if you can, please feel free to either pay what you can/pay what you think it's worth to my paypal account:
+    https://paypal.me/BscholtzFreelance?country.x=ZA&locale.x=en_US
+
+  THE APP IS FREE... but all donations are welcome and make this viable :)
+
+
 # Images
 - Light Mode
  ![image](https://github.com/Bgls-html/TimeCapture/assets/83670555/e6831fc0-1412-447a-8b87-ecf340a04ba2)
