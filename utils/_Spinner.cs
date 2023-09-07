@@ -51,5 +51,10 @@ namespace TimeCapture.Forms.Shared
             path.AddArc(rect.X, rect.Y + rect.Height - radius, radius, radius, 90, 90);
             this.Region = new Region(path);
         }
+
+        public Control GetLabel()
+        {
+            return this.lblAction2;
+        }
     }
 }

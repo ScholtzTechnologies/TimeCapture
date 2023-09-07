@@ -83,39 +83,6 @@ namespace TimeCapture.Selenium.TimeTaker
 
                             int Type = Extensions.ConvertTimeTypeToInt(time.GetDataRowStringValue("TimeType"));
 
-                            //if (time.GetDataRowStringValue("TimeType").Contains("General"))
-                            //{
-                            //    Type = 1;
-                            //}
-                            //else if (time.GetDataRowStringValue("TimeType").Contains("Investigation"))
-                            //{
-                            //    Type = 2;
-                            //}
-                            //else if (time.GetDataRowStringValue("TimeType").Contains("Report"))
-                            //{
-                            //    Type = 3;
-                            //}
-                            //else if (time.GetDataRowStringValue("TimeType").Contains("Bug"))
-                            //{
-                            //    Type = 4;
-                            //}
-                            //else if (time.GetDataRowStringValue("TimeType").Contains("Dev") || time.GetDataRowStringValue("TimeType").Contains("Develop") || time.GetDataRowStringValue("TimeType").Contains("Development"))
-                            //{
-                            //    Type = 5;
-                            //}
-                            //else if (time.GetDataRowStringValue("TimeType").Contains("Meeting") || time.GetDataRowStringValue("TimeType").Contains("Meetings"))
-                            //{
-                            //    Type = 10;
-                            //}
-                            //else if (time.GetDataRowStringValue("TimeType").Contains("Training"))
-                            //{
-                            //    Type = 12;
-                            //}
-                            //else if (time.GetDataRowStringValue("TimeType").Contains("Testing") || time.GetDataRowStringValue("TimeType").Contains("Test"))
-                            //{
-                            //    Type = 13;
-                            //}
-
                             driver.FindElement(By.XPath("//div[3]/div[5]/div/div[2]/select/option[" + Type + "]")).Click();
                             var saveBtn = driver.FindElement(By.XPath("//div[2]/div/div/div[4]/a[1]"));
                             js.ExecuteScript("arguments[0].click()", saveBtn);

@@ -100,8 +100,6 @@ namespace TimeCapture
                 dataGridView1.RowsAdded += PaintRows;
                 PushNofication("Time Capture", "Welcome to Time Capture");
             }
-            if (Spinner != null)
-                HideSpinner();
         }
 
         public void SetLocations()
@@ -355,67 +353,26 @@ namespace TimeCapture
 
         private void btnCaptureTime_Click(object sender, EventArgs e)
         {
-            bool ready = false;
-            if (lTime.Count > 0)
+            this.Hide();
+            Control x;
+            ShowSpinner(out x);
+            x.Visible = false;
+            try
             {
-                DialogResult result = MessageBox.Show("Would you like to export the current time first?", "", MessageBoxButtons.YesNoCancel);
-                if (result == DialogResult.Yes)
+                timeCapture.CaptureTime(BrowserType.Chrome);
+                new _logger().Log(LogType.Info, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
+            }
+            catch (Exception ex)
+            {
+                new _logger().Log(LogType.Error, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
+                MessageBox.Show("Failed to capture time, please try again");
+                DialogResult error = MessageBox.Show("Failed to capture time, see exception message?", "", MessageBoxButtons.YesNo);
+                if (error == DialogResult.Yes)
                 {
-                    ready = true;
+                    MessageBox.Show(ex.Message.ToString());
                 }
             }
-            else
-            {
-                ready = true;
-            }
-
-            if (ready)
-            {
-                Control lblAction;
-                ShowSpinner(out lblAction);
-                this.Hide();
-                try
-                {
-                    btnExport_Click(sender, e);
-                    lblAction.Text = "Capturing Time";
-                    timeCapture.CaptureTime(BrowserType.Chrome);
-                    lblAction.Text = "Done!";
-                    sendToast("Time has been captured");
-                    new _logger().Log(LogType.Info, "Time captured");
-                }
-                catch (Exception ex)
-                {
-                    new _logger().Log(LogType.Error, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
-                    MessageBox.Show("Failed to capture time, please try again");
-                    DialogResult error = MessageBox.Show("Failed to capture time, see exception message?", "", MessageBoxButtons.YesNo);
-                    if (error == DialogResult.Yes)
-                    {
-                        MessageBox.Show(ex.Message.ToString());
-                    }
-                }
-                HideSpinner();
-            }
-            else
-            {
-                ShowSpinner();
-                this.Hide();
-                try
-                {
-                    timeCapture.CaptureTime(BrowserType.Chrome);
-                    new _logger().Log(LogType.Info, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
-                }
-                catch (Exception ex)
-                {
-                    new _logger().Log(LogType.Error, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
-                    MessageBox.Show("Failed to capture time, please try again");
-                    DialogResult error = MessageBox.Show("Failed to capture time, see exception message?", "", MessageBoxButtons.YesNo);
-                    if (error == DialogResult.Yes)
-                    {
-                        MessageBox.Show(ex.Message.ToString());
-                    }
-                }
-                HideSpinner();
-            }
+            HideSpinner();
             this.Show();
         }
 
@@ -652,21 +609,19 @@ namespace TimeCapture
             }
         }
 
-        public void ShowSpinner()
-        {
-            Spinner = new();
-            Spinner.Show();
-        }
-
         public void ShowSpinner(out Control lblAction)
         {
-            Spinner = new(out lblAction);
+            if (Spinner == null)
+                Spinner = new(out lblAction);
+            else
+                lblAction = Spinner.GetLabel();
+
             Spinner.Show();
         }
 
         public void HideSpinner()
         {
-            Spinner.Dispose();
+            Spinner.Hide();
         }
 
         public void ShowInputDialog(string sContext, out bool OK, out string sValue)
@@ -967,7 +922,9 @@ namespace TimeCapture
 
             if (OKResult)
             {
-                ShowSpinner();
+                Control x;
+                ShowSpinner(out x);
+                x.Visible = false;
                 TicketViewer ticketViewer = new(sValue);
                 ticketViewer.Show();
                 HideSpinner();
@@ -1506,7 +1463,9 @@ namespace TimeCapture
 
         public void generic_DarkMode(Form form, out bool isDarkMode)
         {
-            ShowSpinner();
+            Control x;
+            ShowSpinner(out x);
+            x.Visible = false;
             this.Hide();
             Color bgDark = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             Color bgDarkSecondary = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));

@@ -14,7 +14,6 @@ namespace TimeCapture.Forms
         {
             InitializeComponent();
             this.Hide();
-            capture.ShowSpinner();
             timeCapture = capture;
             isInitialized = false;
             GetSettings();
@@ -28,7 +27,6 @@ namespace TimeCapture.Forms
                 this.label1.ForeColor = Color.White;
                 this.containerControl1.BackColor = Color.Gray;
             }
-            capture.HideSpinner();
             this.Show();
             this.FormClosed += OnClose;
         }
