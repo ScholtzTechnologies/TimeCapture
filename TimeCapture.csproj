@@ -29,6 +29,7 @@
     <PackageReference Include="OpenQA.Selenium.Chrome.ChromeDriverExtensions" Version="1.2.0" />
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="116.0.5845.9600" />
     <PackageReference Include="SharpCompress" Version="0.33.0" />
+    <PackageReference Include="Tulpep.NotificationWindow" Version="1.1.38" />
     <PackageReference Include="Uno.Core" Version="4.0.1" />
     <PackageReference Include="Uno.UI" Version="4.8.33" />
     <PackageReference Include="WinForms.DataVisualization" Version="1.8.0" />
@@ -68,6 +69,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SourceGeneratorInput Remove="Resources\TimeCapture.png" />
   </ItemGroup>
 
 </Project>

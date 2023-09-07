@@ -11,7 +11,7 @@
 
         private void button2_Click(object sender, EventArgs e)
         {
-            timeCapture.sendToast("You have clocked out, enjoy the evening");
+            timeCapture.PushNofication("You have clocked out, enjoy the evening", NotificationType.Info);
             timeCapture.Dispose();
             Dispose();
         }
@@ -20,7 +20,7 @@
         {
             TimeCapture timeCapture = new TimeCapture();
             timeCapture.btnExport_Click(sender, e);
-            timeCapture.sendToast("You have clocked out, enjoy the evening");
+            timeCapture.PushNofication("You have clocked out, enjoy the evening", NotificationType.Info);
             timeCapture.Dispose();
             Dispose();
         }

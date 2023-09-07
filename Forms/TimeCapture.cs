@@ -98,7 +98,7 @@ namespace TimeCapture
                 }
 
                 dataGridView1.RowsAdded += PaintRows;
-                PushNofication("Time Capture", "Welcome to Time Capture");
+                PushNofication("Welcome to TimeCapture", NotificationType.Logo);
             }
         }
 
@@ -220,11 +220,11 @@ namespace TimeCapture
             exportProgress.Value = 100;
             if (!string.IsNullOrEmpty(last))
             {
-                sendToast("Your time for " + DateTime.Now.ToString("dd MMM yyyy") + " has been exported | " + last);
+                PushNofication("Your time for " + DateTime.Now.ToString("dd MMM yyyy") + " has been exported | " + last, NotificationType.Success);
             }
             else
             {
-                sendToast("No time to capture");
+                PushNofication("No Time to capture", NotificationType.Info);
             }
         }
 
@@ -347,7 +347,7 @@ namespace TimeCapture
         {
             lTime.Clear();
             dataGridView1.Rows.Clear();
-            sendToast("All recently captured time cleared");
+            PushNofication("All recently captured time cleared", NotificationType.Info);
             exportProgress.Value = 0;
         }
 
@@ -536,27 +536,6 @@ namespace TimeCapture
             }
         }
 
-        public void sendToast(string msg)
-        {
-            if (Access.GetSettingValue(4))
-            {
-                Uri uri = new Uri(Path.Combine(root, "TimeIcon.png"));
-                var doc = new XmlDocument();
-
-                ToastContentBuilder toastContent = new ToastContentBuilder()
-                    .AddArgument("action", "viewConversation")
-                    .AddArgument("conversationId", 9813)
-                    .AddAppLogoOverride(uri)
-                    .AddText(msg)
-                    .AddHeader("0", "Time Capture", "");
-            }
-            else
-            {
-                MessageBox.Show(msg);
-                responseMessage.Text = DateTime.Now.ToString("[hh:mm]") + " " + msg;
-            }
-        }
-
         public void addTicket(string Name, string TicketNumber)
         {
             string filePath = Path.Combine(root, "Data", "Tickets.csv");
@@ -571,7 +550,7 @@ namespace TimeCapture
             txtTicketNo.DataSource = lTickets;
             txtTicketNo.DisplayMember = "Name";
             txtTicketNo.ValueMember = "ID";
-            sendToast("Ticket " + Name + " | " + TicketNumber + " has been added");
+            PushNofication("Ticket " + Name + " | " + TicketNumber + " has been added", NotificationType.Success);
         }
 
         public void getTickets()
@@ -860,7 +839,7 @@ namespace TimeCapture
                 }
                 catch
                 {
-                    sendToast("Please make sure a valid csv with the correct columns was submitted");
+                    PushNofication("Please make sure a valid csv with the correct columns was submitted", NotificationType.Error);
                 }
             }
         }
@@ -1083,7 +1062,7 @@ namespace TimeCapture
 
                     if (time.TicketNo == -1)
                     {
-                        sendToast("Please provide a valid ticket number");
+                        PushNofication("Please provide a valid ticket number", NotificationType.Error);
                     }
                     else
                     {
@@ -1104,7 +1083,7 @@ namespace TimeCapture
                 // Call the public void method that accepts the TimeID value
 
                 DeleteTime(e.RowIndex, timeID);
-                sendToast("Time Deleted");
+                PushNofication("Time Deleted", NotificationType.Success);
             }
             if (dataGridView1.Columns[e.ColumnIndex] is DataGridViewButtonColumn
                 && e.RowIndex >= 0 && e.ColumnIndex == 11)
@@ -1569,24 +1548,10 @@ namespace TimeCapture
 
         #region Notifications
 
-        public void PushNofication(string Title, string Message)
+        public void PushNofication(string Message, NotificationType Type)
         {
-            
-            Uri img = new Uri(Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "Images", "TimeIcon.png")));
-
-            ToastContent toastContent = new ToastContentBuilder()
-                .AddToastActivationInfo("action=viewConversation&conversationId=5", ToastActivationType.Foreground)
-                .AddText(Title)
-                .AddText(Message)
-                .GetToastContent();
-            
-            XmlDocument xml = new XmlDocument();
-            xml.LoadXml(toastContent.GetContent());
-            
-            var toast = new ToastNotification(xml);
-            new ToastNotifier().Show(toast);
-
-            //ToastNotificationManager.CreateToastNotifier().Show(toast);
+            new Notifications().SendNotification(Message, Type);
+            responseMessage.Text = DateTime.Now.ToString("[hh:mm]") + " " + Message;
         }
 
         #endregion Notifications

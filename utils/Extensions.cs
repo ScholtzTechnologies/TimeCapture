@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TimeCapture;
+using Tulpep.NotificationWindow;
 
 namespace TimeCapture.utils
 {
@@ -318,6 +319,42 @@ namespace TimeCapture.utils
             lCharacters.Add(".");
             lCharacters.Add(",");
             return lCharacters;
+        }
+    }
+
+    public enum NotificationType
+    {
+        Success,
+        Error,
+        Info,
+        Logo
+    }
+
+    public class Notifications
+    {
+        public void SendNotification(string Message, NotificationType Type)
+        {
+            PopupNotifier popup = new PopupNotifier();
+            popup.ShowGrip = false;
+            popup.HeaderColor = Color.Black;
+            popup.BodyColor = Color.Black;
+            popup.BorderColor = Color.Black;
+            popup.Size = new System.Drawing.Size(300, 75);
+
+            if (Type == NotificationType.Success)
+                popup.Image = Properties.Resources.Success;
+            else if (Type == NotificationType.Error)
+                popup.Image = Properties.Resources.Error;
+            else if (Type == NotificationType.Info)
+                popup.Image = Properties.Resources.Info;
+            else if (Type == NotificationType.Logo)
+                popup.Image = Properties.Resources.TimeIcon_60x;
+
+            popup.TitleColor = Color.Gray;
+            popup.TitleText = "Time Capture";
+            popup.ContentColor = Color.Gray;
+            popup.ContentText = Message;
+            popup.Popup();
         }
     }
 }
