@@ -666,7 +666,7 @@ namespace TimeCapture
 
         public void HideSpinner()
         {
-            Spinner.Hide();
+            Spinner.Dispose();
         }
 
         public void ShowInputDialog(string sContext, out bool OK, out string sValue)
