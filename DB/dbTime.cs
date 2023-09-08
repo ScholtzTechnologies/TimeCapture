@@ -198,9 +198,22 @@ namespace TimeCapture.DB
 
         public bool GetSettingValue(int SettingID)
         {
-            string sSQL = "Select ISNULL(Value, 0) as Value from Settings where ID = " + SettingID;
-            DataSet ds = ExecuteQuery(sSQL);
-            return ds.Tables[0].Rows[0].GetDataRowBoolValue("Value");
+            int attempt = 1;
+            bool done = false;
+            bool response = false;
+            while (attempt < 3 && !done)
+            {
+                attempt++;
+                try
+                {
+                    string sSQL = "Select ISNULL(Value, 0) as Value from Settings where ID = " + SettingID;
+                    DataSet ds = ExecuteQuery(sSQL);
+                    response = ds.Tables[0].Rows[0].GetDataRowBoolValue("Value");
+                    done = true;
+                }
+                catch { }
+            }
+            return response;
         }
 
         public bool IsBusinessModel()

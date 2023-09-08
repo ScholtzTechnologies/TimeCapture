@@ -109,5 +109,15 @@ namespace TimeCapture.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TimeIcon_60x_White {
+            get {
+                object obj = ResourceManager.GetObject("TimeIcon_60x_White", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

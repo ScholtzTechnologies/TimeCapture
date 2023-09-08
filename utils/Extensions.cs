@@ -348,9 +348,9 @@ namespace TimeCapture.utils
             else if (Type == NotificationType.Info)
                 popup.Image = Properties.Resources.Info;
             else if (Type == NotificationType.Logo)
-                popup.Image = Properties.Resources.TimeIcon_60x;
+                popup.Image = Properties.Resources.TimeIcon_60x_White;
 
-            popup.TitleColor = Color.Gray;
+            popup.TitleColor = Color.White;
             popup.TitleText = "Time Capture";
             popup.ContentColor = Color.Gray;
             popup.ContentText = Message;

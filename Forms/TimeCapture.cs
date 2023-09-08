@@ -46,6 +46,7 @@ namespace TimeCapture
         public TimeCapture()
         {
             InitializeComponent();
+            PushNofication("Welcome to TimeCapture", NotificationType.Logo);
             CheckDB();
             string response;
             new Access().TestConnection(out response);
@@ -61,7 +62,6 @@ namespace TimeCapture
                 bool isSuccess = true;
                 bool isSelenium = Access.GetSettingValue(7);
 
-                //CreateTable();
                 getTypes();
                 getTickets();
                 SetLocations();
@@ -98,7 +98,6 @@ namespace TimeCapture
                 }
 
                 dataGridView1.RowsAdded += PaintRows;
-                PushNofication("Welcome to TimeCapture", NotificationType.Logo);
             }
         }
 
@@ -320,21 +319,8 @@ namespace TimeCapture
                 time.Description = ptDesc;
                 time.Type = ptTicketType;
                 time.Date = DateTime.Now.ToString("dd MMM yyyy");
-                //lTime.Add(time);
 
                 int iTimeID = new Access().InsertTime(time, UserID);
-
-                //DataRow row = tblTime.NewRow();
-                //row["tName"] = ptName;
-                //row["TicketNumber"] = ptTicketNumber;
-                //row["StartTime"] = ptStart;
-                //row["EndTime"] = DateTime.Now.ToString("HH:mm");
-                //row["Total"] = Total;
-                //row["TimeType"] = ptTimeType;
-                //row["Description"] = ptDesc;
-                //row["TicketType"] = ptTicketType;
-                //row["Date"] = DateTime.Now.ToString("dd MMM yyyy");
-                //tblTime.Rows.Add(row);
 
                 dataGridView1.Rows.Add(iTimeID, ptName, ptTicketNumber, ptStart, DateTime.Now.ToString("HH:mm"),
                     Total, ptTimeType, ptDesc, ptTicketType, DateTime.Now.ToString("dd MMM yyyy"), "Delete", "Continue");
@@ -445,59 +431,6 @@ namespace TimeCapture
             }
         }
 
-        //public void CreateTable()
-        //{
-        //    tblTime = new DataTable();
-        //    tblTime.Columns.Add("tName");
-        //    tblTime.Columns.Add("TicketNumber");
-        //    tblTime.Columns.Add("StartTime");
-        //    tblTime.Columns.Add("EndTime");
-        //    tblTime.Columns.Add("Total");
-        //    tblTime.Columns.Add("TimeType");
-        //    tblTime.Columns.Add("Description");
-        //    tblTime.Columns.Add("TicketType");
-        //    tblTime.Columns.Add("Date");
-        //}
-
-        public void WriteDataToCsv()
-        {
-            CSVImport.CreateFolder();
-            string filePath = Path.Combine(root, "csvImport", "ZZZImport_CSV.csv");
-            exportProgress.Value = 25;
-
-            var stream = File.Open(filePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-
-            using (var writer = new StreamWriter(stream))
-            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-            {
-                exportProgress.Value = 50;
-                
-                if (stream.Length == 0)
-                {
-                    csv.WriteHeader<CSVImport>();
-                    csv.NextRecord();
-                }
-
-                foreach (var time in lTime)
-                {
-                    csv.WriteField(time.Item);
-                    csv.WriteField(time.TicketNo);
-                    csv.WriteField(time.Start);
-                    csv.WriteField(time.End);
-                    csv.WriteField(time.Total);
-                    csv.WriteField(time.TimeType);
-                    csv.WriteField(time.Description);
-                    csv.WriteField(time.Type);
-                    csv.WriteField(time.Date);
-                    csv.NextRecord();
-                }
-                
-                exportProgress.Value = 75;
-            }
-            stream.Close();
-            lTime.Clear();
-        }
-
         public void StoreTime(out string last)
         {
             Control lblAction;
@@ -534,23 +467,6 @@ namespace TimeCapture
                     lTypes.Add(csTypes);
                 }
             }
-        }
-
-        public void addTicket(string Name, string TicketNumber)
-        {
-            string filePath = Path.Combine(root, "Data", "Tickets.csv");
-            using (var stream = File.Open(filePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
-            using (var writer = new StreamWriter(stream))
-            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-            {
-                csv.WriteField(Name);
-                csv.WriteField(TicketNumber);
-            }
-            getTickets();
-            txtTicketNo.DataSource = lTickets;
-            txtTicketNo.DisplayMember = "Name";
-            txtTicketNo.ValueMember = "ID";
-            PushNofication("Ticket " + Name + " | " + TicketNumber + " has been added", NotificationType.Success);
         }
 
         public void getTickets()
@@ -818,7 +734,7 @@ namespace TimeCapture
                         {
                             i++;
                             Lists.Time time = new Lists.Time();
-                            time.TimeID = TimeID;
+                            time.TimeID = -1;
                             time.Item = user.Item;
                             time.TicketNo = user.TicketNo;
                             time.Start = user.Start;
@@ -832,9 +748,11 @@ namespace TimeCapture
 
                             int progress = (int)((double)i / Count * 100);
                             exportProgress.Value = progress;
-                            dataGridView1.Rows.Add(TimeID, user.Item, user.TicketNo, user.Start,
-                                user.End, user.Total, user.Type, user.TimeType, user.Date, "Delete", "Continue");
+
+                            dataGridView1.Rows.Add(TimeID, ptName, ptTicketNumber, ptStart, DateTime.Now.ToString("HH:mm"),
+                                Total, ptTimeType, ptDesc, ptTicketType, DateTime.Now.ToString("dd MMM yyyy"), "Delete", "Continue");
                         }
+                        PushNofication(Count.ToString() + " records added", NotificationType.Info);
                     }
                 }
                 catch
