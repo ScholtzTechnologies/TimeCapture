@@ -77,7 +77,7 @@ namespace TimeCapture.DB
 
         public DataSet getTickets()
         {
-            string sSQL = @"select ID, Name from Tickets";
+            string sSQL = @"select ID, Name from Tickets order by Name asc";
             return ExecuteQuery(sSQL);
         }
 
@@ -527,6 +527,23 @@ namespace TimeCapture.DB
             }
 
             return ret;
+        }
+
+        public DataSet GetTimeByString(string sString)
+        {
+            string sSQL = string.Format(@"select distinct TimeID, Item, TicketNo, Start, [End], [Total], TimeType, Description, TicketType, Date from Time
+                where
+	                Item like '%{0}%' or
+	                TicketNo like '%{0}%' or
+	                Start like '%{0}%' or
+	                [End] like '%{0}%' or
+	                [Total] like '%{0}%' or
+	                TimeType like '%{0}%' or
+	                Description like '%{0}%' or
+	                TicketType like '%{0}%' or
+	                Date like '%{0}%'", sString.FixString());
+
+            return ExecuteQuery(sSQL);
         }
     }
 }

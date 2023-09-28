@@ -72,6 +72,7 @@
             this.byDayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byDateRangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fromDateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.byTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.csvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,6 +89,8 @@
             this.btnDelTicket = new System.Windows.Forms.Button();
             this.lblDarkMode = new System.Windows.Forms.Label();
             this.toggleSwitch1 = new CustomControls.ToggleSwitch();
+            this.txtTotalTime = new System.Windows.Forms.TextBox();
+            this.lblTotal = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.containerControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -472,7 +475,8 @@
             this.capturedToolStripMenuItem,
             this.byDayToolStripMenuItem,
             this.byDateRangeToolStripMenuItem,
-            this.fromDateToolStripMenuItem});
+            this.fromDateToolStripMenuItem,
+            this.byTextToolStripMenuItem});
             this.loadAllResultsToolStripMenuItem.Name = "loadAllResultsToolStripMenuItem";
             this.loadAllResultsToolStripMenuItem.Size = new System.Drawing.Size(106, 24);
             this.loadAllResultsToolStripMenuItem.Text = "Load Results";
@@ -519,6 +523,13 @@
             this.fromDateToolStripMenuItem.Size = new System.Drawing.Size(199, 26);
             this.fromDateToolStripMenuItem.Text = "From Date...";
             this.fromDateToolStripMenuItem.Click += new System.EventHandler(this.fromDateToolStripMenuItem_Click);
+            // 
+            // byTextToolStripMenuItem
+            // 
+            this.byTextToolStripMenuItem.Name = "byTextToolStripMenuItem";
+            this.byTextToolStripMenuItem.Size = new System.Drawing.Size(199, 26);
+            this.byTextToolStripMenuItem.Text = "By Text";
+            this.byTextToolStripMenuItem.Click += new System.EventHandler(this.byTextToolStripMenuItem_Click);
             // 
             // importToolStripMenuItem
             // 
@@ -601,7 +612,7 @@
             this.responseMessage.Location = new System.Drawing.Point(361, 560);
             this.responseMessage.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.responseMessage.Name = "responseMessage";
-            this.responseMessage.Size = new System.Drawing.Size(521, 27);
+            this.responseMessage.Size = new System.Drawing.Size(392, 27);
             this.responseMessage.TabIndex = 38;
             // 
             // UpdCurrent
@@ -673,12 +684,34 @@
             this.toggleSwitch1.UseVisualStyleBackColor = true;
             this.toggleSwitch1.CheckedChanged += new System.EventHandler(this.toggleSwitch1_CheckedChanged_1);
             // 
+            // txtTotalTime
+            // 
+            this.txtTotalTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTotalTime.Location = new System.Drawing.Point(806, 560);
+            this.txtTotalTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtTotalTime.Name = "txtTotalTime";
+            this.txtTotalTime.Size = new System.Drawing.Size(76, 27);
+            this.txtTotalTime.TabIndex = 47;
+            // 
+            // lblTotal
+            // 
+            this.lblTotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTotal.AutoSize = true;
+            this.lblTotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lblTotal.Location = new System.Drawing.Point(759, 564);
+            this.lblTotal.Name = "lblTotal";
+            this.lblTotal.Size = new System.Drawing.Size(41, 18);
+            this.lblTotal.TabIndex = 48;
+            this.lblTotal.Text = "Total";
+            // 
             // TimeCapture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.ClientSize = new System.Drawing.Size(896, 599);
+            this.Controls.Add(this.lblTotal);
+            this.Controls.Add(this.txtTotalTime);
             this.Controls.Add(this.toggleSwitch1);
             this.Controls.Add(this.lblDarkMode);
             this.Controls.Add(this.btnDelTicket);
@@ -787,6 +820,9 @@
         private ToolStripMenuItem byDayToolStripMenuItem;
         private ToolStripMenuItem byDateRangeToolStripMenuItem;
         private ToolStripMenuItem fromDateToolStripMenuItem;
+        private ToolStripMenuItem byTextToolStripMenuItem;
+        private TextBox txtTotalTime;
+        private Label lblTotal;
     }
 }
 

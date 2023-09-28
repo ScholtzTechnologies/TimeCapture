@@ -41,13 +41,16 @@ namespace TimeCapture
         public Selenium.TimeTaker.TimeCapture timeCapture = new();
         public _Spinner Spinner { get; set; }
         public int UserID { get; set; }
+
+        public string TotalTime { get; set; }
         #endregion Properties
-        
+
         public TimeCapture()
         {
             InitializeComponent();
             PushNofication("Welcome to TimeCapture", NotificationType.Logo);
             CheckDB();
+            TotalTime = "00:00";
             string response;
             new Access().TestConnection(out response);
             if (new Access().IsBusinessModel())
@@ -98,6 +101,7 @@ namespace TimeCapture
                 }
 
                 dataGridView1.RowsAdded += PaintRows;
+                txtTotalTime.Enabled = false;
             }
         }
 
@@ -335,6 +339,7 @@ namespace TimeCapture
             dataGridView1.Rows.Clear();
             PushNofication("All recently captured time cleared", NotificationType.Info);
             exportProgress.Value = 0;
+            txtTotalTime.Text = "00:00";
         }
 
         private void btnCaptureTime_Click(object sender, EventArgs e)
@@ -987,6 +992,9 @@ namespace TimeCapture
                         new Access().UpdateTime(time);
                     }
                 }
+
+                txtTotalTime.Text = "00:00";
+                UpdateTotal();
             }
         }
 
@@ -1356,6 +1364,8 @@ namespace TimeCapture
                     dataGridView1.Rows[i].DefaultCellStyle.ForeColor = Color.Black;
                 }
             }
+
+            UpdateTotal();
         }
 
         public void generic_DarkMode(Form form, out bool isDarkMode)
@@ -1473,5 +1483,54 @@ namespace TimeCapture
         }
 
         #endregion Notifications
+
+        private void byTextToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bool Ok;
+            string sValue;
+            ShowInputDialog("Please fill in text to search", out Ok, out sValue);
+
+            if (Ok)
+            {
+                DataSet ds = new Access().GetTimeByString(sValue);
+                if (ds.HasRows())
+                    InsertIntoTimeTable(ds);
+            }
+        }
+
+        public void InsertIntoTimeTable(DataSet ds)
+        {
+            foreach (DataRow time in ds.Tables[0].Rows)
+            {
+                dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"),
+                        time.GetDataRowStringValue("Item"), time.GetDataRowIntValue("TicketNo"),
+                        time.GetDataRowStringValue("Start"), time.GetDataRowStringValue("End"),
+                        time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
+                        time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"),
+                        time.GetDataRowStringValue("Date"),
+                        "Delete", "Continue"
+                    );
+            }
+        }
+
+        public void UpdateTotal()
+        {
+            foreach (DataGridViewRow item in dataGridView1.Rows)
+            {
+                string sTotal = item.GetDataGridViewStringValue("Total");
+                if (string.IsNullOrEmpty(txtTotalTime.Text))
+                    TotalTime = "00:00";
+                else
+                    TotalTime = txtTotalTime.Text;
+                try
+                {
+                    TimeSpan Total;
+                    TimeSpan.TryParse(TotalTime, out Total);
+                    TimeSpan.TryParse(Convert.ToDateTime(sTotal).Add(Total).ToString("HH:mm"), out Total);
+                    txtTotalTime.Text = Total.ToString().Substring(0, 5);
+                }
+                catch { }
+            }
+        }
     }
 }
