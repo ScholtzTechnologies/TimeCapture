@@ -993,7 +993,6 @@ namespace TimeCapture
                     }
                 }
 
-                txtTotalTime.Text = "00:00";
                 UpdateTotal();
             }
         }
@@ -1348,24 +1347,27 @@ namespace TimeCapture
 
         private void PaintRows(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            if (toggleSwitch1.Checked)
+            if (isInitialized)
             {
-                for (int i = e.RowIndex; i < e.RowIndex + e.RowCount; i++)
+                if (toggleSwitch1.Checked)
                 {
-                    dataGridView1.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-                    dataGridView1.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+                    for (int i = e.RowIndex; i < e.RowIndex + e.RowCount; i++)
+                    {
+                        dataGridView1.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+                        dataGridView1.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+                    }
                 }
-            }
-            else
-            {
-                for (int i = e.RowIndex; i < e.RowIndex + e.RowCount; i++)
+                else
                 {
-                    dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.White;
-                    dataGridView1.Rows[i].DefaultCellStyle.ForeColor = Color.Black;
+                    for (int i = e.RowIndex; i < e.RowIndex + e.RowCount; i++)
+                    {
+                        dataGridView1.Rows[i].DefaultCellStyle.BackColor = Color.White;
+                        dataGridView1.Rows[i].DefaultCellStyle.ForeColor = Color.Black;
+                    }
                 }
-            }
 
-            UpdateTotal();
+                UpdateTotal();
+            }
         }
 
         public void generic_DarkMode(Form form, out bool isDarkMode)
@@ -1515,6 +1517,7 @@ namespace TimeCapture
 
         public void UpdateTotal()
         {
+            txtTotalTime.Text = "00:00";
             foreach (DataGridViewRow item in dataGridView1.Rows)
             {
                 string sTotal = item.GetDataGridViewStringValue("Total");

@@ -485,50 +485,50 @@
             // allToolStripMenuItem
             // 
             this.allToolStripMenuItem.Name = "allToolStripMenuItem";
-            this.allToolStripMenuItem.Size = new System.Drawing.Size(199, 26);
+            this.allToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.allToolStripMenuItem.Text = "All";
             this.allToolStripMenuItem.Click += new System.EventHandler(this.allToolStripMenuItem_Click);
             // 
             // uncapturedToolStripMenuItem
             // 
             this.uncapturedToolStripMenuItem.Name = "uncapturedToolStripMenuItem";
-            this.uncapturedToolStripMenuItem.Size = new System.Drawing.Size(199, 26);
+            this.uncapturedToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.uncapturedToolStripMenuItem.Text = "Uncaptured";
             this.uncapturedToolStripMenuItem.Click += new System.EventHandler(this.uncapturedToolStripMenuItem_Click);
             // 
             // capturedToolStripMenuItem
             // 
             this.capturedToolStripMenuItem.Name = "capturedToolStripMenuItem";
-            this.capturedToolStripMenuItem.Size = new System.Drawing.Size(199, 26);
+            this.capturedToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.capturedToolStripMenuItem.Text = "Captured";
             this.capturedToolStripMenuItem.Click += new System.EventHandler(this.capturedToolStripMenuItem_Click);
             // 
             // byDayToolStripMenuItem
             // 
             this.byDayToolStripMenuItem.Name = "byDayToolStripMenuItem";
-            this.byDayToolStripMenuItem.Size = new System.Drawing.Size(199, 26);
+            this.byDayToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.byDayToolStripMenuItem.Text = "By Date...";
             this.byDayToolStripMenuItem.Click += new System.EventHandler(this.byDayToolStripMenuItem_Click);
             // 
             // byDateRangeToolStripMenuItem
             // 
             this.byDateRangeToolStripMenuItem.Name = "byDateRangeToolStripMenuItem";
-            this.byDateRangeToolStripMenuItem.Size = new System.Drawing.Size(199, 26);
+            this.byDateRangeToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.byDateRangeToolStripMenuItem.Text = "By Date Range...";
             this.byDateRangeToolStripMenuItem.Click += new System.EventHandler(this.byDateRangeToolStripMenuItem_Click);
             // 
             // fromDateToolStripMenuItem
             // 
             this.fromDateToolStripMenuItem.Name = "fromDateToolStripMenuItem";
-            this.fromDateToolStripMenuItem.Size = new System.Drawing.Size(199, 26);
+            this.fromDateToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.fromDateToolStripMenuItem.Text = "From Date...";
             this.fromDateToolStripMenuItem.Click += new System.EventHandler(this.fromDateToolStripMenuItem_Click);
             // 
             // byTextToolStripMenuItem
             // 
             this.byTextToolStripMenuItem.Name = "byTextToolStripMenuItem";
-            this.byTextToolStripMenuItem.Size = new System.Drawing.Size(199, 26);
-            this.byTextToolStripMenuItem.Text = "By Text";
+            this.byTextToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.byTextToolStripMenuItem.Text = "By Text...";
             this.byTextToolStripMenuItem.Click += new System.EventHandler(this.byTextToolStripMenuItem_Click);
             // 
             // importToolStripMenuItem
@@ -564,7 +564,7 @@
             // ticketToolStripMenuItem
             // 
             this.ticketToolStripMenuItem.Name = "ticketToolStripMenuItem";
-            this.ticketToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
+            this.ticketToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.ticketToolStripMenuItem.Text = "Ticket ...";
             this.ticketToolStripMenuItem.Click += new System.EventHandler(this.ticketToolStripMenuItem_Click);
             // 
