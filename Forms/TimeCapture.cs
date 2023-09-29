@@ -53,6 +53,7 @@ namespace TimeCapture
             TotalTime = "00:00";
             string response;
             new Access().TestConnection(out response);
+            new Access().InitiateKeepAlive();
             if (new Access().IsBusinessModel())
             {
                 new Login(this).Show();

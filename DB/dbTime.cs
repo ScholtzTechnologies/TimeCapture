@@ -1,10 +1,12 @@
-﻿using Uno.Extensions;
+﻿using System.Timers;
+using Uno.Extensions;
 
 namespace TimeCapture.DB
 {
     public class Access
     {
         public _logger Logger = new();
+        private static System.Timers.Timer TimerConn = null;
         public static String GetConnectionString()
         {
             string dbFile = Path.GetFullPath("../../../DB/Time.mdf");
@@ -25,6 +27,43 @@ namespace TimeCapture.DB
                 MessageBox.Show("Failed to connect, please ensure the database file has been created and restart the app.");
                 Response = "Failed to connect, please correct and restart";
             }
+        }
+
+        public bool isConnectionUp()
+        {
+            try
+            {
+                SqlConnection connection = new SqlConnection(GetConnectionString());
+                connection.Open();
+                connection.Close();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public void InitiateKeepAlive()
+        {
+            if (TimerConn != null)
+            {
+                TimerConn.Enabled = false;
+            }
+            TimerConn = new System.Timers.Timer();
+            TimerConn.Interval = 20000;
+            TimerConn.Elapsed += HandleTimerConTick;
+
+            TimerConn.Enabled = true;
+        }
+
+        private static void HandleTimerConTick(object source, ElapsedEventArgs e)
+        {
+            bool isConnectionUp = new Access().isConnectionUp();
+            string errorMsg = "An error has occured while connection to the database. If the issue persists please restart the app";
+
+            if (!isConnectionUp)
+                MessageBox.Show(errorMsg.ToString());
         }
 
         #region dbAccess
