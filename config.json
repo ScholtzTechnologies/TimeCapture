@@ -1,0 +1,14 @@
+{
+  // Connections
+  "ConnectionString": "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=[NotImplemented];Integrated Security=True",
+
+  // Global Settings
+  //
+  // Bool
+  "isNotifications": "0",
+  "isBusiness": "0",
+
+  // String
+  "BusinessName": "Scholtz",
+  "SeleniumURL": "https://web3.searchlightsoftware.co.za/Tickets/Login.aspx"
+}

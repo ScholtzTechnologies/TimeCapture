@@ -99,7 +99,11 @@ namespace TimeCapture.Forms
                 }
                 else if (ID == 8)
                 {
-                    txtURL.Text = setting.GetDataRowStringValue("Value");
+                    if (_configuration.SeleniumURL != null)
+                        txtURL.Text = _configuration.SeleniumURL;
+                    else
+                        txtURL.Text = setting.GetDataRowStringValue("Value");
+
                     toolTip.SetToolTip(txtURL, setting.GetDataRowStringValue("Description"));
                 }
             }

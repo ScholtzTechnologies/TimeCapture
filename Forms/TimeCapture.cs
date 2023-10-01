@@ -54,7 +54,12 @@ namespace TimeCapture
             string response;
             new Access().TestConnection(out response);
             new Access().InitiateKeepAlive();
-            if (new Access().IsBusinessModel())
+
+            //if (new Access().IsBusinessModel())
+            //{
+            //    new Login(this).Show();
+            //}
+            if (Convert.ToBoolean(Convert.ToInt32(_configuration.isBusiness)))
             {
                 new Login(this).Show();
             }
@@ -346,12 +351,11 @@ namespace TimeCapture
         private void btnCaptureTime_Click(object sender, EventArgs e)
         {
             this.Hide();
-            Control x;
-            ShowSpinner(out x);
-            x.Visible = false;
+            Control lblAction;
+            ShowSpinner(out lblAction);
             try
             {
-                timeCapture.CaptureTime(BrowserType.Chrome);
+                timeCapture.CaptureTime(BrowserType.Chrome, lblAction);
                 new _logger().Log(LogType.Info, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
             }
             catch (Exception ex)

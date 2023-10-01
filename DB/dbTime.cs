@@ -9,6 +9,9 @@ namespace TimeCapture.DB
         private static System.Timers.Timer TimerConn = null;
         public static String GetConnectionString()
         {
+            if (!_configuration.ConnectionString.Contains("[NotImplemented]"))
+                return _configuration.ConnectionString;
+
             string dbFile = Path.GetFullPath("../../../DB/Time.mdf");
             return "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=" + dbFile + ";Integrated Security=True";
         }
