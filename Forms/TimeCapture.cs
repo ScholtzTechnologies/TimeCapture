@@ -111,60 +111,6 @@ namespace TimeCapture
             }
         }
 
-        public void SetLocations()
-        {
-            lblTypeLocal = lblType.Location;
-            drpTypeLocal = drpType.Location;
-            drpTypeSize = drpType.Size;
-
-            lblDescLocal = lblDesc.Location;
-            txtDescLocal = txtDesc.Location;
-            txtDescSize = txtDesc.Size;
-        }
-
-        public void CompleteLogin()
-        {
-            string response;
-            new Access().TestConnection(out response);
-            responseMessage.Text = response;
-
-            //CreateTable();
-            getTypes();
-            getTickets();
-
-            lblTypeLocal = lblType.Location;
-            drpTypeLocal = drpType.Location;
-            drpTypeSize = drpType.Size;
-
-            lblDescLocal = lblDesc.Location;
-            txtDescLocal = txtDesc.Location;
-            txtDescSize = txtDesc.Size;
-
-            CheckHidden();
-
-            var lTypesColumn = lTypes.Select(x => x.Name).ToList();
-            drpType.DataSource = lTypesColumn;
-
-            txtStartTime.Enabled = false;
-            responseMessage.Enabled = false;
-
-            lblStop.Enabled = false;
-
-            TimeID = -1;
-            isInitialized = true;
-
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-            string path = Path.Combine(CSVImport.root, "TimeCapture_log_sql.txt");
-            if (!File.Exists(path))
-            {
-                File.Create(path);
-            }
-
-            dataGridView1.RowsAdded += PaintRows;
-            this.Show();
-        }
-
         #region CheckBoxes
         private void rbNonCharge_CheckedChanged(object sender, EventArgs e)
         {
@@ -716,6 +662,103 @@ namespace TimeCapture
             }
         }
 
+        public void SetLocations()
+        {
+            lblTypeLocal = lblType.Location;
+            drpTypeLocal = drpType.Location;
+            drpTypeSize = drpType.Size;
+
+            lblDescLocal = lblDesc.Location;
+            txtDescLocal = txtDesc.Location;
+            txtDescSize = txtDesc.Size;
+        }
+
+        public void CompleteLogin()
+        {
+            string response;
+            new Access().TestConnection(out response);
+            responseMessage.Text = response;
+
+            //CreateTable();
+            getTypes();
+            getTickets();
+
+            lblTypeLocal = lblType.Location;
+            drpTypeLocal = drpType.Location;
+            drpTypeSize = drpType.Size;
+
+            lblDescLocal = lblDesc.Location;
+            txtDescLocal = txtDesc.Location;
+            txtDescSize = txtDesc.Size;
+
+            CheckHidden();
+
+            var lTypesColumn = lTypes.Select(x => x.Name).ToList();
+            drpType.DataSource = lTypesColumn;
+
+            txtStartTime.Enabled = false;
+            responseMessage.Enabled = false;
+
+            lblStop.Enabled = false;
+
+            TimeID = -1;
+            isInitialized = true;
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            string path = Path.Combine(CSVImport.root, "TimeCapture_log_sql.txt");
+            if (!File.Exists(path))
+            {
+                File.Create(path);
+            }
+
+            dataGridView1.RowsAdded += PaintRows;
+            this.Show();
+        }
+
+        public void InsertIntoTimeTable(DataSet ds)
+        {
+            foreach (DataRow time in ds.Tables[0].Rows)
+            {
+                dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"),
+                        time.GetDataRowStringValue("Item"), time.GetDataRowIntValue("TicketNo"),
+                        time.GetDataRowStringValue("Start"), time.GetDataRowStringValue("End"),
+                        time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
+                        time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"),
+                        time.GetDataRowStringValue("Date"),
+                        "Delete", "Continue"
+                    );
+            }
+        }
+
+        public void UpdateTotal()
+        {
+            txtTotalTime.Text = "00:00";
+            foreach (DataGridViewRow item in dataGridView1.Rows)
+            {
+                string sTotal = item.GetDataGridViewStringValue("Total");
+                if (string.IsNullOrEmpty(txtTotalTime.Text))
+                    TotalTime = "00:00";
+                else
+                    TotalTime = txtTotalTime.Text;
+                try
+                {
+                    TimeSpan Total;
+                    TimeSpan.TryParse(TotalTime, out Total);
+                    TimeSpan.TryParse(Convert.ToDateTime(sTotal).Add(Total).ToString("HH:mm"), out Total);
+                    txtTotalTime.Text = Total.ToString().Substring(0, 5);
+                }
+                catch { }
+            }
+        }
+
+        public TimeSpan GetTimeSpan(string initial, string final)
+        {
+            TimeSpan Total =
+            Convert.ToDateTime(initial).Subtract(Convert.ToDateTime(final));
+            return Total;
+        }
+
         #endregion Actions
 
         #region NavMenu
@@ -898,6 +941,26 @@ namespace TimeCapture
                     }
                 }
             }
+        }
+
+        private void byTextToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bool Ok;
+            string sValue;
+            ShowInputDialog("Please fill in text to search", out Ok, out sValue);
+
+            if (Ok)
+            {
+                DataSet ds = new Access().GetTimeByString(sValue);
+                if (ds.HasRows())
+                    InsertIntoTimeTable(ds);
+            }
+        }
+
+        private void reportsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Forms.Reports Report = new Reports(this);
+            Report.Show();
         }
 
         #endregion Nav
@@ -1490,55 +1553,5 @@ namespace TimeCapture
         }
 
         #endregion Notifications
-
-        private void byTextToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            bool Ok;
-            string sValue;
-            ShowInputDialog("Please fill in text to search", out Ok, out sValue);
-
-            if (Ok)
-            {
-                DataSet ds = new Access().GetTimeByString(sValue);
-                if (ds.HasRows())
-                    InsertIntoTimeTable(ds);
-            }
-        }
-
-        public void InsertIntoTimeTable(DataSet ds)
-        {
-            foreach (DataRow time in ds.Tables[0].Rows)
-            {
-                dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"),
-                        time.GetDataRowStringValue("Item"), time.GetDataRowIntValue("TicketNo"),
-                        time.GetDataRowStringValue("Start"), time.GetDataRowStringValue("End"),
-                        time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
-                        time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"),
-                        time.GetDataRowStringValue("Date"),
-                        "Delete", "Continue"
-                    );
-            }
-        }
-
-        public void UpdateTotal()
-        {
-            txtTotalTime.Text = "00:00";
-            foreach (DataGridViewRow item in dataGridView1.Rows)
-            {
-                string sTotal = item.GetDataGridViewStringValue("Total");
-                if (string.IsNullOrEmpty(txtTotalTime.Text))
-                    TotalTime = "00:00";
-                else
-                    TotalTime = txtTotalTime.Text;
-                try
-                {
-                    TimeSpan Total;
-                    TimeSpan.TryParse(TotalTime, out Total);
-                    TimeSpan.TryParse(Convert.ToDateTime(sTotal).Add(Total).ToString("HH:mm"), out Total);
-                    txtTotalTime.Text = Total.ToString().Substring(0, 5);
-                }
-                catch { }
-            }
-        }
     }
 }

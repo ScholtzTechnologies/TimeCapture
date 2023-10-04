@@ -1,12 +1,18 @@
 {
   // Connections
   "ConnectionString": "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=[NotImplemented];Integrated Security=True",
+  "TableName": "",
+  "SQL01": "insert into x",
+  "SQL02": "(columns)",
+  "SQL03": "Values ([Replace])",
+  "DateTimeFormat": "dd MMM yyyy",
 
   // Global Settings
   //
   // Bool
   "isNotifications": "0",
   "isBusiness": "0",
+  "IsDirectCapture": "0",
 
   // String
   "BusinessName": "Scholtz",

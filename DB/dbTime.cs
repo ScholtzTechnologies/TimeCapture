@@ -224,7 +224,7 @@ namespace TimeCapture.DB
             else
             {
                 sSQL = String.Format(@"select TimeID, Item, TicketNo, Start, [End], Total, TimeType, Description, TicketType, Date from Time
-                            where Date > DATEADD(day,-1,'{0}') and Date < '{1}'", sStart, sEnd);
+                            where Date > DATEADD(day,-1,'{0}') and Date < DATEADD(day,1,'{1}')", sStart, sEnd);
             }
             return ExecuteQuery(sSQL);
         }
@@ -584,6 +584,14 @@ namespace TimeCapture.DB
 	                Description like '%{0}%' or
 	                TicketType like '%{0}%' or
 	                Date like '%{0}%'", sString.FixString());
+
+            return ExecuteQuery(sSQL);
+        }
+
+        public DataSet GetTimeByTicketNo(string TicketNo)
+        {
+            string sSQL = String.Format(@"select TimeID, Item, TicketNo, Start, [End], [Total], TimeType, Description, TicketType, Date from Time
+                where TicketNo = {0}", TicketNo);
 
             return ExecuteQuery(sSQL);
         }

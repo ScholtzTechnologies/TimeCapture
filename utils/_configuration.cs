@@ -46,6 +46,11 @@ namespace TimeCapture.utils
             get { return _config["SeleniumURL"]; }
         }
 
+        public static string DateTimeFormat
+        {
+            get { return _config["DateTimeFormat"]; }
+        }
+
         public static string GetConfigValue(string Param)
         {
             try
@@ -55,6 +60,22 @@ namespace TimeCapture.utils
             catch
             {
                 return null;
+            }
+        }
+
+        public static string GetDirectUpdate
+        {
+            get
+            {
+                StringBuilder SQL = new StringBuilder();
+                if (_config["IsDirectCapture"] == "1")
+                {
+                    SQL.AppendLine(_config["SQL01"]);
+                    SQL.AppendLine(_config["SQL02"]);
+                    SQL.AppendLine(_config["SQL03"]);
+                    return SQL.ToString();
+                }
+                return "";
             }
         }
     }
