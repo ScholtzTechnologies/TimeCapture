@@ -12,10 +12,15 @@ namespace TimeCapture.Forms
 {
     public partial class Reports : Form
     {
+        #region Properties
+
         public DataSet dsTime = new DataSet();
         public Dictionary<string, double> aggregatedTotals = new Dictionary<string, double>();
         public Dictionary<int, double> aggregatedTotalsTickets = new Dictionary<int, double>();
         public TimeCapture timeCapture { get; set; }
+
+        #endregion Properties
+        
         public Reports(TimeCapture time)
         {
             timeCapture = time;
@@ -29,6 +34,8 @@ namespace TimeCapture.Forms
             cbReportType.SelectedValueChanged += CbReportType_SelectedValueChanged;
             cbTicket.SelectedValueChanged += CbTicket_SelectedValueChanged;
         }
+
+        #region Events
 
         private void CbReportType_SelectedValueChanged(object? sender, EventArgs e)
         {
@@ -219,6 +226,10 @@ namespace TimeCapture.Forms
 
         }
 
+        #endregion Events
+
+        #region Actions 
+
         public void GetTickets()
         {
             List<CSVImport.Tickets> lTickets = new();
@@ -258,6 +269,10 @@ namespace TimeCapture.Forms
             cbReportType.ValueMember = "ID";
         }
 
+        #endregion Actions
+
+        #region Custom
+
         public class Report
         {
             public int ID { get; set; }
@@ -289,6 +304,8 @@ namespace TimeCapture.Forms
             ByDateRange,
             ByTicket
         };
+
+        #endregion Custom
     }
 
     public static class ReportUtil

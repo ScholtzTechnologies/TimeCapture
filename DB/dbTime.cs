@@ -7,6 +7,9 @@ namespace TimeCapture.DB
     {
         public _logger Logger = new();
         private static System.Timers.Timer TimerConn = null;
+
+        #region Connection
+
         public static String GetConnectionString()
         {
             if (!_configuration.ConnectionString.Contains("[NotImplemented]"))
@@ -69,6 +72,8 @@ namespace TimeCapture.DB
                 MessageBox.Show(errorMsg.ToString());
         }
 
+        #endregion Connection
+
         #region dbAccess
         public DataSet ExecuteQuery(string SQL)
         {
@@ -107,6 +112,7 @@ namespace TimeCapture.DB
                 Logger.Log(LogType.Error, ex.Message.ToString());
             }
 }
+
         #endregion
 
         #region Get
@@ -355,6 +361,31 @@ namespace TimeCapture.DB
             catch { return false; }
         }
 
+        public DataSet GetTimeByString(string sString)
+        {
+            string sSQL = string.Format(@"select distinct TimeID, Item, TicketNo, Start, [End], [Total], TimeType, Description, TicketType, Date from Time
+                where
+	                Item like '%{0}%' or
+	                TicketNo like '%{0}%' or
+	                Start like '%{0}%' or
+	                [End] like '%{0}%' or
+	                [Total] like '%{0}%' or
+	                TimeType like '%{0}%' or
+	                Description like '%{0}%' or
+	                TicketType like '%{0}%' or
+	                Date like '%{0}%'", sString.FixString());
+
+            return ExecuteQuery(sSQL);
+        }
+
+        public DataSet GetTimeByTicketNo(string TicketNo)
+        {
+            string sSQL = String.Format(@"select TimeID, Item, TicketNo, Start, [End], [Total], TimeType, Description, TicketType, Date from Time
+                where TicketNo = {0}", TicketNo);
+
+            return ExecuteQuery(sSQL);
+        }
+
         #endregion
 
         #region Save
@@ -485,7 +516,37 @@ namespace TimeCapture.DB
             string sSQL = "Delete from Tickets where ID = " + TicketID;
             ExecuteNonQuery(sSQL);
         }
+
+        public int InsertTime(Time time, int UserID)
+        {
+            int ret = 0;
+
+            string sSQL = String.Format(@"insert into Time 
+                (Item, TicketNo, Start, [End],
+                    Total, TimeType, Description, TicketType, Date, SystemUserID)
+                VALUES ( '{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', {9} )
+
+                select MAX(TimeID) as ID from Time", time.Item, time.TicketNo, time.Start, time.End, time.Total,
+                time.TimeType, time.Description, time.Type, time.Date, UserID);
+
+            DataSet ds = ExecuteQuery(sSQL);
+
+            try
+            {
+                ret = ds.Tables[0].Rows[0].GetDataRowIntValue("ID");
+            }
+            catch
+            {
+                string retSQL = "select MAX(TimeID) as ID from Time";
+                ret = ExecuteQuery(retSQL).Tables[0].Rows[0].GetDataRowIntValue("ID");
+            }
+
+            return ret;
+        }
+
         #endregion
+
+        #region Init
 
         public void FillSettings()
         {
@@ -545,55 +606,7 @@ namespace TimeCapture.DB
             ExecuteNonQuery(sSQL);
         }
 
-        public int InsertTime(Time time, int UserID)
-        {
-            int ret = 0;
-
-            string sSQL = String.Format(@"insert into Time 
-                (Item, TicketNo, Start, [End],
-                    Total, TimeType, Description, TicketType, Date, SystemUserID)
-                VALUES ( '{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', {9} )
-
-                select MAX(TimeID) as ID from Time", time.Item, time.TicketNo, time.Start, time.End, time.Total, 
-                time.TimeType, time.Description, time.Type, time.Date, UserID);
-
-            DataSet ds = ExecuteQuery(sSQL);
-
-            try
-            {
-                ret = ds.Tables[0].Rows[0].GetDataRowIntValue("ID");
-            }
-            catch {
-                string retSQL = "select MAX(TimeID) as ID from Time";
-                ret = ExecuteQuery(retSQL).Tables[0].Rows[0].GetDataRowIntValue("ID");
-            }
-
-            return ret;
-        }
-
-        public DataSet GetTimeByString(string sString)
-        {
-            string sSQL = string.Format(@"select distinct TimeID, Item, TicketNo, Start, [End], [Total], TimeType, Description, TicketType, Date from Time
-                where
-	                Item like '%{0}%' or
-	                TicketNo like '%{0}%' or
-	                Start like '%{0}%' or
-	                [End] like '%{0}%' or
-	                [Total] like '%{0}%' or
-	                TimeType like '%{0}%' or
-	                Description like '%{0}%' or
-	                TicketType like '%{0}%' or
-	                Date like '%{0}%'", sString.FixString());
-
-            return ExecuteQuery(sSQL);
-        }
-
-        public DataSet GetTimeByTicketNo(string TicketNo)
-        {
-            string sSQL = String.Format(@"select TimeID, Item, TicketNo, Start, [End], [Total], TimeType, Description, TicketType, Date from Time
-                where TicketNo = {0}", TicketNo);
-
-            return ExecuteQuery(sSQL);
-        }
+        #endregion Init
+        
     }
 }

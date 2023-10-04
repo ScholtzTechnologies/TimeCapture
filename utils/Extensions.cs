@@ -12,6 +12,7 @@ namespace TimeCapture.utils
 {
     public static class Extensions
     {
+        #region Checks
         public static bool HasRows(this DataSet ds)
         {
             try
@@ -40,30 +41,50 @@ namespace TimeCapture.utils
             }
         }
 
-        public static string sDate(this DateTime sString, int? Format)
+        public static int IsChecked(this CheckBox checkBox)
         {
-            if (Format == TimeFormat.DDMMMYYYY)
+            if (checkBox.CheckState == CheckState.Checked)
             {
-                return sString.ToString("dd MMM yyyy");
-            }
-            else if (Format == TimeFormat.HHMM)
-            {
-                return sString.ToString("HH:mm");
-            }
-            else if (Format == TimeFormat.DDMMMYYYYHHMM)
-            {
-                return sString.ToString("dd MMM yyyy HH:mm");
-            }
-            else if (String.IsNullOrEmpty(sString.ToString()))
-            {
-                return DateTime.Now.ToString();
+                return 1;
             }
             else
             {
-                return sString.ToString();
+                return 0;
             }
         }
 
+        public static string ValidateTimeString(this string TimeStamp, out int errorType)
+        {
+            ErrorType e = new();
+            errorType = e.None;
+            List<string> invalidCharacters = new Invalid().Characters();
+            CultureInfo enUS = new CultureInfo("en-US");
+            DateTime x;
+
+            if (TimeStamp.Length == 5)
+            {
+                foreach (var Char in invalidCharacters)
+                {
+                    TimeStamp.Replace(Char.ToCharArray()[0], ':');
+                }
+                try
+                {
+                    DateTime.TryParseExact(TimeStamp, "hh:mm", enUS, DateTimeStyles.None, out x);
+                }
+                catch
+                {
+                    errorType = e.Format;
+                }
+            }
+            else
+                errorType = e.Length;
+
+            return TimeStamp;
+        }
+
+        #endregion Checks
+
+        #region DataRow Extensions
         public static string GetDataRowStringValue(this DataRow dataRow, string sColumn)
         {
             string sValue = "";
@@ -136,6 +157,9 @@ namespace TimeCapture.utils
             }
         }
 
+        #endregion DataRow Extensions
+
+        #region Data Grid View Extensions
         public static string GetDataGridViewStringValue(this DataGridViewRow dvRow, string sColumn)
         {
             if (dvRow.Cells[sColumn].Value == null)
@@ -209,18 +233,9 @@ namespace TimeCapture.utils
 
             return row;
         }
+        #endregion Data Grid View Extensions
 
-        public static int IsChecked(this CheckBox checkBox)
-        {
-            if (checkBox.CheckState == CheckState.Checked)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
+        #region Conversions
 
         public static int ConvertTimeTypeToInt(string sTimeType)
         {
@@ -256,41 +271,17 @@ namespace TimeCapture.utils
             return Type;
         }
 
-        public static string ValidateTimeString(this string TimeStamp, out int errorType)
-        {
-            ErrorType e = new();
-            errorType = e.None;
-            List<string> invalidCharacters = new Invalid().Characters();
-            CultureInfo enUS = new CultureInfo("en-US");
-            DateTime x;
+        #endregion Conversions
+        
+    }
 
-            if (TimeStamp.Length == 5)
-            {
-                foreach (var Char in invalidCharacters)
-                {
-                    TimeStamp.Replace(Char.ToCharArray()[0], ':');
-                }
-                try
-                {
-                    DateTime.TryParseExact(TimeStamp, "hh:mm", enUS, DateTimeStyles.None, out x);
-                }
-                catch
-                {
-                    errorType = e.Format;
-                }
-            }
-            else
-                errorType = e.Length;
+    #region Classes
 
-            return TimeStamp;
-        }
-
-        public class ErrorType
-        {
-            public int None = 0;
-            public int Format = 1;
-            public int Length = 2;
-        }
+    public class ErrorType
+    {
+        public int None = 0;
+        public int Format = 1;
+        public int Length = 2;
     }
 
     public class NoteTreeNode : TreeNode
@@ -357,4 +348,7 @@ namespace TimeCapture.utils
             popup.Popup();
         }
     }
+
+    #endregion Classes
+
 }
