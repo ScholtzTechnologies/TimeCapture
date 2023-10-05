@@ -14,9 +14,11 @@ namespace TimeCapture.Forms
 {
     public partial class TicketViewer : Form
     {
-        public TicketViewer(string sValue)
+        public TicketViewer(string sValue, TimeCapture timeCapture)
         {
             InitializeComponent();
+            bool isDarkMode;
+            timeCapture.generic_DarkMode(this, out isDarkMode);
             string sURL;
             new TicketSystem().GetTicketURL(BrowserType.Chrome, sValue, out sURL);
             if (sURL != null)

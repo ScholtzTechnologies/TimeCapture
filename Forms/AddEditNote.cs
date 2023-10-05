@@ -19,6 +19,7 @@ namespace TimeCapture.Forms
         public string Date { get; set; }
         public Access access = new Access();
         public Notes frmNotes { get; set; }
+        TimeCapture time { get; set; }
         public AddEditNote(int iNoteID, int parentID, string name, string date, Notes notes)
         {
             InitializeComponent();
@@ -27,9 +28,14 @@ namespace TimeCapture.Forms
             Date = date;
             ParentID = parentID;
             frmNotes = notes;
-
+            
             txtEditName.Text = sName;
             lblSure.Text = "Are you sure you wish to delete " + sName + "?";
+
+
+            time = new TimeCapture();
+            bool x;
+            time.generic_DarkMode(this, out x);
         }
 
         #region Add

@@ -16,6 +16,8 @@ namespace TimeCapture.Forms
 {
     public partial class Notes : Form
     {
+        #region Properties
+
         public int iTaskID { get; set; }
         public static string root = Directory.GetCurrentDirectory();
         public static string fNotes = Path.Combine(root, "Data", "Notes.txt");
@@ -23,6 +25,9 @@ namespace TimeCapture.Forms
         public DB.Access Access = new DB.Access();
         public List<CSVImport.Tasks> lTasks = new List<CSVImport.Tasks>();
         public bool isDarkMode { get; set; }
+
+        #endregion Properties
+
         public Notes(TimeCapture timeCapture)
         {
             InitializeComponent();
@@ -82,18 +87,7 @@ namespace TimeCapture.Forms
             }
         }
 
-        public void qAddEdit(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            if (e.Node is NoteTreeNode noteNode)
-            {
-                int NoteID = noteNode.NodeID;
-                string name = noteNode.Name;
-                int ParentID = noteNode.ParentID;
-                string Date = noteNode.Date;
-                AddEditNote addEditNote = new(NoteID, ParentID, name.FixString(), Date, this);
-                addEditNote.Show();
-            }
-        }
+        #region Get
 
         public void GetNote(object sender, TreeNodeMouseClickEventArgs e)
         {
@@ -102,17 +96,6 @@ namespace TimeCapture.Forms
                 getNoteByID(noteNode.NodeID);
             }
         }
-
-        private void SetNewTaskID(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            int rowIndex = e.RowIndex;
-            for (int i = 0; i < e.RowCount; i++)
-            {
-                iTaskID++;
-                dgTasks.Rows[rowIndex + i].Cells["TaskID"].Value = iTaskID;
-            }
-        }
-
         public void getTasks()
         {
             DataSet dsTasks = Access.GetTasks();
@@ -132,7 +115,7 @@ namespace TimeCapture.Forms
                 iTaskID = rowWithGreatestNoteID.Field<int>("TaskID");
             }
         }
-        
+
         public void getNotes()
         {
             NoteTreeNode root = new NoteTreeNode("Root", 0, "", 0);
@@ -186,6 +169,33 @@ namespace TimeCapture.Forms
                 rtxtNote.Enabled = true;
         }
 
+        #endregion Get
+
+        public void qAddEdit(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Node is NoteTreeNode noteNode)
+            {
+                int NoteID = noteNode.NodeID;
+                string name = noteNode.Name;
+                int ParentID = noteNode.ParentID;
+                string Date = noteNode.Date;
+                AddEditNote addEditNote = new(NoteID, ParentID, name.FixString(), Date, this);
+                addEditNote.Show();
+            }
+        }
+
+        private void SetNewTaskID(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            int rowIndex = e.RowIndex;
+            for (int i = 0; i < e.RowCount; i++)
+            {
+                iTaskID++;
+                dgTasks.Rows[rowIndex + i].Cells["TaskID"].Value = iTaskID;
+            }
+        }
+
+        #region Notes
+
         public void updateNotes()
         {
             treeNotes.Nodes.Clear();
@@ -207,6 +217,10 @@ namespace TimeCapture.Forms
             Access access = new();
             access.saveNote(NoteID, Name, Note, DateTime.Now.ToString("dd MMM yyyy"), ParentID);
         }
+
+        #endregion Notes
+
+        #region Tasks
 
         private void btnSaveTask_Click(object sender, EventArgs e)
         {
@@ -238,6 +252,10 @@ namespace TimeCapture.Forms
                 }
             }
         }
+
+        #endregion Tasks
+
+        #region TreeView
 
         private void NoteNodeDrag(object sender, ItemDragEventArgs e)
         {
@@ -315,6 +333,10 @@ namespace TimeCapture.Forms
             return ContainsNode(node1, node2.Parent);
         }
 
+        #endregion TreeView
+
+        #region DarkMode
+
         private void PaintRows(object sender, DataGridViewRowsAddedEventArgs e)
         {
             if (isDarkMode)
@@ -370,5 +392,7 @@ namespace TimeCapture.Forms
                 e.Handled = true;
             }
         }
+
+        #endregion DarkMode
     }
 }

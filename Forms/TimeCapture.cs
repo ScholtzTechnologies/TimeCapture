@@ -875,7 +875,7 @@ namespace TimeCapture
                 Control x;
                 ShowSpinner(out x);
                 x.Visible = false;
-                TicketViewer ticketViewer = new(sValue);
+                TicketViewer ticketViewer = new(sValue, this);
                 ticketViewer.Show();
                 HideSpinner();
             }

@@ -18,19 +18,24 @@ namespace TimeCapture.Forms
         public Dictionary<string, double> aggregatedTotals = new Dictionary<string, double>();
         public Dictionary<int, double> aggregatedTotalsTickets = new Dictionary<int, double>();
         public TimeCapture timeCapture { get; set; }
+        public bool isDark { get; set; }
 
         #endregion Properties
         
         public Reports(TimeCapture time)
         {
-            timeCapture = time;
             InitializeComponent();
+
+            timeCapture = time;
+
             this.lblTicket.Visible = false;
             this.cbTicket.Visible = false;
-            descTicket.Visible = false;
-            descTicket2.Visible = false;
+            this.descTicket.Visible = false;
+            this.descTicket2.Visible = false;
+            
             GetTickets();
             SetReports();
+
             cbReportType.SelectedValueChanged += CbReportType_SelectedValueChanged;
             cbTicket.SelectedValueChanged += CbTicket_SelectedValueChanged;
         }
