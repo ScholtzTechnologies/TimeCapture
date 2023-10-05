@@ -55,7 +55,7 @@ I do have a website available, where both a copy of the release for individuals 
 # 'Donations'
   - Due to me being South African, BuyMeACoffee failed me, and the only one that kind of works is paypal
   if you can, please feel free to either pay what you can/pay what you think it's worth to one of the below:
-    [![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)]([https://ko-fi.com/I2I8PU8JB](https://paypal.me/BscholtzFreelance?country.x=ZA&locale.x=en_US))
+    [![PayPal](https://rawgit.com/twolfson/paypal-github-button/1.2.x/dist/button.svg)]((https://paypal.me/BscholtzFreelance?country.x=ZA&locale.x=en_US))
     [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/I2I8PU8JB)
 
   THE APP IS FREE... but all donations are welcome and make this viable :)
