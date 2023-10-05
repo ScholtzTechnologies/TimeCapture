@@ -33,9 +33,57 @@ namespace TimeCapture.Forms
             lblSure.Text = "Are you sure you wish to delete " + sName + "?";
 
 
-            time = new TimeCapture();
-            bool x;
-            time.generic_DarkMode(this, out x);
+            time = notes.time;
+            bool isDarkMode;
+            time.generic_DarkMode(this, out isDarkMode);
+            if (isDarkMode)
+            {
+                this.tabAdd.BackColor = Color.Black;
+                this.tabDelete.BackColor = Color.Black;
+                this.tabEdit.BackColor = Color.Black;
+
+                List<Control> lControls = new List<Control>();
+                foreach (Control control in tabAdd.Controls)
+                {
+                    lControls.Add(control);
+                }
+                foreach (Control control in tabEdit.Controls)
+                {
+                    lControls.Add(control);
+                }
+                foreach (Control control in tabDelete.Controls)
+                {
+                    lControls.Add(control);
+                }
+
+                foreach (Control control in lControls)
+                {
+                    Color bgDark = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+                    Color bgDarkSecondary = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+                    Color controlDark = Color.SlateGray;
+
+                    if (control is Button button)
+                    {
+                        button.FlatStyle = FlatStyle.Flat; // Set the FlatStyle to Flat
+                        button.BackColor = bgDarkSecondary;
+                        button.FlatAppearance.BorderColor = bgDark; // Set the border color to the same as the background color
+                    }
+
+                    if (control is RichTextBox richTextBox)
+                    {
+                        richTextBox.BorderStyle = BorderStyle.FixedSingle;
+                        richTextBox.BackColor = bgDark;
+                        richTextBox.ForeColor = Color.White;
+                    }
+
+                    if (control is TextBox textBox)
+                    {
+                        textBox.BorderStyle = BorderStyle.FixedSingle;
+                        textBox.BackColor = bgDark;
+                        textBox.ForeColor = Color.White;
+                    }
+                }
+            }
         }
 
         #region Add

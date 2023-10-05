@@ -25,6 +25,7 @@ namespace TimeCapture.Forms
         public DB.Access Access = new DB.Access();
         public List<CSVImport.Tasks> lTasks = new List<CSVImport.Tasks>();
         public bool isDarkMode { get; set; }
+        public TimeCapture time { get; set; }
 
         #endregion Properties
 
@@ -32,6 +33,7 @@ namespace TimeCapture.Forms
         {
             InitializeComponent();
 
+            time = timeCapture;
             dgTasks.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
             getTasks();
