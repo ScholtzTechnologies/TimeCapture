@@ -44,7 +44,8 @@ I do have a website available, where both a copy of the release for individuals 
 # Requirements
   - Hardware Requirements
     - RAM Usage: 20mb - 100mb on average
-    - Disk Space: 110mb MIN
+        - Recommend atleast 4gb
+    - Disk Space: 300mb MIN
     - Internet Connection: Not Required unless Automated TimeCapture is required
   - Software Requirements
     - Developed on Windows 10 and 11
