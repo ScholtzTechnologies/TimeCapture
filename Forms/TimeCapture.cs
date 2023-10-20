@@ -963,6 +963,12 @@ namespace TimeCapture
             Report.Show();
         }
 
+        private void donateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            KofiQR QR = new KofiQR();
+            QR.Show();
+        }
+
         #endregion Nav
 
         #region DataGridView
@@ -1553,5 +1559,6 @@ namespace TimeCapture
         }
 
         #endregion Notifications
+
     }
 }
