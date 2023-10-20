@@ -11,7 +11,6 @@ namespace TimeCapture
     public partial class TimeCapture : Form
     {
         #region Properties
-        //public DataTable tblTime { get; set; }
         public List<Time> lTime = new List<Time>();
         public List<CSVImport.Types> lTypes = new List<CSVImport.Types>();
         public List<CSVImport.Clients> lClients = new List<CSVImport.Clients>();
@@ -26,6 +25,7 @@ namespace TimeCapture
         public System.Drawing.Point lblDescLocal { get; set; }
         public System.Drawing.Point txtDescLocal { get; set; }
         public System.Drawing.Size txtDescSize { get; set; }
+        public bool isTaskRunning { get; set; }
         #region priorTime
         public string ptName { get; set; }
         public int ptTicketNumber { get; set; }
@@ -187,14 +187,15 @@ namespace TimeCapture
         {
             if (String.IsNullOrWhiteSpace(txtName.Text))
             {
-                MessageBox.Show("Please fill in Name");
+                MessageBox.Show("Name cannot be blank");
             }
             else if (String.IsNullOrWhiteSpace(txtTicketNo.Text) && !Access.GetSettingValue(3))
             {
-                MessageBox.Show("Please fill in the Ticket Number, if unkown, just put 0");
+                MessageBox.Show("Please fill in the Ticket Number, if unkown, simply put 0");
             }
             else if (lblPlay.Enabled)
             {
+                isTaskRunning = true;
                 txtCurrent.Text = txtName.Text;
                 txtStartTime.Text = DateTime.Now.ToString("HH:mm");
 
@@ -261,20 +262,23 @@ namespace TimeCapture
         {
             if (lblStop.Enabled)
             {   
+                isTaskRunning = false;
                 TimeSpan preTotal = DateTime.Now.Subtract(dtStart);
                 string Total = preTotal.ToString().Substring(0, 5);
 
-                Time time = new Time();
-                time.TimeID = -1;
-                time.Item = ptName;
-                time.TicketNo = ptTicketNumber;
-                time.Start = ptStart;
-                time.End = DateTime.Now.ToString("HH:mm");
-                time.Total = Total;
-                time.TimeType = ptTimeType;
-                time.Description = ptDesc;
-                time.Type = ptTicketType;
-                time.Date = DateTime.Now.ToString("dd MMM yyyy");
+                Time time = new Time()
+                {
+                    TimeID = -1,
+                    Item = ptName,
+                    TicketNo = ptTicketNumber,
+                    Start = ptStart,
+                    End = DateTime.Now.ToString("HH:mm"),
+                    Total = Total,
+                    TimeType = ptTimeType,
+                    Description = ptDesc,
+                    Type = ptTicketType,
+                    Date = DateTime.Now.ToString("dd MMM yyyy")
+                };
 
                 int iTimeID = new Access().InsertTime(time, UserID);
 
@@ -307,12 +311,10 @@ namespace TimeCapture
             catch (Exception ex)
             {
                 new _logger().Log(LogType.Error, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
-                MessageBox.Show("Failed to capture time, please try again");
                 DialogResult error = MessageBox.Show("Failed to capture time, see exception message?", "", MessageBoxButtons.YesNo);
+
                 if (error == DialogResult.Yes)
-                {
                     MessageBox.Show(ex.Message.ToString());
-                }
             }
             HideSpinner();
             this.Show();
@@ -1087,6 +1089,11 @@ namespace TimeCapture
             if (dataGridView1.Columns[e.ColumnIndex] is DataGridViewButtonColumn
                 && e.RowIndex >= 0 && e.ColumnIndex == 11)
             {
+                if (isTaskRunning)
+                    lblStop_Click(null, null);
+               
+                isTaskRunning = true;
+
                 txtCurrent.Text = dataGridView1.Rows[e.RowIndex].GetDataGridViewStringValue("tName");
                 txtStartTime.Text = DateTime.Now.ToString("HH:mm");
 
