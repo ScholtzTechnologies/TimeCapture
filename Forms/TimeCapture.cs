@@ -5,6 +5,8 @@ using TimeCapture.Forms.Shared;
 using SharpCompress.Archives;
 using SharpCompress.Common;
 using Microsoft.Toolkit.Uwp.Notifications;
+using ScottPlot.Palettes;
+using Uno.Extensions;
 
 namespace TimeCapture
 {
@@ -139,6 +141,7 @@ namespace TimeCapture
         #endregion
 
         #region Buttons
+
         private void btnAddTicket_Click(object sender, EventArgs e)
         {
             Forms.AddTicket addTicket = new Forms.AddTicket(this);
@@ -451,14 +454,21 @@ namespace TimeCapture
 
         public void DeleteTime(int rowIndex, int iTimeID)
         {
-            dataGridView1.Rows.Remove(dataGridView1.Rows[rowIndex]);
-            if (iTimeID != -1)
+            try
             {
-                DialogResult result = MessageBox.Show("Would you like to delete the record entirely?", "", MessageBoxButtons.YesNoCancel);
-                if (result == DialogResult.Yes)
+                dataGridView1.Rows.Remove(dataGridView1.Rows[rowIndex]);
+                if (iTimeID != -1)
                 {
-                    new Access().DeleteTime(iTimeID);
+                    DialogResult result = MessageBox.Show("Would you like to delete the record entirely?", "", MessageBoxButtons.YesNoCancel);
+                    if (result == DialogResult.Yes)
+                    {
+                        new Access().DeleteTime(iTimeID);
+                    }
                 }
+            }
+            catch
+            {
+                MessageBox.Show("Failed to delete time");
             }
         }
 
@@ -1428,6 +1438,9 @@ namespace TimeCapture
 
         private void PaintRows(object sender, DataGridViewRowsAddedEventArgs e)
         {
+            Color bgDark = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            Color bgDarkSecondary = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            Color controlDark = Color.SlateGray;
             if (isInitialized)
             {
                 if (toggleSwitch1.Checked)
@@ -1436,6 +1449,11 @@ namespace TimeCapture
                     {
                         dataGridView1.Rows[i].DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
                         dataGridView1.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+                        DataGridViewComboBoxColumn cbTimeType = (dataGridView1.Columns[6] as DataGridViewComboBoxColumn);
+                        DataGridViewComboBoxColumn cbTicketType = (dataGridView1.Columns[8] as DataGridViewComboBoxColumn);
+
+                        cbTimeType.FlatStyle = FlatStyle.Flat;
+                        cbTicketType.FlatStyle = FlatStyle.Flat;
                     }
                 }
                 else
@@ -1448,6 +1466,34 @@ namespace TimeCapture
                 }
 
                 UpdateTotal();
+
+                List<string> lTimeType = new List<string>();
+                List<string> lTicketType = ("Support,Non-Chargeable,Chargeable").Split(',').ToList();
+
+                DataSet dsTypes = new Access().GetTicketTypes();
+
+                if (dsTypes.HasRows())
+                {
+                    foreach (DataRow row in dsTypes.Tables[0].Rows)
+                    {
+                        string Name = row.GetDataRowStringValue("Name");
+                        lTimeType.Add(Name);
+                    }
+                }
+
+                for (int i = e.RowIndex; i < e.RowIndex + e.RowCount; i++)
+                {
+                    (dataGridView1.Columns[6] as DataGridViewComboBoxColumn).DataSource = lTimeType;
+                    (dataGridView1.Columns[8] as DataGridViewComboBoxColumn).DataSource = lTicketType;
+
+                    DataGridViewButtonColumn btnDelete = (dataGridView1.Columns[10] as DataGridViewButtonColumn);
+                    DataGridViewButtonColumn btnContinue = (dataGridView1.Columns[11] as DataGridViewButtonColumn);
+                    if (btnDelete.Text.IsNullOrEmpty())
+                    {
+                        btnDelete.Text = "Delete";
+                        btnContinue.Text = "Continue";
+                    }
+                }
             }
         }
 
