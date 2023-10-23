@@ -109,6 +109,7 @@ namespace TimeCapture
                 }
 
                 dataGridView1.RowsAdded += PaintRows;
+                dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
                 txtTotalTime.Enabled = false;
             }
         }
@@ -1080,6 +1081,15 @@ namespace TimeCapture
                 }
 
                 UpdateTotal();
+            }
+        }
+
+        void dataGridView1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (dataGridView1.IsCurrentCellDirty)
+            {
+                // This fires the cell value changed handler below
+                dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
             }
         }
 
