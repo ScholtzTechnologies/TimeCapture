@@ -50,68 +50,57 @@ namespace TimeCapture
         public TimeCapture()
         {
             InitializeComponent();
-            PushNofication("Welcome to TimeCapture", NotificationType.Logo);
             CheckDB();
             TotalTime = "00:00";
             string response;
             new Access().TestConnection(out response);
             new Access().InitiateKeepAlive();
 
-            //if (new Access().IsBusinessModel())
-            //{
-            //    new Login(this).Show();
-            //}
-            if (Convert.ToBoolean(Convert.ToInt32(_configuration.isBusiness)))
+            UserID = -1;
+            responseMessage.Text = response;
+            bool updatedNeeded = false;
+            bool isSuccess = true;
+            bool isSelenium = Access.GetSettingValue(7);
+
+            getTypes();
+            getTickets();
+            SetLocations();
+            CheckHidden();
+
+            //if (isSelenium)
+            //    new _nuget().CheckChromeDriver(out updatedNeeded, out isSuccess);
+
+            //if (updatedNeeded && isSuccess && isSelenium)
+            //    MessageBox.Show("Latest drivers for selenium have been installed successfully");
+            //else if (updatedNeeded && !isSuccess && isSelenium)
+            //    MessageBox.Show(@"Failed to update Selium drivers. 
+            //            Please ensure you are connected to the internet. 
+            //            You may continue without updating it but will not be 
+            //            able to use the automated time capture.");
+
+            var lTypesColumn = lTypes.Select(x => x.Name).ToList();
+            drpType.DataSource = lTypesColumn;
+
+            txtStartTime.Enabled = false;
+            responseMessage.Enabled = false;
+
+            lblStop.Enabled = false;
+
+            TimeID = -1;
+            isInitialized = true;
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            string path = Path.Combine(CSVImport.root, "TimeCapture_log_sql.txt");
+            if (!File.Exists(path))
             {
-                new Login(this).Show();
+                File.Create(path);
             }
-            else
-            {
-                UserID = -1;
-                responseMessage.Text = response;
-                bool updatedNeeded = false;
-                bool isSuccess = true;
-                bool isSelenium = Access.GetSettingValue(7);
 
-                getTypes();
-                getTickets();
-                SetLocations();
-                CheckHidden();
-
-                //if (isSelenium)
-                //    new _nuget().CheckChromeDriver(out updatedNeeded, out isSuccess);
-
-                //if (updatedNeeded && isSuccess && isSelenium)
-                //    MessageBox.Show("Latest drivers for selenium have been installed successfully");
-                //else if (updatedNeeded && !isSuccess && isSelenium)
-                //    MessageBox.Show(@"Failed to update Selium drivers. 
-                //            Please ensure you are connected to the internet. 
-                //            You may continue without updating it but will not be 
-                //            able to use the automated time capture.");
-
-                var lTypesColumn = lTypes.Select(x => x.Name).ToList();
-                drpType.DataSource = lTypesColumn;
-
-                txtStartTime.Enabled = false;
-                responseMessage.Enabled = false;
-
-                lblStop.Enabled = false;
-
-                TimeID = -1;
-                isInitialized = true;
-
-                dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-                string path = Path.Combine(CSVImport.root, "TimeCapture_log_sql.txt");
-                if (!File.Exists(path))
-                {
-                    File.Create(path);
-                }
-
-                dataGridView1.RowsAdded += PaintRows;
-                dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
-                txtTotalTime.Enabled = false;
-            }
+            dataGridView1.RowsAdded += PaintRows;
+            dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
+            txtTotalTime.Enabled = false;
+            tsAdmin.Visible = false;
         }
 
         #region CheckBoxes
@@ -686,49 +675,6 @@ namespace TimeCapture
             txtDescSize = txtDesc.Size;
         }
 
-        public void CompleteLogin()
-        {
-            string response;
-            new Access().TestConnection(out response);
-            responseMessage.Text = response;
-
-            //CreateTable();
-            getTypes();
-            getTickets();
-
-            lblTypeLocal = lblType.Location;
-            drpTypeLocal = drpType.Location;
-            drpTypeSize = drpType.Size;
-
-            lblDescLocal = lblDesc.Location;
-            txtDescLocal = txtDesc.Location;
-            txtDescSize = txtDesc.Size;
-
-            CheckHidden();
-
-            var lTypesColumn = lTypes.Select(x => x.Name).ToList();
-            drpType.DataSource = lTypesColumn;
-
-            txtStartTime.Enabled = false;
-            responseMessage.Enabled = false;
-
-            lblStop.Enabled = false;
-
-            TimeID = -1;
-            isInitialized = true;
-
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-            string path = Path.Combine(CSVImport.root, "TimeCapture_log_sql.txt");
-            if (!File.Exists(path))
-            {
-                File.Create(path);
-            }
-
-            dataGridView1.RowsAdded += PaintRows;
-            this.Show();
-        }
-
         public void InsertIntoTimeTable(DataSet ds)
         {
             foreach (DataRow time in ds.Tables[0].Rows)
@@ -770,6 +716,13 @@ namespace TimeCapture
             TimeSpan Total =
             Convert.ToDateTime(initial).Subtract(Convert.ToDateTime(final));
             return Total;
+        }
+
+        public void LoginResponse(int iUserID)
+        {
+            bool isAdmin = Access.isAdmin(iUserID);
+            if (isAdmin)
+                tsAdmin.Visible = true;
         }
 
         #endregion Actions
@@ -836,7 +789,7 @@ namespace TimeCapture
 
         private void allToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DataSet dsTime = new Access().getTime(1);
+            DataSet dsTime = new Access().getTime(1, UserID);
             if (dsTime.HasRows())
             {
                 foreach (DataRow time in dsTime.Tables[0].Rows)
@@ -850,7 +803,7 @@ namespace TimeCapture
 
         private void uncapturedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DataSet dsTime = new Access().getTime(2);
+            DataSet dsTime = new Access().getTime(2, UserID);
             if (dsTime.HasRows())
             {
                 foreach (DataRow time in dsTime.Tables[0].Rows)
@@ -864,7 +817,7 @@ namespace TimeCapture
 
         private void capturedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DataSet dsTime = new Access().getTime(3);
+            DataSet dsTime = new Access().getTime(3, UserID);
             if (dsTime.HasRows())
             {
                 foreach (DataRow time in dsTime.Tables[0].Rows)
@@ -901,7 +854,7 @@ namespace TimeCapture
             ShowDateInputDialog("Please provide a date", out OK, out sDate);
             if (OK && !string.IsNullOrEmpty(sDate))
             {
-                DataSet dsTime = new Access().getTimeByDay(sDate);
+                DataSet dsTime = new Access().getTimeByDay(sDate, UserID);
                 if (dsTime.HasRows())
                 {
                     foreach (DataRow time in dsTime.Tables[0].Rows)
@@ -922,7 +875,7 @@ namespace TimeCapture
             ShowDateRangeInputDialog("Please provide a start and End Date", out OK, out sStart, out sEnd);
             if (OK && !string.IsNullOrEmpty(sStart))
             {
-                DataSet dsTime = new Access().GetTimeByDateRange(sStart, sEnd);
+                DataSet dsTime = new Access().GetTimeByDateRange(sStart, sEnd, UserID);
                 if (dsTime.HasRows())
                 {
                     foreach (DataRow time in dsTime.Tables[0].Rows)
@@ -943,7 +896,7 @@ namespace TimeCapture
             ShowDateInputDialog("Please provide a date", out OK, out sStart);
             if (OK && !string.IsNullOrEmpty(sStart))
             {
-                DataSet dsTime = new Access().GetTimeByDateRange(sStart, null);
+                DataSet dsTime = new Access().GetTimeByDateRange(sStart, null, UserID);
                 if (dsTime.HasRows())
                 {
                     foreach (DataRow time in dsTime.Tables[0].Rows)
@@ -980,6 +933,12 @@ namespace TimeCapture
         {
             KofiQR QR = new KofiQR();
             QR.Show();
+        }
+
+        private void adminToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Admin frmAdmin = new Admin();
+            frmAdmin.Show();
         }
 
         #endregion Nav

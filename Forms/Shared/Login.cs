@@ -7,32 +7,55 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Uno.Extensions;
 
 namespace TimeCapture.Forms.Shared
 {
     public partial class Login : Form
     {
         public TimeCapture time { get; set; }
-        public Login(TimeCapture timeCapture)
+
+        public Login()
         {
             InitializeComponent();
-            time = timeCapture;
-            timeCapture.Hide();
+            time = new TimeCapture();
+            time.CheckDB();
+            string response;
+            new Access().TestConnection(out response);
+            new Access().InitiateKeepAlive();
             this.textBox2.PasswordChar = '*';
+            time.Disposed += Time_Disposed;
+
+            int AllowNewUsers = Convert.ToInt32(_configuration.GetConfigValue("AllowNewUsers"));
+            if (AllowNewUsers == 0)
+                linkLabel1.Visible = false;
+        }
+
+        private void Time_Disposed(object? sender, EventArgs e)
+        {
+            this.Dispose();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             int UserID;
-            if (new Access().Login(textBox1.Text.ToString(), textBox2.Text.ToString(), out UserID))
+            if (!textBox1.Text.ToString().IsNullOrEmpty() && !textBox2.Text.ToString().IsNullOrEmpty())
             {
-                time.UserID = UserID;
-                time.CompleteLogin();
-                this.Dispose();
+                if (new Access().Login(textBox1.Text.ToString(), textBox2.Text.ToString(), out UserID))
+                {
+                    time.UserID = UserID;
+                    time.Show();
+                    this.Hide();
+                    time.LoginResponse(UserID);
+                }
+                else
+                {
+                    MessageBox.Show("Incorrect Credentials");
+                }
             }
             else
             {
-                MessageBox.Show("Incorrect Credentials");
+                MessageBox.Show("Please provide a username and password");
             }
         }
 
@@ -49,8 +72,9 @@ namespace TimeCapture.Forms.Shared
                         if (new Access().Login(textBox1.Text.ToString(), textBox2.Text.ToString(), out UserID))
                         {
                             time.UserID = UserID;
-                            time.CompleteLogin();
-                            this.Dispose();
+                            time.Show();
+                            this.Hide();
+                            time.LoginResponse(UserID);
                         }
                         else
                             MessageBox.Show("Error when signing in. Please try again");

@@ -1,3 +1,5 @@
+using TimeCapture.Forms.Shared;
+
 namespace TimeCapture.rev2
 {
     internal static class Program
@@ -8,10 +10,15 @@ namespace TimeCapture.rev2
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new TimeCapture());
+
+            bool IsBusinessModel = Convert.ToBoolean(Convert.ToInt32(_configuration.isBusiness));
+            
+            if (IsBusinessModel)
+                Application.Run(new Login());
+            else
+                Application.Run(new TimeCapture());
+
         }
     }
 }

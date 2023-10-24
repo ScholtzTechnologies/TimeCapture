@@ -38,6 +38,18 @@
             this.btnExport = new System.Windows.Forms.Button();
             this.exportProgress = new System.Windows.Forms.ProgressBar();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.iTimeID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TicketNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.StartTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.EndTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Total = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TimeType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TicketType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Button = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.Continue = new System.Windows.Forms.DataGridViewButtonColumn();
             this.lblPlay = new System.Windows.Forms.Label();
             this.lblStop = new System.Windows.Forms.Label();
             this.txtCurrent = new System.Windows.Forms.TextBox();
@@ -81,18 +93,7 @@
             this.toggleSwitch1 = new CustomControls.ToggleSwitch();
             this.txtTotalTime = new System.Windows.Forms.TextBox();
             this.lblTotal = new System.Windows.Forms.Label();
-            this.iTimeID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TicketNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.StartTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.EndTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Total = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TimeType = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TicketType = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Button = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.Continue = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.tsAdmin = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.containerControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -206,6 +207,98 @@
             this.dataGridView1.TabIndex = 23;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
+            // 
+            // iTimeID
+            // 
+            this.iTimeID.HeaderText = "iTimeID";
+            this.iTimeID.MinimumWidth = 6;
+            this.iTimeID.Name = "iTimeID";
+            this.iTimeID.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.iTimeID.Visible = false;
+            this.iTimeID.Width = 125;
+            // 
+            // tName
+            // 
+            this.tName.HeaderText = "Name";
+            this.tName.MinimumWidth = 6;
+            this.tName.Name = "tName";
+            this.tName.Width = 125;
+            // 
+            // TicketNumber
+            // 
+            this.TicketNumber.HeaderText = "Ticket Number";
+            this.TicketNumber.MinimumWidth = 6;
+            this.TicketNumber.Name = "TicketNumber";
+            this.TicketNumber.Width = 125;
+            // 
+            // StartTime
+            // 
+            this.StartTime.HeaderText = "Start Time";
+            this.StartTime.MinimumWidth = 6;
+            this.StartTime.Name = "StartTime";
+            this.StartTime.Width = 125;
+            // 
+            // EndTime
+            // 
+            this.EndTime.HeaderText = "End Time";
+            this.EndTime.MinimumWidth = 6;
+            this.EndTime.Name = "EndTime";
+            this.EndTime.Width = 125;
+            // 
+            // Total
+            // 
+            this.Total.HeaderText = "Total Time";
+            this.Total.MinimumWidth = 6;
+            this.Total.Name = "Total";
+            this.Total.Width = 125;
+            // 
+            // TimeType
+            // 
+            this.TimeType.HeaderText = "Time Type";
+            this.TimeType.MinimumWidth = 6;
+            this.TimeType.Name = "TimeType";
+            this.TimeType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.TimeType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.TimeType.Width = 125;
+            // 
+            // Description
+            // 
+            this.Description.HeaderText = "Description";
+            this.Description.MinimumWidth = 6;
+            this.Description.Name = "Description";
+            this.Description.Width = 125;
+            // 
+            // TicketType
+            // 
+            this.TicketType.HeaderText = "TicketType";
+            this.TicketType.MinimumWidth = 6;
+            this.TicketType.Name = "TicketType";
+            this.TicketType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.TicketType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.TicketType.Width = 125;
+            // 
+            // Date
+            // 
+            this.Date.HeaderText = "Date";
+            this.Date.MinimumWidth = 6;
+            this.Date.Name = "Date";
+            this.Date.ReadOnly = true;
+            this.Date.Width = 125;
+            // 
+            // Button
+            // 
+            this.Button.HeaderText = "Button";
+            this.Button.MinimumWidth = 6;
+            this.Button.Name = "Button";
+            this.Button.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Button.Width = 125;
+            // 
+            // Continue
+            // 
+            this.Continue.HeaderText = "Continue";
+            this.Continue.MinimumWidth = 6;
+            this.Continue.Name = "Continue";
+            this.Continue.Width = 125;
             // 
             // lblPlay
             // 
@@ -361,7 +454,8 @@
             this.loadAllResultsToolStripMenuItem,
             this.importToolStripMenuItem,
             this.notesToolStripMenuItem,
-            this.viewToolStripMenuItem});
+            this.viewToolStripMenuItem,
+            this.tsAdmin});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
@@ -614,97 +708,12 @@
             this.lblTotal.TabIndex = 48;
             this.lblTotal.Text = "Total";
             // 
-            // iTimeID
+            // tsAdmin
             // 
-            this.iTimeID.HeaderText = "iTimeID";
-            this.iTimeID.MinimumWidth = 6;
-            this.iTimeID.Name = "iTimeID";
-            this.iTimeID.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.iTimeID.Visible = false;
-            this.iTimeID.Width = 125;
-            // 
-            // tName
-            // 
-            this.tName.HeaderText = "Name";
-            this.tName.MinimumWidth = 6;
-            this.tName.Name = "tName";
-            this.tName.Width = 125;
-            // 
-            // TicketNumber
-            // 
-            this.TicketNumber.HeaderText = "Ticket Number";
-            this.TicketNumber.MinimumWidth = 6;
-            this.TicketNumber.Name = "TicketNumber";
-            this.TicketNumber.Width = 125;
-            // 
-            // StartTime
-            // 
-            this.StartTime.HeaderText = "Start Time";
-            this.StartTime.MinimumWidth = 6;
-            this.StartTime.Name = "StartTime";
-            this.StartTime.Width = 125;
-            // 
-            // EndTime
-            // 
-            this.EndTime.HeaderText = "End Time";
-            this.EndTime.MinimumWidth = 6;
-            this.EndTime.Name = "EndTime";
-            this.EndTime.Width = 125;
-            // 
-            // Total
-            // 
-            this.Total.HeaderText = "Total Time";
-            this.Total.MinimumWidth = 6;
-            this.Total.Name = "Total";
-            this.Total.Width = 125;
-            // 
-            // TimeType
-            // 
-            this.TimeType.HeaderText = "Time Type";
-            this.TimeType.MinimumWidth = 6;
-            this.TimeType.Name = "TimeType";
-            this.TimeType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.TimeType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.TimeType.Width = 125;
-            // 
-            // Description
-            // 
-            this.Description.HeaderText = "Description";
-            this.Description.MinimumWidth = 6;
-            this.Description.Name = "Description";
-            this.Description.Width = 125;
-            // 
-            // TicketType
-            // 
-            this.TicketType.HeaderText = "TicketType";
-            this.TicketType.MinimumWidth = 6;
-            this.TicketType.Name = "TicketType";
-            this.TicketType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.TicketType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.TicketType.Width = 125;
-            // 
-            // Date
-            // 
-            this.Date.HeaderText = "Date";
-            this.Date.MinimumWidth = 6;
-            this.Date.Name = "Date";
-            this.Date.ReadOnly = true;
-            this.Date.Width = 125;
-            // 
-            // Button
-            // 
-            this.Button.HeaderText = "Button";
-            this.Button.MinimumWidth = 6;
-            this.Button.Name = "Button";
-            this.Button.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Button.Width = 125;
-            // 
-            // Continue
-            // 
-            this.Continue.HeaderText = "Continue";
-            this.Continue.MinimumWidth = 6;
-            this.Continue.Name = "Continue";
-            this.Continue.Width = 125;
+            this.tsAdmin.Name = "tsAdmin";
+            this.tsAdmin.Size = new System.Drawing.Size(55, 20);
+            this.tsAdmin.Text = "Admin";
+            this.tsAdmin.Click += new System.EventHandler(this.adminToolStripMenuItem_Click);
             // 
             // TimeCapture
             // 
@@ -826,6 +835,7 @@
         private DataGridViewTextBoxColumn Date;
         private DataGridViewButtonColumn Button;
         private DataGridViewButtonColumn Continue;
+        private ToolStripMenuItem tsAdmin;
     }
 }
 

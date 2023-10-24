@@ -62,13 +62,13 @@ namespace TimeCapture.Forms
             {
                 timeCapture.ShowDateInputDialog("Please provide a date", out OK, out sDate);
                 if (OK)
-                    dsTime = new Access().getTimeByDay(sDate);
+                    dsTime = new Access().getTimeByDay(sDate, timeCapture.UserID);
             }
             else if (Type == ReportType.ByDateRange)
             {
                 timeCapture.ShowDateRangeInputDialog("Please provide a date range", out OK, out sDate, out sEnd);
                 if (OK)
-                    dsTime = new Access().GetTimeByDateRange(sDate, sEnd);
+                    dsTime = new Access().GetTimeByDateRange(sDate, sEnd, timeCapture.UserID);
             }
             else if (Type == ReportType.ByTicket)
             {

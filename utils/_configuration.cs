@@ -70,10 +70,7 @@ namespace TimeCapture.utils
                 StringBuilder SQL = new StringBuilder();
                 if (_config["IsDirectCapture"] == "1")
                 {
-                    SQL.AppendLine(_config["SQL01"]);
-                    SQL.AppendLine(_config["SQL02"]);
-                    SQL.AppendLine(_config["SQL03"]);
-                    return SQL.ToString();
+                    return _config["SQL"];
                 }
                 return "";
             }

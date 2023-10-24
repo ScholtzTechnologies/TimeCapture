@@ -166,22 +166,29 @@ namespace TimeCapture.DB
             ExecuteNonQuery(sSQL);
         }
 
-        public DataSet getTime(int type)
+        public DataSet getTime(int type, int iUserID)
         {
+            string sWhere = "", sAnd = "";
+            if (iUserID > 0)
+            {
+                sWhere = " where SystemUserID = " + iUserID;
+                sAnd = " and SystemUserID = " + iUserID;
+            }
+
             string sSQL = "";
             if (type == 1)
             {
-                sSQL = @"select TimeID, Item, TicketNo, Start, [End], Total, TimeType, Description, TicketType, Date from Time";
+                sSQL = @"select TimeID, Item, TicketNo, Start, [End], Total, TimeType, Description, TicketType, Date from Time" + sWhere;
             }
             else if (type == 2)
             {
                 sSQL = @"select TimeID, Item, TicketNo, Start, [End], Total, TimeType, Description, TicketType, Date from Time
-                            where ISNULL(IsCaptured,0) = 0";
+                            where ISNULL(IsCaptured,0) = 0" + sAnd;
             }
             else if (type == 3)
             {
                 sSQL = @"select TimeID, Item, TicketNo, Start, [End], Total, TimeType, Description, TicketType, Date from Time
-                            where ISNULL(IsCaptured,0) = 1";
+                            where ISNULL(IsCaptured,0) = 1" + sAnd;
             }
             return ExecuteQuery(sSQL);
         }
@@ -212,25 +219,39 @@ namespace TimeCapture.DB
             }
         }
 
-        public DataSet getTimeByDay(string Date)
+        public DataSet getTimeByDay(string Date, int iUserID)
         {
+            string sWhere = "", sAnd = "";
+            if (iUserID > 0)
+            {
+                sWhere = " where SystemUserID = " + iUserID;
+                sAnd = " and SystemUserID = " + iUserID;
+            }
+
             string sSQL = @"select TimeID, Item, TicketNo, Start, [End], Total, TimeType, Description, TicketType, Date from Time
-                            where Date = '" + Date + "'";
+                            where Date = '" + Date + "'" + sAnd;
             return ExecuteQuery(sSQL);
         }
 
-        public DataSet GetTimeByDateRange(string sStart, string sEnd)
+        public DataSet GetTimeByDateRange(string sStart, string sEnd, int iUserID)
         {
+            string sWhere = "", sAnd = "";
+            if (iUserID > 0)
+            {
+                sWhere = " where SystemUserID = " + iUserID;
+                sAnd = " and SystemUserID = " + iUserID;
+            }
+
             string sSQL;
             if (string.IsNullOrEmpty(sEnd))
             {
                 sSQL = String.Format(@"select TimeID, Item, TicketNo, Start, [End], Total, TimeType, Description, TicketType, Date from Time
-                            where Date > DATEADD(day,-1,'{0}')", sStart);
+                            where Date > DATEADD(day,-1,'{0}')" + sAnd, sStart);
             }
             else
             {
                 sSQL = String.Format(@"select TimeID, Item, TicketNo, Start, [End], Total, TimeType, Description, TicketType, Date from Time
-                            where Date > DATEADD(day,-1,'{0}') and Date < DATEADD(day,1,'{1}')", sStart, sEnd);
+                            where Date > DATEADD(day,-1,'{0}') and Date < DATEADD(day,1,'{1}')" + sAnd, sStart, sEnd);
             }
             return ExecuteQuery(sSQL);
         }
@@ -325,7 +346,7 @@ namespace TimeCapture.DB
         public bool Login(string Username, string Password, out int UserID)
         {
             string sSQL = "select ID from SystemUsers where LOWER(Name) = '" + Username.ToLower() 
-                + "' and Password = '" + Password + "'";
+                + "' and Password = '" + Password.Encrypt() + "'";
             try
             {
                 if (ExecuteQuery(sSQL).HasRows())
@@ -351,8 +372,8 @@ namespace TimeCapture.DB
 		            '{0}',
 		            '{1}',
 		            '{2}',
-		            'u'
-	            )", Username, Password, Email);
+		            '2'
+	            )", Username, Password.Encrypt(), Email);
             try
             {
                 ExecuteNonQuery(sSQL);
@@ -383,6 +404,27 @@ namespace TimeCapture.DB
             string sSQL = String.Format(@"select TimeID, Item, TicketNo, Start, [End], [Total], TimeType, Description, TicketType, Date from Time
                 where TicketNo = {0}", TicketNo);
 
+            return ExecuteQuery(sSQL);
+        }
+
+        public bool isAdmin(int iUserID)
+        {
+            if (iUserID > 0)
+            {
+                string sSQL = "select Role from SystemUsers where ID = " + iUserID;
+                DataSet ds = ExecuteQuery(sSQL);
+                int Role = ds.Tables[0].Rows[0].GetDataRowIntValue("Role");
+                if (Role == 1)
+                    return true;
+                else
+                    return false;
+            }
+            return false;
+        }
+
+        public DataSet GetUsers()
+        {
+            string sSQL = "select * from SystemUsers";
             return ExecuteQuery(sSQL);
         }
 
@@ -542,6 +584,28 @@ namespace TimeCapture.DB
             }
 
             return ret;
+        }
+
+        public void DeleteUser(int iUserID)
+        {
+            if (iUserID != 1)
+            {
+                string sSQL = "Delete from SystemUsers where ID = " + iUserID;
+                ExecuteQuery(sSQL);
+            }
+        }
+
+        public void UpdateUser(int iUserID, string Name, string Email)
+        {
+            string sSQL = String.Format(@"update SystemUsers set Name = '{1}' Email = '{2}'
+                                    where ID = {0}", iUserID, Name, Email);
+            ExecuteQuery(sSQL);
+        }
+
+        public void MakeAdmin(int iUserID)
+        {
+            string sSQL = "update SystemUsers set Role = 1 where ID = " + iUserID;
+            ExecuteQuery(sSQL);
         }
 
         #endregion
