@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Uno.Extensions;
+using Keys = System.Windows.Forms.Keys;
 
 namespace TimeCapture.Forms.Shared
 {
@@ -29,6 +30,16 @@ namespace TimeCapture.Forms.Shared
             int AllowNewUsers = Convert.ToInt32(_configuration.GetConfigValue("AllowNewUsers"));
             if (AllowNewUsers == 0)
                 linkLabel1.Visible = false;
+
+            this.textBox2.KeyPress += TextBox2_KeyPress;
+        }
+
+        private void TextBox2_KeyPress(object? sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+            {
+                button1.PerformClick();
+            }
         }
 
         private void Time_Disposed(object? sender, EventArgs e)

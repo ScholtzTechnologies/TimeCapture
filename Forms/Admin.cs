@@ -19,6 +19,7 @@ namespace TimeCapture.Forms
             InitializeComponent();
             GetUsers();
             dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         public void GetUsers()
@@ -28,7 +29,7 @@ namespace TimeCapture.Forms
             {
                 dataGridView1.Rows.Add(
                     row.GetDataRowIntValue("ID"), row.GetDataRowStringValue("Name"), row.GetDataRowStringValue("Password"),
-                    row.GetDataRowStringValue("Email"), "Delete", "Make Admin"
+                    row.GetDataRowStringValue("Email"), "Delete", "Make Admin", "Reset Password"
                 );
             }
         }
@@ -47,6 +48,23 @@ namespace TimeCapture.Forms
             {
                 new Access().MakeAdmin(dataGridView1.Rows[e.RowIndex].GetDataGridViewIntValue("ID"));
                 new Notifications().SendNotification("User Updated", NotificationType.Success);
+            }
+            if (dataGridView1.Columns[e.ColumnIndex] is DataGridViewButtonColumn
+                && e.RowIndex >= 0 && e.ColumnIndex == 6)
+            {
+                int iUserID = dataGridView1.CurrentRow.GetDataGridViewIntValue("ID");
+                string Name = dataGridView1.CurrentRow.GetDataGridViewStringValue("sName");
+                bool bOK;
+                string sValue;
+                
+                TimeCapture time = new TimeCapture();
+                time.ShowInputDialog("Please Provide new password for " + Name, out bOK, out sValue);
+
+                if (bOK && !sValue.IsNullOrEmpty())
+                    new Access().UpdateUsersPassword(iUserID, sValue);
+
+                dataGridView1.Rows.Clear();
+                GetUsers();
             }
         }
 

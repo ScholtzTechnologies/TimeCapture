@@ -602,6 +602,13 @@ namespace TimeCapture.DB
             ExecuteQuery(sSQL);
         }
 
+        public void UpdateUsersPassword(int iUserID, string Password)
+        {
+            string sSQL = String.Format(@"update SystemUsers set Password = '{1}'
+                                    where ID = {0}", iUserID, Password.Encrypt());
+            ExecuteQuery(sSQL);
+        }
+
         public void MakeAdmin(int iUserID)
         {
             string sSQL = "update SystemUsers set Role = 1 where ID = " + iUserID;

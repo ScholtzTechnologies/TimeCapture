@@ -42,6 +42,7 @@
             this.sEmail = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Delete = new System.Windows.Forms.DataGridViewButtonColumn();
             this.dataGridViewButtonColumn1 = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.Reset = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -57,7 +58,8 @@
             this.sPassword,
             this.sEmail,
             this.Delete,
-            this.dataGridViewButtonColumn1});
+            this.dataGridViewButtonColumn1,
+            this.Reset});
             this.dataGridView1.Location = new System.Drawing.Point(12, 12);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 25;
@@ -162,6 +164,11 @@
             this.dataGridViewButtonColumn1.HeaderText = "Make Admin";
             this.dataGridViewButtonColumn1.Name = "dataGridViewButtonColumn1";
             // 
+            // Reset
+            // 
+            this.Reset.HeaderText = "Reset Password";
+            this.Reset.Name = "Reset";
+            // 
             // Admin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -199,5 +206,6 @@
         private DataGridViewTextBoxColumn sEmail;
         private DataGridViewButtonColumn Delete;
         private DataGridViewButtonColumn dataGridViewButtonColumn1;
+        private DataGridViewButtonColumn Reset;
     }
 }
