@@ -11,7 +11,7 @@ namespace TimeCapture.utils
 {
     public class _logger
     {
-        public void Log(LogType logType, string Text)
+        public void Log(LogType logType, string Text, string sSection = null)
         {
             var config = new LoggingConfiguration();
 
@@ -24,32 +24,43 @@ namespace TimeCapture.utils
             config.AddTarget("file", fileTarget);
 
             LogManager.Configuration = config;
-            
             Logger log = LogManager.GetCurrentClassLogger();
 
-            if (logType == LogType.Info)
+            if (sSection != null)
             {
-                log.Info(Text);
+                Text = $"[{sSection}] : {Text}";
             }
-            else if (logType == LogType.Debug)
+
+            switch (logType)
             {
-                log.Debug(Text);
-            }
-            else if (logType == LogType.Error)
-            {
-                log.Error(Text);
-            }
-            else if (logType == LogType.Warn)
-            {
-                log.Warn(Text);
-            }
-            else if (logType == LogType.Fatal)
-            {
-                log.Fatal(Text);
-            }
-            else if (logType == LogType.Trace)
-            {
-                log.Trace(Text);
+                case LogType.Info:
+                    log.Info(Text);
+                    break;
+
+                case LogType.Debug:
+                    log.Debug(Text);
+                    break;
+
+                case LogType.Error:
+                    log.Error(Text);
+                    break;
+
+
+                case LogType.Warn:
+                    log.Warn(Text);
+                    break;
+
+                case LogType.Fatal:
+                    log.Fatal(Text);
+                    break;
+
+                case LogType.Trace:
+                    log.Trace(Text);
+                    break;
+
+                default:
+                    log.Info(Text);
+                    break;
             }
         }
     }

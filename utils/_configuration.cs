@@ -26,9 +26,21 @@ namespace TimeCapture.utils
             get { return _config["ConnectionString"]; }
         }
 
-        public static string isBusiness
+        public static int isBusiness
         {
-            get { return _config["isBusiness"]; }
+            get {
+                string sBool = _config["isBusiness"];
+                if (sBool.ToLower() == "y")
+                    return 1;
+                else if (sBool.ToLower() == "n")
+                    return 0;
+                else if (sBool.ToLower() == "1")
+                    return 1;
+                else if (sBool.ToLower() == "0")
+                    return 0;
+                else
+                    return 0;
+            }
         }
 
         public static string BusinessName

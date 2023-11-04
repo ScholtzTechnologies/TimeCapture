@@ -5,6 +5,7 @@ namespace TimeCapture.Selenium.TimeTaker
 {
     public class TimeCapture
     {
+        
         public string Username = new Access().GetUserName();
         public string Password = new Access().GetPassword();
         public string URL { get; set; }

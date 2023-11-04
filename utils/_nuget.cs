@@ -1,76 +1,123 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using NuGet.Common;
-using NuGet.Configuration;
-using NuGet.Protocol;
-using NuGet.Protocol.Core.Types;
-using NuGet.Versioning;
+using System.Diagnostics;
+using System.Net;
 
 namespace TimeCapture.utils
 {
     public class _nuget
     {
-        public bool isSuccess { get; set; }
-        public void CheckChromeDriver(out bool isUpdated, out bool isSuccessful)
+        private const string ChromeDriverExe = "chromedriver.exe";
+        private const string ChromeDriverUrl = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE";
+        private const string DownloadUrlTemplate = "https://chromedriver.storage.googleapis.com/{0}/chromedriver_win32.zip";
+
+        public bool UpdateChromeDriver(out string error)
         {
-            isSuccessful = true;
-            isUpdated = false;
-            // NuGet package information
-            string packageName = "Selenium.WebDriver.ChromeDriver"; // NuGet package name
-            string packageVersion = "LATEST";    // Use "LATEST" to always get the latest version
-
-            // Path to the ChromeDriver NuGet package
-            string packagePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                ".nuget", "packages", packageName);
-
-            // Check if the package needs an update
-            bool updateNeeded = CheckForPackageUpdate(packageName, packageVersion);
-
-            if (updateNeeded)
+            DateTime currentLastModified = GetFileLastModified(ChromeDriverExe);
+            DateTime latestLastModified = GetLatestChromeDriverLastModified();
+            error = null;
+            if (latestLastModified > currentLastModified)
             {
-                // Update the package
-                UpdatePackage(packageName, packageVersion, packagePath);
-                isUpdated = true;
-            }
-            isSuccessful = isSuccess;
-        }
-
-        public static bool CheckForPackageUpdate(string packageName, string packageVersion)
-        {
-            SourceCacheContext cache = new SourceCacheContext();
-            PackageSource packageSource = new PackageSource(NuGetConstants.V3FeedUrl);
-
-            SourceRepository repository = Repository.Factory.GetCoreV3(packageSource);
-            FindPackageByIdResource resource = repository.GetResource<FindPackageByIdResource>();
-
-            NuGetVersion latestVersion = resource.GetAllVersionsAsync(packageName, cache, NullLogger.Instance, CancellationToken.None).Result
-                                             .OrderByDescending(v => v)
-                                             .FirstOrDefault();
-
-            if (latestVersion != null)
-            {
-                if (packageVersion == "LATEST" || NuGetVersion.Parse(packageVersion) < latestVersion)
+                try
                 {
-                    return true; // Update needed
+                    DownloadAndInstallChromeDriver(latestLastModified.ToString("dd-MM-yyyy"));
+                    return true;
+                }
+                catch (Exception exception)
+                {
+                    error = "Failed to update drivers. Reason: " + exception.Message.ToString();
+                    return false;
                 }
             }
-
-            return false; // No update needed
+            return false;
         }
 
-        public void UpdatePackage(string packageName, string packageVersion, string packagePath)
+        private DateTime GetFileLastModified(string fileName)
         {
-            string nugetExePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "nuget.exe");
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+            if (File.Exists(filePath))
+            {
+                return File.GetLastWriteTime(filePath);
+            }
+            return DateTime.MinValue; // Return a minimum date if the file doesn't exist.
+        }
+
+        private string GetCurrentChromeDriverVersion()
+        {
+            string currentPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ChromeDriverExe);
+            if (File.Exists(currentPath))
+            {
+                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(currentPath);
+                return fileVersionInfo.FileVersion;
+            }
+            return null;
+        }
+
+        private DateTime GetLatestChromeDriverLastModified()
+        {
             try
             {
-                // Use the NuGet CLI to update the package
-                Process.Start(nugetExePath, $"update {packageName} -Version {packageVersion} -Source \"{packagePath}\" -NonInteractive");
-                isSuccess = true;
+                using (var client = new System.Net.WebClient())
+                {
+                    string latestVersion = client.DownloadString(ChromeDriverUrl).Trim();
+                    string downloadUrl = string.Format(DownloadUrlTemplate, latestVersion);
+                    WebRequest webRequest = WebRequest.Create(downloadUrl);
+                    webRequest.Method = "HEAD"; // Send a HEAD request to retrieve the last modified date without downloading the file.
+
+                    using (WebResponse response = webRequest.GetResponse())
+                    {
+                        if (response is HttpWebResponse httpWebResponse)
+                        {
+                            return httpWebResponse.LastModified;
+                        }
+                    }
+                }
             }
             catch
             {
-                isSuccess = false;
+                new _logger().Log(LogType.Error, "Failed to update selenium chrome driver", "Chrome Driver Update");
+            }
+            return DateTime.MinValue;
+        }
+
+        private string GetLatestChromeDriverVersion()
+        {
+            try
+            {
+                using (var client = new System.Net.WebClient())
+                {
+                    string latestVersion = client.DownloadString(ChromeDriverUrl).Trim();
+                    return latestVersion;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private void DownloadAndInstallChromeDriver(string version)
+        {
+            string downloadUrl = string.Format(DownloadUrlTemplate, version);
+            string tempZipFile = Path.Combine(Path.GetTempPath(), "chromedriver.zip");
+            string extractPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
+
+            try
+            {
+                using (var client = new System.Net.WebClient())
+                {
+                    client.DownloadFile(downloadUrl, tempZipFile);
+                }
+
+                System.IO.Compression.ZipFile.ExtractToDirectory(tempZipFile, extractPath);
+            }
+            catch
+            {
+                // Handle download and extraction errors
+            }
+            finally
+            {
+                File.Delete(tempZipFile);
             }
         }
     }

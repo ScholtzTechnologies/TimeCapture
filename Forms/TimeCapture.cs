@@ -52,6 +52,7 @@ namespace TimeCapture
             InitializeComponent();
             CheckDB();
             TotalTime = "00:00";
+
             string response;
             new Access().TestConnection(out response);
             new Access().InitiateKeepAlive();
@@ -67,16 +68,10 @@ namespace TimeCapture
             SetLocations();
             CheckHidden();
 
-            //if (isSelenium)
-            //    new _nuget().CheckChromeDriver(out updatedNeeded, out isSuccess);
-
-            //if (updatedNeeded && isSuccess && isSelenium)
-            //    MessageBox.Show("Latest drivers for selenium have been installed successfully");
-            //else if (updatedNeeded && !isSuccess && isSelenium)
-            //    MessageBox.Show(@"Failed to update Selium drivers. 
-            //            Please ensure you are connected to the internet. 
-            //            You may continue without updating it but will not be 
-            //            able to use the automated time capture.");
+            dataGridView1.RowsAdded += PaintRows;
+            dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
+            txtTotalTime.Enabled = false;
+            tsAdmin.Visible = false;
 
             var lTypesColumn = lTypes.Select(x => x.Name).ToList();
             drpType.DataSource = lTypesColumn;
@@ -91,16 +86,13 @@ namespace TimeCapture
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            string path = Path.Combine(CSVImport.root, "TimeCapture_log_sql.txt");
-            if (!File.Exists(path))
+            string sError;
+            new _nuget().UpdateChromeDriver(out sError);
+            if (sError != null)
             {
-                File.Create(path);
+                MessageBox.Show("Error updating chrome driver. Please restart app, if issue persists please contact support.");
+                new _logger().Log(LogType.Error, sError, "Chrome Driver Update");
             }
-
-            dataGridView1.RowsAdded += PaintRows;
-            dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
-            txtTotalTime.Enabled = false;
-            tsAdmin.Visible = false;
         }
 
         #region CheckBoxes

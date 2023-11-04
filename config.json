@@ -10,7 +10,7 @@
   //
   // Bool
   "isNotifications": "0",
-  "isBusiness": "1",
+  "isBusiness": "0",
   "IsDirectCapture": "0",
   "AllowNewUsers":  "1",
 

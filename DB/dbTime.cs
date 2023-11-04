@@ -91,7 +91,7 @@ namespace TimeCapture.DB
             }
             catch (Exception ex)
             {
-                Logger.Log(LogType.Error, ex.Message.ToString());
+                Logger.Log(LogType.Error, ex.Message.ToString(), "ExecuteQuery");
                 return new DataSet();
             }
         }
@@ -109,9 +109,9 @@ namespace TimeCapture.DB
             }
             catch (Exception ex)
             {
-                Logger.Log(LogType.Error, ex.Message.ToString());
+                Logger.Log(LogType.Error, ex.Message.ToString(), "ExecuteNonQuery");
             }
-}
+        }
 
         #endregion
 
@@ -529,7 +529,11 @@ namespace TimeCapture.DB
                             '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', {10}
                         )", TimeID, Item, TicketNo, Start, End, Total, TimeType, Desc, TicketType, Date, UserID);
             ExecuteNonQuery(sSQL);
-            Logger.Log(LogType.Info, "Time Added to DB");
+
+            if (UserID > 0)
+                Logger.Log(LogType.Info, $"Time Added to DB for UserID {UserID}");
+            else
+                Logger.Log(LogType.Info, "Time Added to DB");
         }
 
         public void updSettings(int SettingID, int Value, string? sValue)
@@ -561,7 +565,7 @@ namespace TimeCapture.DB
 
         public int InsertTime(Time time, int UserID)
         {
-            int ret = 0;
+            int iReturn = 0;
 
             string sSQL = String.Format(@"insert into Time 
                 (Item, TicketNo, Start, [End],
@@ -575,15 +579,15 @@ namespace TimeCapture.DB
 
             try
             {
-                ret = ds.Tables[0].Rows[0].GetDataRowIntValue("ID");
+                iReturn = ds.Tables[0].Rows[0].GetDataRowIntValue("ID");
             }
             catch
             {
                 string retSQL = "select MAX(TimeID) as ID from Time";
-                ret = ExecuteQuery(retSQL).Tables[0].Rows[0].GetDataRowIntValue("ID");
+                iReturn = ExecuteQuery(retSQL).Tables[0].Rows[0].GetDataRowIntValue("ID");
             }
 
-            return ret;
+            return iReturn;
         }
 
         public void DeleteUser(int iUserID)

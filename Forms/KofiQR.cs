@@ -15,6 +15,7 @@ namespace TimeCapture.Forms
         public KofiQR()
         {
             InitializeComponent();
+            this.pictureBox1.Size = this.Size;
         }
     }
 }
