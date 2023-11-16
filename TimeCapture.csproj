@@ -35,6 +35,7 @@
     <PackageReference Include="Tulpep.NotificationWindow" Version="1.1.38" />
     <PackageReference Include="Uno.Core" Version="4.0.1" />
     <PackageReference Include="Uno.UI" Version="4.8.33" />
+    <PackageReference Include="WebDriverManager" Version="2.17.1" />
     <PackageReference Include="WinForms.DataVisualization" Version="1.8.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
   </ItemGroup>

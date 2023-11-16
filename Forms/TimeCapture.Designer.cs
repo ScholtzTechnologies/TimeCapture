@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimeCapture));
             this.Heading = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
@@ -94,10 +95,13 @@
             this.toggleSwitch1 = new CustomControls.ToggleSwitch();
             this.txtTotalTime = new System.Windows.Forms.TextBox();
             this.lblTotal = new System.Windows.Forms.Label();
+            this.tblTimeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openTicketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.containerControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.tblTimeContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // Heading
@@ -736,6 +740,21 @@
             this.lblTotal.TabIndex = 48;
             this.lblTotal.Text = "Total";
             // 
+            // tblTimeContextMenu
+            // 
+            this.tblTimeContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.tblTimeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openTicketToolStripMenuItem});
+            this.tblTimeContextMenu.Name = "tblTimeContextMenu";
+            this.tblTimeContextMenu.Size = new System.Drawing.Size(211, 56);
+            // 
+            // openTicketToolStripMenuItem
+            // 
+            this.openTicketToolStripMenuItem.Name = "openTicketToolStripMenuItem";
+            this.openTicketToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
+            this.openTicketToolStripMenuItem.Text = "Open Ticket";
+            this.openTicketToolStripMenuItem.Click += new System.EventHandler(this.openTicketToolStripMenuItem_Click);
+            // 
             // TimeCapture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -787,6 +806,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.tblTimeContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -858,6 +878,8 @@
         private DataGridViewTextBoxColumn Date;
         private DataGridViewButtonColumn Button;
         private DataGridViewButtonColumn Continue;
+        private ContextMenuStrip tblTimeContextMenu;
+        private ToolStripMenuItem openTicketToolStripMenuItem;
     }
 }
 

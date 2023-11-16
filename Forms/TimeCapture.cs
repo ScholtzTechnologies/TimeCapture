@@ -43,6 +43,7 @@ namespace TimeCapture
         public Selenium.TimeTaker.TimeCapture timeCapture = new();
         public _Spinner Spinner { get; set; }
         public int UserID { get; set; }
+        public string iTicketNumber { get; set; }
 
         public string TotalTime { get; set; }
         #endregion Properties
@@ -85,10 +86,12 @@ namespace TimeCapture
             isInitialized = true;
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView1.ContextMenuStrip = tblTimeContextMenu;
+            dataGridView1.CellMouseDown += DataGridView1_CellMouseDown;
 
             string sError;
-            new _nuget().UpdateChromeDriver(out sError);
-            if (sError != null)
+            bool bDriverUpdated = new _nuget().UpdateChromeDriver(out sError);
+            if (!bDriverUpdated)
             {
                 MessageBox.Show("Error updating chrome driver. Please restart app, if issue persists please contact support.");
                 new _logger().Log(LogType.Error, sError, "Chrome Driver Update");
@@ -1171,6 +1174,8 @@ namespace TimeCapture
             }
         }
 
+       
+
         #endregion DataGridView
 
         #region DarkMode
@@ -1574,5 +1579,37 @@ namespace TimeCapture
 
         #endregion Notifications
 
+        #region Context Menu
+
+        private void DataGridView1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            try
+            {
+                iTicketNumber = dataGridView1.Rows[e.RowIndex].GetDataGridViewStringValue("TicketNumber");
+            }
+            catch { iTicketNumber = null; }
+        }
+
+        private void openTicketToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (new Access().GetSettingValue(3))
+                this.tblTimeContextMenu.Hide();
+            else
+            {
+                if (!iTicketNumber.IsNullOrEmpty())
+                {
+                    Control x;
+                    ShowSpinner(out x);
+                    x.Visible = false;
+                    TicketViewer ticketViewer = new(iTicketNumber, this);
+                    ticketViewer.Show();
+                    HideSpinner();
+                }
+                else
+                    this.tblTimeContextMenu.Hide();
+            }
+        }
+
+        #endregion Context Menu
     }
 }
