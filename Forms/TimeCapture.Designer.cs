@@ -97,6 +97,8 @@
             this.lblTotal = new System.Windows.Forms.Label();
             this.tblTimeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openTicketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnSupport = new System.Windows.Forms.Button();
+            this.btnMeeting = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.containerControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -146,7 +148,7 @@
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnClose.Location = new System.Drawing.Point(11, 523);
+            this.btnClose.Location = new System.Drawing.Point(11, 509);
             this.btnClose.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(101, 29);
@@ -158,7 +160,7 @@
             // btnSettings
             // 
             this.btnSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSettings.Location = new System.Drawing.Point(11, 485);
+            this.btnSettings.Location = new System.Drawing.Point(11, 471);
             this.btnSettings.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnSettings.Name = "btnSettings";
             this.btnSettings.Size = new System.Drawing.Size(101, 29);
@@ -170,7 +172,7 @@
             // btnExport
             // 
             this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExport.Location = new System.Drawing.Point(255, 523);
+            this.btnExport.Location = new System.Drawing.Point(255, 509);
             this.btnExport.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExport.Name = "btnExport";
             this.btnExport.Size = new System.Drawing.Size(101, 29);
@@ -182,7 +184,7 @@
             // exportProgress
             // 
             this.exportProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.exportProgress.Location = new System.Drawing.Point(11, 559);
+            this.exportProgress.Location = new System.Drawing.Point(11, 545);
             this.exportProgress.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.exportProgress.Name = "exportProgress";
             this.exportProgress.Size = new System.Drawing.Size(343, 32);
@@ -213,7 +215,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(523, 539);
+            this.dataGridView1.Size = new System.Drawing.Size(523, 525);
             this.dataGridView1.TabIndex = 23;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
@@ -337,7 +339,7 @@
             // txtCurrent
             // 
             this.txtCurrent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtCurrent.Location = new System.Drawing.Point(227, 432);
+            this.txtCurrent.Location = new System.Drawing.Point(227, 418);
             this.txtCurrent.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtCurrent.Name = "txtCurrent";
             this.txtCurrent.Size = new System.Drawing.Size(127, 27);
@@ -348,7 +350,7 @@
             // 
             this.lblCurrent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblCurrent.AutoSize = true;
-            this.lblCurrent.Location = new System.Drawing.Point(224, 409);
+            this.lblCurrent.Location = new System.Drawing.Point(224, 395);
             this.lblCurrent.Name = "lblCurrent";
             this.lblCurrent.Size = new System.Drawing.Size(110, 20);
             this.lblCurrent.TabIndex = 27;
@@ -357,7 +359,7 @@
             // txtStartTime
             // 
             this.txtStartTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtStartTime.Location = new System.Drawing.Point(227, 488);
+            this.txtStartTime.Location = new System.Drawing.Point(227, 474);
             this.txtStartTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtStartTime.Name = "txtStartTime";
             this.txtStartTime.Size = new System.Drawing.Size(127, 27);
@@ -367,7 +369,7 @@
             // 
             this.lblTimeStarted.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblTimeStarted.AutoSize = true;
-            this.lblTimeStarted.Location = new System.Drawing.Point(224, 464);
+            this.lblTimeStarted.Location = new System.Drawing.Point(224, 450);
             this.lblTimeStarted.Name = "lblTimeStarted";
             this.lblTimeStarted.Size = new System.Drawing.Size(94, 20);
             this.lblTimeStarted.TabIndex = 29;
@@ -616,7 +618,7 @@
             // btnAddTicket
             // 
             this.btnAddTicket.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAddTicket.Location = new System.Drawing.Point(11, 451);
+            this.btnAddTicket.Location = new System.Drawing.Point(11, 437);
             this.btnAddTicket.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnAddTicket.Name = "btnAddTicket";
             this.btnAddTicket.Size = new System.Drawing.Size(99, 29);
@@ -632,7 +634,7 @@
             // btnClear
             // 
             this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnClear.Location = new System.Drawing.Point(118, 485);
+            this.btnClear.Location = new System.Drawing.Point(118, 471);
             this.btnClear.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(99, 29);
@@ -645,7 +647,7 @@
             // 
             this.responseMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.responseMessage.Location = new System.Drawing.Point(361, 560);
+            this.responseMessage.Location = new System.Drawing.Point(361, 546);
             this.responseMessage.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.responseMessage.Name = "responseMessage";
             this.responseMessage.Size = new System.Drawing.Size(393, 27);
@@ -675,7 +677,7 @@
             // btnCaptureTime
             // 
             this.btnCaptureTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCaptureTime.Location = new System.Drawing.Point(119, 523);
+            this.btnCaptureTime.Location = new System.Drawing.Point(119, 509);
             this.btnCaptureTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnCaptureTime.Name = "btnCaptureTime";
             this.btnCaptureTime.Size = new System.Drawing.Size(129, 31);
@@ -687,12 +689,12 @@
             // btnDelTicket
             // 
             this.btnDelTicket.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDelTicket.Location = new System.Drawing.Point(118, 451);
+            this.btnDelTicket.Location = new System.Drawing.Point(118, 437);
             this.btnDelTicket.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnDelTicket.Name = "btnDelTicket";
             this.btnDelTicket.Size = new System.Drawing.Size(99, 29);
             this.btnDelTicket.TabIndex = 42;
-            this.btnDelTicket.Text = "Delete Ticket";
+            this.btnDelTicket.Text = "Tickets";
             this.btnDelTicket.UseVisualStyleBackColor = true;
             this.btnDelTicket.Click += new System.EventHandler(this.btnDelTicket_Click);
             // 
@@ -700,7 +702,7 @@
             // 
             this.lblDarkMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblDarkMode.AutoSize = true;
-            this.lblDarkMode.Location = new System.Drawing.Point(65, 421);
+            this.lblDarkMode.Location = new System.Drawing.Point(65, 407);
             this.lblDarkMode.Name = "lblDarkMode";
             this.lblDarkMode.Size = new System.Drawing.Size(83, 20);
             this.lblDarkMode.TabIndex = 45;
@@ -710,7 +712,7 @@
             // 
             this.toggleSwitch1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.toggleSwitch1.AutoSize = true;
-            this.toggleSwitch1.Location = new System.Drawing.Point(9, 420);
+            this.toggleSwitch1.Location = new System.Drawing.Point(9, 406);
             this.toggleSwitch1.MaximumSize = new System.Drawing.Size(50, 21);
             this.toggleSwitch1.MinimumSize = new System.Drawing.Size(35, 21);
             this.toggleSwitch1.Name = "toggleSwitch1";
@@ -723,7 +725,7 @@
             // txtTotalTime
             // 
             this.txtTotalTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtTotalTime.Location = new System.Drawing.Point(806, 560);
+            this.txtTotalTime.Location = new System.Drawing.Point(806, 546);
             this.txtTotalTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtTotalTime.Name = "txtTotalTime";
             this.txtTotalTime.Size = new System.Drawing.Size(76, 27);
@@ -734,7 +736,7 @@
             this.lblTotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTotal.AutoSize = true;
             this.lblTotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblTotal.Location = new System.Drawing.Point(759, 564);
+            this.lblTotal.Location = new System.Drawing.Point(759, 550);
             this.lblTotal.Name = "lblTotal";
             this.lblTotal.Size = new System.Drawing.Size(41, 18);
             this.lblTotal.TabIndex = 48;
@@ -746,21 +748,43 @@
             this.tblTimeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openTicketToolStripMenuItem});
             this.tblTimeContextMenu.Name = "tblTimeContextMenu";
-            this.tblTimeContextMenu.Size = new System.Drawing.Size(211, 56);
+            this.tblTimeContextMenu.Size = new System.Drawing.Size(158, 28);
             // 
             // openTicketToolStripMenuItem
             // 
             this.openTicketToolStripMenuItem.Name = "openTicketToolStripMenuItem";
-            this.openTicketToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
+            this.openTicketToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
             this.openTicketToolStripMenuItem.Text = "Open Ticket";
             this.openTicketToolStripMenuItem.Click += new System.EventHandler(this.openTicketToolStripMenuItem_Click);
+            // 
+            // btnSupport
+            // 
+            this.btnSupport.Location = new System.Drawing.Point(11, 366);
+            this.btnSupport.Name = "btnSupport";
+            this.btnSupport.Size = new System.Drawing.Size(94, 29);
+            this.btnSupport.TabIndex = 49;
+            this.btnSupport.Text = "Support";
+            this.btnSupport.UseVisualStyleBackColor = true;
+            this.btnSupport.Click += new System.EventHandler(this.btnSupport_Click);
+            // 
+            // btnMeeting
+            // 
+            this.btnMeeting.Location = new System.Drawing.Point(111, 366);
+            this.btnMeeting.Name = "btnMeeting";
+            this.btnMeeting.Size = new System.Drawing.Size(94, 29);
+            this.btnMeeting.TabIndex = 50;
+            this.btnMeeting.Text = "Meeting";
+            this.btnMeeting.UseVisualStyleBackColor = true;
+            this.btnMeeting.Click += new System.EventHandler(this.btnMeeting_Click);
             // 
             // TimeCapture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.ClientSize = new System.Drawing.Size(896, 599);
+            this.ClientSize = new System.Drawing.Size(896, 585);
+            this.Controls.Add(this.btnMeeting);
+            this.Controls.Add(this.btnSupport);
             this.Controls.Add(this.lblTotal);
             this.Controls.Add(this.txtTotalTime);
             this.Controls.Add(this.toggleSwitch1);
@@ -880,6 +904,8 @@
         private DataGridViewButtonColumn Continue;
         private ContextMenuStrip tblTimeContextMenu;
         private ToolStripMenuItem openTicketToolStripMenuItem;
+        private Button btnSupport;
+        private Button btnMeeting;
     }
 }
 

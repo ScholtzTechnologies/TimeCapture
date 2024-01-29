@@ -170,5 +170,44 @@ namespace TimeCapture.Selenium.TimeTaker
                 driver.Quit();
             }
         }
+
+        public void CloseTicket(BrowserType browserType, string ticketNo, string sSolution, out bool isSuccess)
+        {
+            IJavaScriptExecutor js;
+            using (var driver = WebDriverInfra.Create_Browser(browserType))
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                js = (IJavaScriptExecutor)driver;
+
+                driver.Navigate().GoToUrl(URL);
+                driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080);
+
+                driver.FindElement(By.Id("UserName")).SendKeys(Username);
+                driver.FindElement(By.Id("Password")).SendKeys(Password);
+                js.ExecuteScript("arguments[0].click()", driver.FindElement(By.XPath("/html/body/form/div[3]/div/div[2]/input")));
+
+                driver.FindElement(By.XPath("/html/body/form/div[3]/div/a[2]")).Click();
+
+                driver.FindElement(By.XPath("//div[1]/div[1]/div/div/div[3]/div[1]/input")).Clear();
+                driver.FindElement(By.XPath("//div[1]/div[1]/div/div/div[3]/div[1]/input")).SendKeys(ticketNo);
+                js.ExecuteScript("arguments[0].click()", driver.FindElement(By.XPath("//div[1]/div/div/div[3]/div[4]/a")));
+                Thread.Sleep(1000);
+                try
+                {
+                    js.ExecuteScript("arguments[0].click()", driver.FindElement(By.XPath("//tr[3]/td[1]/a[1]")));
+                    Thread.Sleep(1000);
+
+
+
+                    isSuccess = true;
+                }
+                catch
+                {
+                    MessageBox.Show("No ticket found");
+                    isSuccess = false;
+                }
+                driver.Quit();
+            }
+        }
     }
 }

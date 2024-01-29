@@ -68,9 +68,16 @@ namespace TimeCapture
             getTickets();
             SetLocations();
             CheckHidden();
+            isCodeplex();
 
             dataGridView1.RowsAdded += PaintRows;
             dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView1.ContextMenuStrip = tblTimeContextMenu;
+            dataGridView1.CellMouseDown += DataGridView1_CellMouseDown;
+            (dataGridView1.Columns[6] as DataGridViewComboBoxColumn).FlatStyle = FlatStyle.Flat;
+            (dataGridView1.Columns[8] as DataGridViewComboBoxColumn).FlatStyle = FlatStyle.Flat;
+
             txtTotalTime.Enabled = false;
             tsAdmin.Visible = false;
 
@@ -85,10 +92,6 @@ namespace TimeCapture
             TimeID = -1;
             isInitialized = true;
 
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridView1.ContextMenuStrip = tblTimeContextMenu;
-            dataGridView1.CellMouseDown += DataGridView1_CellMouseDown;
-
             string sError;
             bool bDriverUpdated = new _nuget().UpdateChromeDriver(out sError);
             if (!bDriverUpdated)
@@ -96,6 +99,10 @@ namespace TimeCapture
                 MessageBox.Show("Error updating chrome driver. Please restart app, if issue persists please contact support.");
                 new _logger().Log(LogType.Error, sError, "Chrome Driver Update");
             }
+
+            bool isDefaultDarkMode = Convert.ToInt32(_configuration.GetConfigValue("isDefaultDarkMode")).ToBool();
+            if (isDefaultDarkMode)
+                toggleSwitch1.Checked = true;
         }
 
         #region CheckBoxes
@@ -310,8 +317,22 @@ namespace TimeCapture
 
         private void btnDelTicket_Click(object sender, EventArgs e)
         {
-            DeleteTicket frmDelete = new(this);
-            frmDelete.Show();
+            ViewTickets frmTickets = new(this);
+            frmTickets.Show();
+        }
+
+        private void btnSupport_Click(object sender, EventArgs e)
+        {
+            NewTimeStart("Internal Support", 31790, "General", "", "Non-Chargeable");
+            txtName.Text = "Internal Support";
+            rbNonCharge.Checked = true;
+        }
+
+        private void btnMeeting_Click(object sender, EventArgs e)
+        {
+            NewTimeStart("Internal Meeting", 39971, "Meeting", "", "Non-Chargeable");
+            txtName.Text = "Internal Meeting";
+            rbNonCharge.Checked = true;
         }
 
         #endregion Buttons
@@ -659,6 +680,64 @@ namespace TimeCapture
             }
         }
 
+        public void ShowTextAreaInputDialog(string sContext, out bool OK, out string sValue)
+        {
+            // Create a custom input box form
+            Form inputBoxForm = new Form();
+            inputBoxForm.Text = "";
+            inputBoxForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+            inputBoxForm.StartPosition = FormStartPosition.CenterParent;
+            inputBoxForm.Width = 240;
+            inputBoxForm.Height = 190;
+
+            // Create the label and text box for input
+            Label label = new Label();
+            label.Text = sContext;
+            label.AutoSize = true;
+            label.Location = new System.Drawing.Point(10, 10);
+
+            RichTextBox textBox = new RichTextBox();
+            textBox.Location = new System.Drawing.Point(10, 30);
+            textBox.Size = new System.Drawing.Size(200, 85);
+
+            // Create the OK and Cancel buttons
+            Button okButton = new Button();
+            okButton.Text = "OK";
+            okButton.DialogResult = DialogResult.OK;
+            okButton.Location = new System.Drawing.Point(10, 115);
+            okButton.Height = 25;
+            okButton.Click += (sender, e) => inputBoxForm.Close();
+
+            Button cancelButton = new Button();
+            cancelButton.Text = "Cancel";
+            cancelButton.DialogResult = DialogResult.Cancel;
+            cancelButton.Location = new System.Drawing.Point(90, 115);
+            cancelButton.Height = 25;
+            cancelButton.Click += (sender, e) => inputBoxForm.Close();
+
+            // Add the controls to the form
+            inputBoxForm.Controls.AddRange(new Control[] { label, textBox, okButton, cancelButton });
+
+            // Show the input box form as a dialog
+            if (inputBoxForm.ShowDialog() == DialogResult.OK)
+            {
+                OK = true;
+                if (!string.IsNullOrEmpty(textBox.Text))
+                {
+                    sValue = textBox.Text;
+                }
+                else
+                {
+                    sValue = "";
+                }
+            }
+            else
+            {
+                sValue = "";
+                OK = false;
+            }
+        }
+
         public void SetLocations()
         {
             lblTypeLocal = lblType.Location;
@@ -718,6 +797,46 @@ namespace TimeCapture
             bool isAdmin = Access.isAdmin(iUserID);
             if (isAdmin)
                 tsAdmin.Visible = true;
+        }
+
+        public void isCodeplex()
+        {
+            bool bIsCodeplex = Convert.ToInt32(_configuration.GetConfigValue("IsCodeplex")).ToBool();
+            if  (!bIsCodeplex)
+            {
+                btnSupport.Hide();
+                btnMeeting.Hide();
+            }
+        }
+
+        public void NewTimeStart(string sName, int iTicketNo, string sTimeType, string sDescription, string sTicketType)
+        {
+            if (isTaskRunning)
+                lblStop_Click(null, null);
+
+            isTaskRunning = true;
+
+            txtCurrent.Text = sName;
+            txtStartTime.Text = DateTime.Now.ToString("HH:mm");
+
+            ptName = sName;
+
+            if (Access.GetSettingValue(3))
+            {
+                ptTicketNumber = 0;
+            }
+            else
+            {
+                ptTicketNumber = iTicketNo;
+            }
+            ptStart = DateTime.Now.ToString("HH:mm");
+            dtStart = DateTime.Now;
+            ptTimeType = sTimeType;
+            ptDesc = sDescription;
+            ptTicketType = sTicketType;
+
+            lblStop.Enabled = true;
+            lblPlay.Enabled = false;
         }
 
         #endregion Actions
@@ -1173,8 +1292,6 @@ namespace TimeCapture
                 lblPlay.Enabled = false;
             }
         }
-
-       
 
         #endregion DataGridView
 

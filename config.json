@@ -12,7 +12,9 @@
   "isNotifications": "0",
   "isBusiness": "0",
   "IsDirectCapture": "0",
-  "AllowNewUsers":  "1",
+  "AllowNewUsers": "1",
+  "IsCodeplex": "1",
+  "isDefaultDarkMode": "1",
 
   // String
   "BusinessName": "Scholtz",

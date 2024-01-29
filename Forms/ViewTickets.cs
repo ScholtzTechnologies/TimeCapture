@@ -11,10 +11,10 @@ using static TimeCapture.utils.CSVImport;
 
 namespace TimeCapture.Forms
 {
-    public partial class DeleteTicket : Form
+    public partial class ViewTickets : Form
     {
         public TimeCapture frmCapture { get; set; }
-        public DeleteTicket(TimeCapture timeCapture)
+        public ViewTickets(TimeCapture timeCapture)
         {
             InitializeComponent();
             GetTickets();
@@ -57,23 +57,38 @@ namespace TimeCapture.Forms
             {
                 foreach (DataRow row in dataSet.Tables[0].Rows)
                 {
-                    dataGridView1.Rows.Add(row.GetDataRowIntValue("ID"), row.GetDataRowStringValue("Name"));
+                    dataGridView1.Rows.Add(row.GetDataRowIntValue("ID"), row.GetDataRowStringValue("Name"), "Delete", "Close");
                 }
             }
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dataGridView1.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
-                    e.RowIndex >= 0)
+            if (dataGridView1.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&    
+                e.RowIndex >= 0)
             {
-                int TicketID = dataGridView1.Rows[e.RowIndex].GetDataGridViewIntValue("ID");
-                string Name = dataGridView1.Rows[e.RowIndex].GetDataGridViewStringValue("Name");
-                new Access().DelTicket(TicketID);
-                dataGridView1.Rows.Clear();
-                GetTickets();
-                frmCapture.getTickets();
-                MessageBox.Show(Name + " was deleted");
+                if (e.ColumnIndex == 2)
+                {
+                    int TicketID = dataGridView1.Rows[e.RowIndex].GetDataGridViewIntValue("ID");
+                    string Name = dataGridView1.Rows[e.RowIndex].GetDataGridViewStringValue("Name");
+                    new Access().DelTicket(TicketID);
+                    dataGridView1.Rows.Clear();
+                    GetTickets();
+                    frmCapture.getTickets();
+                    MessageBox.Show(Name + " was deleted");
+                }
+                else if (e.ColumnIndex == 3)
+                {
+                    bool bOk;
+                    string sValue;
+                    frmCapture.ShowTextAreaInputDialog("Please Provide a solution", out bOk, out sValue);
+                    if (bOk && !String.IsNullOrEmpty(sValue))
+                    {
+                        MessageBox.Show("Not implemented, yet.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else if (String.IsNullOrEmpty(sValue) && bOk)
+                        MessageBox.Show("Please Provide a solution", "Solution Required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

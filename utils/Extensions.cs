@@ -271,8 +271,26 @@ namespace TimeCapture.utils
             return Type;
         }
 
+        public static bool ToBool(this int i)
+        {
+            if (i == 1)
+                return true;
+            else
+                return false;
+        }
+
+        public static void Hide(this Control control)
+        {
+            control.Visible = false;
+        }
+
+        public static void Show(this Control control)
+        {
+            control.Visible = true;
+        }
+
         #endregion Conversions
-        
+
     }
 
     #region Classes
