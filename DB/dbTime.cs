@@ -619,6 +619,14 @@ namespace TimeCapture.DB
             ExecuteQuery(sSQL);
         }
 
+        public int GetUncapturedTimeCount()
+        {
+            string sSQL = @"select COUNT(Date) as Count from Time
+                where ISNULL(IsCaptured,0) <> 1";
+            int iCount = ExecuteQuery(sSQL).Tables[0].Rows[0].GetDataRowIntValue("Count");
+            return iCount;
+        }
+
         #endregion
 
         #region Init

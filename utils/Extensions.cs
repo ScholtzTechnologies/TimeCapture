@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TimeCapture;
 using Tulpep.NotificationWindow;
+using MimeKit;
 
 namespace TimeCapture.utils
 {
@@ -287,6 +288,47 @@ namespace TimeCapture.utils
         public static void Show(this Control control)
         {
             control.Visible = true;
+        }
+
+        public static string EncaseMailBody(this string sBody)
+        {
+            string sEncasedBody = String.Format(@"
+				<div class='message' style='margin: 10px;
+		            border: 1px solid black;
+		            border-radius: 20px;'>
+                    <div class='header' style='border-top-right-radius: 20px;border-top-left-radius: 20px;text-align: center;
+		            font-size: 15px;
+		            font-family: arial;
+		            background-color: darkred;
+		            padding: 10px;
+		            color: white;
+		            border-bottom: 2px solid black;'>
+	                <h1 style='vertical-align: middle;'>
+                        Sent Via TimeCapture
+                    </h1>
+                </div>
+                <br>
+                <div style='margin-left: 10px; margin-right: 10px;font-family: arial;'>
+                	{0}
+            	</div>
+                <br>
+                <div class='header' style='border-bottom-right-radius: 20px;border-bottom-left-radius: 20px; font-size: 10; 
+                		color: lightgray !important;text-align: center;
+		                font-size: 15px;
+		                font-family: arial;
+		                background-color: darkred;
+		                padding: 10px;
+		                color: white;
+		                border-bottom: 2px solid black;'>
+	                <p>The company accepts no liability for the content of this email.</p>
+	                <p>If not recieved by the intended recipient, you are notified that disclosing, copying, distributing or taking any action in reliance on the contents of this information is strictly prohibited.</p>
+                    <img src='https://i.ibb.co/kmmdLpy/Time-Icon-60x-White.png' alt='Time-Icon-60x-White' border='0'>
+                </div>
+                </div>
+                
+                ", sBody.Replace("\r", "<br>"));
+
+            return sEncasedBody;
         }
 
         #endregion Conversions

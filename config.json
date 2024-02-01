@@ -4,7 +4,7 @@
   "TableName": "",
   "DateTimeFormat": "dd MMM yyyy",
   "key": "b14ca5898a4e4133bbce2ea2315a1916",
-  "SQL":  "insert into blah blah",
+  "SQL": "insert into blah blah",
 
   // Global Settings
   //
@@ -18,5 +18,14 @@
 
   // String
   "BusinessName": "Scholtz",
-  "SeleniumURL": "https://web3.searchlightsoftware.co.za/Tickets/Login.aspx"
+  "SeleniumURL": "https://web3.searchlightsoftware.co.za/Tickets/Login.aspx",
+
+  // Mail
+  "FromName": "TimeCapture",
+  "FromEmail": "scholtz.web@gmail.com",
+  "MailUsername": "TimeCapture",
+  "MailPassword": "sfvk jded ijge mcav",
+  "MailHost": "smtp.gmail.com",
+  "MailPort": 587,
+  "SendReminders": "1"
 }

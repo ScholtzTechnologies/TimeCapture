@@ -72,6 +72,7 @@ namespace TimeCapture
             SetLocations();
             CheckHidden();
             isCodeplex();
+            sendReminders();
 
             dataGridView1.RowsAdded += PaintRows;
             dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
@@ -1770,5 +1771,22 @@ namespace TimeCapture
         }
 
         #endregion Loader
+
+        #region Mails
+
+        public void sendReminders()
+        {
+            int iCount = Access.GetUncapturedTimeCount();
+            if (iCount > 0 && Access.GetSettingValue(7))
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("Hello There!" + Environment.NewLine);
+                sb.AppendLine($"You have {iCount} uncaptured time records, please make sure to stay up to date on your time capture." + Environment.NewLine);
+                sb.AppendLine("Kind regards," + Environment.NewLine + "TimeCapture");
+                new _mailer().SendMail("Time Reminders", sb.ToString(), "brayden@codeplex.co.za");
+            }
+        }
+
+        #endregion Mails
     }
 }
