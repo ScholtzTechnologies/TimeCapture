@@ -18,6 +18,7 @@ namespace TimeCapture
         public List<CSVImport.Clients> lClients = new List<CSVImport.Clients>();
         public List<CSVImport.Tickets> lTickets = new List<CSVImport.Tickets>();
         public List<CSVImport.Settings> Settings = new List<CSVImport.Settings>();
+        public List<ProgressBar> progressBars = new List<ProgressBar>();
         public DB.Access Access = new DB.Access();
         public static string root = Directory.GetCurrentDirectory();
         public static string SettingsCsv = Path.Combine(root, "Data", "Settings.csv");
@@ -42,6 +43,8 @@ namespace TimeCapture
 
         public Selenium.TimeTaker.TimeCapture timeCapture = new();
         public _Spinner Spinner { get; set; }
+        public Status oStatus { get; set; }
+
         public int UserID { get; set; }
         public string iTicketNumber { get; set; }
 
@@ -103,6 +106,16 @@ namespace TimeCapture
             bool isDefaultDarkMode = Convert.ToInt32(_configuration.GetConfigValue("isDefaultDarkMode")).ToBool();
             if (isDefaultDarkMode)
                 toggleSwitch1.Checked = true;
+
+            progressBars.Add(this.roundedProgressBar1);
+            progressBars.Add(this.roundedProgressBar2);
+            progressBars.Add(this.roundedProgressBar3);
+            progressBars.Add(this.roundedProgressBar4);
+
+            foreach (var oBar in progressBars)
+            {
+                oBar.Maximum = 1;
+            }
         }
 
         #region CheckBoxes
@@ -144,38 +157,6 @@ namespace TimeCapture
         {
             Forms.Settings fSettings = new Forms.Settings(this);
             fSettings.Show();
-        }
-
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            if (Access.GetSettingValue(1))
-            {
-                TimeCapture timeCapture = new TimeCapture();
-                ConfirmClose confirmClose = new ConfirmClose(this);
-                timeCapture.Dispose();
-                confirmClose.Show();
-                confirmClose.BringToFront();
-            }
-            else
-            {
-                Dispose();
-            }
-        }
-
-        public void btnExport_Click(object sender, EventArgs e)
-        {
-            exportProgress.Value = 15;
-            string last;
-            StoreTime(out last);
-            exportProgress.Value = 100;
-            if (!string.IsNullOrEmpty(last))
-            {
-                PushNofication("Your time for " + DateTime.Now.ToString("dd MMM yyyy") + " has been exported | " + last, NotificationType.Success);
-            }
-            else
-            {
-                PushNofication("No Time to capture", NotificationType.Info);
-            }
         }
 
         private void lblPlay_Click(object sender, EventArgs e)
@@ -256,7 +237,7 @@ namespace TimeCapture
         private void lblStop_Click(object sender, EventArgs e)
         {
             if (lblStop.Enabled)
-            {   
+            {
                 isTaskRunning = false;
                 TimeSpan preTotal = DateTime.Now.Subtract(dtStart);
                 string Total = preTotal.ToString().Substring(0, 5);
@@ -289,7 +270,6 @@ namespace TimeCapture
             lTime.Clear();
             dataGridView1.Rows.Clear();
             PushNofication("All recently captured time cleared", NotificationType.Info);
-            exportProgress.Value = 0;
             txtTotalTime.Text = "00:00";
         }
 
@@ -396,28 +376,6 @@ namespace TimeCapture
             {
                 btnCaptureTime.Visible = false;
             }
-        }
-
-        public void StoreTime(out string last)
-        {
-            Control lblAction;
-            ShowSpinner(out lblAction);
-            last = null;
-            int i = 0;
-            int Count = lTime.Count;
-            foreach (var time in lTime)
-            {
-                i++;
-                lblAction.Text = "Current: " + time.Item + " from @" + time.Start + " to @" + time.End;
-                Access.SaveTime(time.TimeID, time.Item, time.TicketNo, time.Start, time.End,
-                    time.Total, time.TimeType, time.Description, time.Type, time.Date, UserID);
-                if (i == Count)
-                {
-                    last = "End " + '@' + " " + time.End;
-                }
-            }
-            lTime.Clear();
-            HideSpinner();
         }
 
         public void getTypes()
@@ -802,7 +760,7 @@ namespace TimeCapture
         public void isCodeplex()
         {
             bool bIsCodeplex = Convert.ToInt32(_configuration.GetConfigValue("IsCodeplex")).ToBool();
-            if  (!bIsCodeplex)
+            if (!bIsCodeplex)
             {
                 btnSupport.Hide();
                 btnMeeting.Hide();
@@ -852,6 +810,7 @@ namespace TimeCapture
             {
                 try
                 {
+                    StartLoading();
                     string fileName = dialog.FileName;
 
                     var stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -880,16 +839,17 @@ namespace TimeCapture
                             lTime.Add(time);
 
                             int progress = (int)((double)i / Count * 100);
-                            exportProgress.Value = progress;
 
                             dataGridView1.Rows.Add(TimeID, ptName, ptTicketNumber, ptStart, DateTime.Now.ToString("HH:mm"),
                                 Total, ptTimeType, ptDesc, ptTicketType, DateTime.Now.ToString("dd MMM yyyy"), "Delete", "Continue");
                         }
                         PushNofication(Count.ToString() + " records added", NotificationType.Info);
                     }
+                    StopLoading(true);
                 }
                 catch
                 {
+                    StopLoading(false);
                     PushNofication("Please make sure a valid csv with the correct columns was submitted", NotificationType.Error);
                 }
             }
@@ -908,8 +868,8 @@ namespace TimeCapture
             {
                 foreach (DataRow time in dsTime.Tables[0].Rows)
                 {
-                    dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"), 
-                        time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"), 
+                    dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
+                        time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
                         time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
                 }
             }
@@ -1184,7 +1144,7 @@ namespace TimeCapture
             {
                 if (isTaskRunning)
                     lblStop_Click(null, null);
-               
+
                 isTaskRunning = true;
 
                 txtCurrent.Text = dataGridView1.Rows[e.RowIndex].GetDataGridViewStringValue("tName");
@@ -1728,5 +1688,87 @@ namespace TimeCapture
         }
 
         #endregion Context Menu
+
+        #region Loader
+
+        public async Task StartLoading()
+        {
+            oStatus = Status.Busy;
+
+            await Task.Run(() =>
+            {
+                int i = 0;
+                ProgressBar bar1 = progressBars[0],
+                       bar2 = progressBars[1],
+                       bar3 = progressBars[2],
+                       bar4 = progressBars[3];
+
+                while (oStatus == Status.Busy)
+                {
+
+                    for (i = 0; i < progressBars.Count; i++)
+                    {
+                        try
+                        {
+                            progressBars[i - 1].Invoke((MethodInvoker)delegate
+                            {
+                                progressBars[i - 1].Value = 0;
+                            });
+                        }
+                        catch 
+                        {
+                            progressBars.LastOrDefault().Invoke((MethodInvoker)delegate
+                            {
+                                progressBars.LastOrDefault().Value = 0;
+                            });
+                        }
+
+                        progressBars[i].Invoke((MethodInvoker)delegate
+                        {
+                            progressBars[i].Value = 1;
+                        });
+                        Thread.Sleep(750);
+                    }
+                }
+
+                if (oStatus == Status.Idle)
+                {
+                    foreach (var oBar in progressBars)
+                    {
+                        oBar.Invoke((MethodInvoker)delegate
+                        {
+                            oBar.Value = 1;
+                        });
+                    }
+                    
+                    Thread.Sleep(1000);
+
+                    foreach (var oBar in progressBars)
+                    {
+                        oBar.Invoke((MethodInvoker)delegate
+                        {
+                            oBar.Value = 0;
+                        });
+                    }
+                }
+                else
+                {
+                    foreach (var oBar in progressBars)
+                    {
+                        oBar.Invoke((MethodInvoker)delegate
+                        {
+                            oBar.Value = 0;
+                        });
+                    }
+                }
+            });
+        }
+
+        public void StopLoading(bool isSuccess)
+        {
+            oStatus = isSuccess ? Status.Idle : Status.Error;
+        }
+
+        #endregion Loader
     }
 }

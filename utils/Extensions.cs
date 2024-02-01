@@ -367,6 +367,13 @@ namespace TimeCapture.utils
         }
     }
 
+    public enum Status
+    {
+        Busy,
+        Idle,
+        Error
+    }
+
     #endregion Classes
 
 }

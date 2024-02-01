@@ -34,10 +34,7 @@
             this.txtName = new System.Windows.Forms.TextBox();
             this.lblName = new System.Windows.Forms.Label();
             this.lblDesc = new System.Windows.Forms.Label();
-            this.btnClose = new System.Windows.Forms.Button();
             this.btnSettings = new System.Windows.Forms.Button();
-            this.btnExport = new System.Windows.Forms.Button();
-            this.exportProgress = new System.Windows.Forms.ProgressBar();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.iTimeID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -99,6 +96,10 @@
             this.openTicketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnSupport = new System.Windows.Forms.Button();
             this.btnMeeting = new System.Windows.Forms.Button();
+            this.roundedProgressBar1 = new CustomControls.RoundedProgressBar();
+            this.roundedProgressBar2 = new CustomControls.RoundedProgressBar();
+            this.roundedProgressBar3 = new CustomControls.RoundedProgressBar();
+            this.roundedProgressBar4 = new CustomControls.RoundedProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.containerControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -145,18 +146,6 @@
             this.lblDesc.TabIndex = 7;
             this.lblDesc.Text = "Description";
             // 
-            // btnClose
-            // 
-            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnClose.Location = new System.Drawing.Point(11, 509);
-            this.btnClose.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(101, 29);
-            this.btnClose.TabIndex = 17;
-            this.btnClose.Text = "Close App";
-            this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-            // 
             // btnSettings
             // 
             this.btnSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -168,27 +157,6 @@
             this.btnSettings.Text = "Settings";
             this.btnSettings.UseVisualStyleBackColor = true;
             this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
-            // 
-            // btnExport
-            // 
-            this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExport.Location = new System.Drawing.Point(255, 509);
-            this.btnExport.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(101, 29);
-            this.btnExport.TabIndex = 21;
-            this.btnExport.Text = "Export";
-            this.btnExport.UseVisualStyleBackColor = true;
-            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
-            // 
-            // exportProgress
-            // 
-            this.exportProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.exportProgress.Location = new System.Drawing.Point(11, 545);
-            this.exportProgress.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.exportProgress.Name = "exportProgress";
-            this.exportProgress.Size = new System.Drawing.Size(343, 32);
-            this.exportProgress.TabIndex = 22;
             // 
             // dataGridView1
             // 
@@ -677,7 +645,7 @@
             // btnCaptureTime
             // 
             this.btnCaptureTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCaptureTime.Location = new System.Drawing.Point(119, 509);
+            this.btnCaptureTime.Location = new System.Drawing.Point(9, 508);
             this.btnCaptureTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnCaptureTime.Name = "btnCaptureTime";
             this.btnCaptureTime.Size = new System.Drawing.Size(129, 31);
@@ -777,12 +745,64 @@
             this.btnMeeting.UseVisualStyleBackColor = true;
             this.btnMeeting.Click += new System.EventHandler(this.btnMeeting_Click);
             // 
+            // roundedProgressBar1
+            // 
+            this.roundedProgressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.roundedProgressBar1.Location = new System.Drawing.Point(228, 546);
+            this.roundedProgressBar1.Name = "roundedProgressBar1";
+            this.roundedProgressBar1.ProgressBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.roundedProgressBar1.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.roundedProgressBar1.ProgressFont = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.roundedProgressBar1.ProgressFontColor = System.Drawing.Color.Black;
+            this.roundedProgressBar1.Size = new System.Drawing.Size(27, 27);
+            this.roundedProgressBar1.TabIndex = 51;
+            // 
+            // roundedProgressBar2
+            // 
+            this.roundedProgressBar2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.roundedProgressBar2.Location = new System.Drawing.Point(261, 546);
+            this.roundedProgressBar2.Name = "roundedProgressBar2";
+            this.roundedProgressBar2.ProgressBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.roundedProgressBar2.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.roundedProgressBar2.ProgressFont = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.roundedProgressBar2.ProgressFontColor = System.Drawing.Color.Black;
+            this.roundedProgressBar2.Size = new System.Drawing.Size(27, 27);
+            this.roundedProgressBar2.TabIndex = 52;
+            // 
+            // roundedProgressBar3
+            // 
+            this.roundedProgressBar3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.roundedProgressBar3.Location = new System.Drawing.Point(294, 545);
+            this.roundedProgressBar3.Name = "roundedProgressBar3";
+            this.roundedProgressBar3.ProgressBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.roundedProgressBar3.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.roundedProgressBar3.ProgressFont = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.roundedProgressBar3.ProgressFontColor = System.Drawing.Color.Black;
+            this.roundedProgressBar3.Size = new System.Drawing.Size(27, 27);
+            this.roundedProgressBar3.TabIndex = 54;
+            // 
+            // roundedProgressBar4
+            // 
+            this.roundedProgressBar4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.roundedProgressBar4.Location = new System.Drawing.Point(329, 546);
+            this.roundedProgressBar4.Name = "roundedProgressBar4";
+            this.roundedProgressBar4.ProgressBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.roundedProgressBar4.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.roundedProgressBar4.ProgressFont = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.roundedProgressBar4.ProgressFontColor = System.Drawing.Color.Black;
+            this.roundedProgressBar4.Size = new System.Drawing.Size(27, 27);
+            this.roundedProgressBar4.TabIndex = 53;
+            // 
             // TimeCapture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.ClientSize = new System.Drawing.Size(896, 585);
+            this.Controls.Add(this.roundedProgressBar3);
+            this.Controls.Add(this.roundedProgressBar4);
+            this.Controls.Add(this.roundedProgressBar2);
+            this.Controls.Add(this.roundedProgressBar1);
             this.Controls.Add(this.btnMeeting);
             this.Controls.Add(this.btnSupport);
             this.Controls.Add(this.lblTotal);
@@ -807,10 +827,7 @@
             this.Controls.Add(this.lblStop);
             this.Controls.Add(this.lblPlay);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.exportProgress);
-            this.Controls.Add(this.btnExport);
             this.Controls.Add(this.btnSettings);
-            this.Controls.Add(this.btnClose);
             this.Controls.Add(this.rbCharge);
             this.Controls.Add(this.rbSupport);
             this.Controls.Add(this.rbNonCharge);
@@ -841,10 +858,7 @@
         private System.Windows.Forms.TextBox txtName;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblDesc;
-        private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnSettings;
-        private System.Windows.Forms.Button btnExport;
-        private System.Windows.Forms.ProgressBar exportProgress;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label lblPlay;
         private System.Windows.Forms.Label lblStop;
@@ -906,6 +920,10 @@
         private ToolStripMenuItem openTicketToolStripMenuItem;
         private Button btnSupport;
         private Button btnMeeting;
+        private CustomControls.RoundedProgressBar roundedProgressBar1;
+        private CustomControls.RoundedProgressBar roundedProgressBar2;
+        private CustomControls.RoundedProgressBar roundedProgressBar3;
+        private CustomControls.RoundedProgressBar roundedProgressBar4;
     }
 }
 
