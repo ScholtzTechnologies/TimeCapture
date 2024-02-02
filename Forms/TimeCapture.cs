@@ -316,6 +316,12 @@ namespace TimeCapture
             rbNonCharge.Checked = true;
         }
 
+        private void btnSendMail_Click(object sender, EventArgs e)
+        {
+            Mailer frmMailer = new Mailer(this);
+            frmMailer.Show();
+        }
+
         #endregion Buttons
 
         #region Actions
@@ -1779,7 +1785,7 @@ namespace TimeCapture
         public void sendReminders()
         {
             int iCount = Access.GetUncapturedTimeCount();
-            if (iCount > 20 && Access.GetSettingValue(7))
+            if (iCount > 20 && Access.GetSettingValue(7) && _configuration.GetConfigValue("SendReminders") == "1")
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine("Hello There!" + Environment.NewLine);

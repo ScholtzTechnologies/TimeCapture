@@ -117,6 +117,20 @@ namespace TimeCapture.DB
 
         #region Get
 
+        public DataSet GetTablesAndColumns()
+        {
+            string sSQL = @"SELECT 
+                    t.table_name AS[Table],
+                    STRING_AGG(c.column_name, ',') AS Columns
+                FROM
+                    information_schema.tables t
+                JOIN
+                    information_schema.columns c ON t.table_name = c.table_name
+
+                    group by t.TABLE_NAME
+                ";
+            return ExecuteQuery(sSQL);
+        }
         public DataSet getsettings()
         {
             string sSQL = @"select ID, Name, Value, Description from Settings";

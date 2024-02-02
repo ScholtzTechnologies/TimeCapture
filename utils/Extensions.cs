@@ -322,7 +322,6 @@ namespace TimeCapture.utils
 		                border-bottom: 2px solid black;'>
 	                <p>The company accepts no liability for the content of this email.</p>
 	                <p>If not recieved by the intended recipient, you are notified that disclosing, copying, distributing or taking any action in reliance on the contents of this information is strictly prohibited.</p>
-                    <img src='https://i.ibb.co/kmmdLpy/Time-Icon-60x-White.png' alt='Time-Icon-60x-White' border='0'>
                 </div>
                 </div>
                 

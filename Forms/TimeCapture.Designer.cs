@@ -100,6 +100,7 @@
             this.roundedProgressBar2 = new CustomControls.RoundedProgressBar();
             this.roundedProgressBar3 = new CustomControls.RoundedProgressBar();
             this.roundedProgressBar4 = new CustomControls.RoundedProgressBar();
+            this.btnSendMail = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.containerControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -793,12 +794,24 @@
             this.roundedProgressBar4.Size = new System.Drawing.Size(27, 27);
             this.roundedProgressBar4.TabIndex = 53;
             // 
+            // btnSendMail
+            // 
+            this.btnSendMail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSendMail.Location = new System.Drawing.Point(9, 546);
+            this.btnSendMail.Name = "btnSendMail";
+            this.btnSendMail.Size = new System.Drawing.Size(129, 29);
+            this.btnSendMail.TabIndex = 55;
+            this.btnSendMail.Text = "Send Mail";
+            this.btnSendMail.UseVisualStyleBackColor = true;
+            this.btnSendMail.Click += new System.EventHandler(this.btnSendMail_Click);
+            // 
             // TimeCapture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.ClientSize = new System.Drawing.Size(896, 585);
+            this.Controls.Add(this.btnSendMail);
             this.Controls.Add(this.roundedProgressBar3);
             this.Controls.Add(this.roundedProgressBar4);
             this.Controls.Add(this.roundedProgressBar2);
@@ -924,6 +937,7 @@
         private CustomControls.RoundedProgressBar roundedProgressBar2;
         private CustomControls.RoundedProgressBar roundedProgressBar3;
         private CustomControls.RoundedProgressBar roundedProgressBar4;
+        private Button btnSendMail;
     }
 }
 

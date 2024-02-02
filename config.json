@@ -27,5 +27,5 @@
   "MailPassword": "sfvk jded ijge mcav",
   "MailHost": "smtp.gmail.com",
   "MailPort": 587,
-  "SendReminders": "1"
+  "SendReminders": "0"
 }
