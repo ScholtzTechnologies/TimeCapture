@@ -1620,8 +1620,8 @@ namespace TimeCapture
 
         public void CheckDB()
         {
-            string rarFilePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "DB.rar"));
-            string extractPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "DB"));
+            string rarFilePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "DB.rar"));
+            string extractPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "DB"));
             string existingDB = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "DB", "Time.mdf"));
 
             if (!File.Exists(existingDB))
@@ -1639,6 +1639,8 @@ namespace TimeCapture
                             });
                         }
                     }
+
+                    new _scriptTool().RunInScripts();
                 }
                 new _logger().Log(LogType.Info, "Database Extracted");
                 new Access().FillSettings();
@@ -1777,7 +1779,7 @@ namespace TimeCapture
         public void sendReminders()
         {
             int iCount = Access.GetUncapturedTimeCount();
-            if (iCount > 0 && Access.GetSettingValue(7))
+            if (iCount > 20 && Access.GetSettingValue(7))
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine("Hello There!" + Environment.NewLine);

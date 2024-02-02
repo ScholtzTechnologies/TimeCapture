@@ -10,7 +10,7 @@ namespace TimeCapture.utils
     public static class _configuration
     {
         private static readonly IConfigurationRoot _config;
-        private static string Config = Path.GetFullPath("../../../config.json");
+        private static string Config = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "config.json"));
         static _configuration()
         {
             if (_config == null)

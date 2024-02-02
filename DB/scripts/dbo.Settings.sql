@@ -1,10 +1,40 @@
-﻿CREATE TABLE [dbo].[Settings] (
+﻿IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Settings]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[Settings] (
     [ID]          INT           NOT NULL,
     [Name]        VARCHAR (50)  NOT NULL,
     [Value]       VARCHAR (255)  NOT NULL,
     [Description] VARCHAR (255) NULL,
-    PRIMARY KEY CLUSTERED ([ID] ASC)
-);
+PRIMARY KEY CLUSTERED
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+END
+
+
+IF COL_LENGTH('Settings', 'ID') IS NULL
+BEGIN
+	ALTER TABLE Settings ADD ID INT NOT NULL
+END
+
+
+IF COL_LENGTH('Settings', 'Name') IS NULL
+BEGIN
+	ALTER TABLE Settings ADD Name VARCHAR(50) NOT NULL
+END
+
+
+IF COL_LENGTH('Settings', 'Value') IS NULL
+BEGIN
+	ALTER TABLE Settings ADD Value VARCHAR(255) NOT NULL
+END
+
+
+IF COL_LENGTH('Settings', 'Description') IS NULL
+BEGIN
+	ALTER TABLE Settings ADD Description VARCHAR(255) NULL
+END
 
 
 --#####################################

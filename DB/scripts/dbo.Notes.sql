@@ -1,30 +1,43 @@
-﻿CREATE TABLE [dbo].[Notes] (
-    [NoteID]   INT           NULL,
+﻿IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Notes]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[Notes] (
+    [NoteID]   INT           NOT NULL,
     [Name]     VARCHAR (255) NOT NULL,
     [Note]     VARCHAR (255) NOT NULL,
     [Date]     VARCHAR (255) NOT NULL,
     [ParentID] INT           NOT NULL,
-    CONSTRAINT [CK_Notes_NoteID] CHECK ([NoteID]<>NULL AND [NoteID]>(0))
-);
+PRIMARY KEY CLUSTERED
+(
+	[NoteID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+END
 
-
-GO
-
-CREATE TRIGGER [dbo].[Trigger_Notes]
-ON [dbo].[Notes]
-FOR INSERT
-AS
+IF COL_LENGTH('Notes', 'NoteID') IS NULL
 BEGIN
-    SET NOCOUNT ON;
+	ALTER TABLE Notes ADD NoteID INT NULL
+END
 
-    -- Check if any rows were inserted with NULL NoteID
-    IF EXISTS (SELECT * FROM inserted WHERE NoteID IS NULL)
-    BEGIN
-        -- Set NoteID for NULL values
-        UPDATE n
-        SET n.NoteID = ISNULL((SELECT MAX(NoteID) + 1 FROM Notes), 1)
-        FROM Notes n
-        INNER JOIN inserted i ON n.NoteID = i.NoteID
-        WHERE i.NoteID IS NULL;
-    END;
-END;
+
+IF COL_LENGTH('Notes', 'Name') IS NULL
+BEGIN
+	ALTER TABLE Notes ADD Name VARCHAR(255) NOT NULL
+END
+
+
+IF COL_LENGTH('Notes', 'Note') IS NULL
+BEGIN
+	ALTER TABLE Notes ADD Note VARCHAR(255) NOT NULL
+END
+
+
+IF COL_LENGTH('Notes', 'Date') IS NULL
+BEGIN
+	ALTER TABLE Notes ADD Date VARCHAR(255) NOT NULL
+END
+
+
+IF COL_LENGTH('Notes', 'ParentID') IS NULL
+BEGIN
+	ALTER TABLE Notes ADD ParentID INT NOT NULL
+END
