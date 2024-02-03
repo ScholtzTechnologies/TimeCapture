@@ -1,13 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
-using System;
+﻿using Tulpep.NotificationWindow;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using TimeCapture;
-using Tulpep.NotificationWindow;
-using MimeKit;
+using System.Text.RegularExpressions;
 
 namespace TimeCapture.utils
 {
@@ -290,6 +283,9 @@ namespace TimeCapture.utils
             control.Visible = true;
         }
 
+        /// <summary>
+        ///  Encases the provided text in the default TimeCapture HTML body
+        /// </summary>
         public static string EncaseMailBody(this string sBody)
         {
             string sEncasedBody = String.Format(@"
@@ -328,6 +324,57 @@ namespace TimeCapture.utils
                 ", sBody.Replace("\r", "<br>"));
 
             return sEncasedBody;
+        }
+
+        public static string ToHTMLTable(this string sText)
+        {
+            // 1, 1 == td in one row
+            // 1, 2, 3 == seperate rows
+            string sNewText = sText.Replace("\n", "");
+            Dictionary<int, List<string>> rows = new Dictionary<int, List<string>>();
+            string[] parts = Regex.Split(sNewText, @"(\d+)");
+
+            int currentRow = 0;
+
+            foreach (var part in parts)
+            {
+                if (int.TryParse(part, out int rowNum))
+                {
+                    currentRow = rowNum;
+                    if (!rows.ContainsKey(currentRow))
+                    {
+                        rows[currentRow] = new List<string>();
+                    }
+                }
+                else if (!string.IsNullOrWhiteSpace(part))
+                {
+                    if (rows.Count > 0)
+                    {
+                        rows[currentRow].Add(part);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Invalid format for table, please ensure table contains numbers for rows");
+                        return sText;
+                    }
+                }
+            }
+
+            string htmlTable = "<table>\n";
+
+            foreach (var row in rows)
+            {
+                htmlTable += "\t<tr>\n";
+                foreach (var cell in row.Value)
+                {
+                    htmlTable += $"\t\t<td>{cell}</td>\n";
+                }
+                htmlTable += "\t</tr>\n";
+            }
+
+            htmlTable += "</table>";
+
+            return htmlTable.Replace("/n", "/r");
         }
 
         #endregion Conversions

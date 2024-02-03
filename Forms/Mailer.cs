@@ -1,4 +1,5 @@
 ﻿using TimeCapture.utils;
+using Keys = System.Windows.Forms.Keys;
 
 namespace TimeCapture.Forms
 {
@@ -31,7 +32,35 @@ namespace TimeCapture.Forms
             {
                 oBar.Maximum = 1;
             }
+
+            rtbBody.KeyDown += RtbBody_KeyDown;
         }
+
+        private void RtbBody_KeyDown(object? sender, KeyEventArgs e)
+        {
+            int selectionStart = rtbBody.SelectionStart;
+            string sText = rtbBody.Text;
+            string sSelected = rtbBody.SelectedText;
+            if (String.IsNullOrWhiteSpace(sSelected))
+            {
+                if (e.Modifiers == Keys.Control && e.KeyCode == Keys.D)
+                    rtbBody.Text = sText.Insert(selectionStart, "<div> </div>");
+                else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.T)
+                    rtbBody.Text = sText.Insert(selectionStart, "<table><tr><td> </td></tr></table>");
+                else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.B)
+                    rtbBody.Text = sText.Insert(selectionStart, "<b> </b>");
+            }
+            else
+            {
+                if (e.Modifiers == Keys.Control && e.KeyCode == Keys.D)
+                    rtbBody.SelectedText = $"<div> {sSelected} </div>";
+                else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.T)
+                    rtbBody.SelectedText = sSelected.ToHTMLTable();
+                else if (e.Modifiers == Keys.Control && e.KeyCode == Keys.B)
+                    rtbBody.SelectedText = $"<b> {sSelected} </b>";
+            }
+        }
+        
 
         private void DgvTags_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
         {
@@ -216,6 +245,21 @@ namespace TimeCapture.Forms
         public void StopLoading(bool isSuccess)
         {
             oStatus = isSuccess ? Status.Idle : Status.Error;
+        }
+
+        private void lnkHTMLHelp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            StringBuilder sbText = new StringBuilder();
+            sbText.AppendLine("Html Shortcuts are enabled:");
+            sbText.AppendLine("- Ctrl + D adds a <div>");
+            sbText.AppendLine("- Ctrl + B adds a <b> (Bold)");
+            sbText.AppendLine("- Ctrl + T adds a <table> with one row");
+            sbText.AppendLine("     When adding tables with selected rows, note that whole tables can be created. ");
+            sbText.AppendLine("     By using: '1 Cell One 1 Cell Two 2 RowTwo 2 Row Two Cell two");
+            sbText.AppendLine("     A table can be created with 2 cells and 2 rows, just by using numbers to seperate the rows");
+            sbText.AppendLine("");
+            sbText.AppendLine("The shortcuts can be used to create new tags or, can be used while selecting text to wrap that text");
+            MessageBox.Show(sbText.ToString(), "HTML Tip", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

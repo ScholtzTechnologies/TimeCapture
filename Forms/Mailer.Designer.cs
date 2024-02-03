@@ -53,6 +53,7 @@
             this.roundedProgressBar2 = new CustomControls.RoundedProgressBar();
             this.roundedProgressBar3 = new CustomControls.RoundedProgressBar();
             this.roundedProgressBar4 = new CustomControls.RoundedProgressBar();
+            this.lnkHTMLHelp = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTags)).BeginInit();
             this.SuspendLayout();
             // 
@@ -310,11 +311,23 @@
             this.roundedProgressBar4.Size = new System.Drawing.Size(29, 29);
             this.roundedProgressBar4.TabIndex = 21;
             // 
+            // lnkHTMLHelp
+            // 
+            this.lnkHTMLHelp.AutoSize = true;
+            this.lnkHTMLHelp.Location = new System.Drawing.Point(694, 117);
+            this.lnkHTMLHelp.Name = "lnkHTMLHelp";
+            this.lnkHTMLHelp.Size = new System.Drawing.Size(16, 20);
+            this.lnkHTMLHelp.TabIndex = 22;
+            this.lnkHTMLHelp.TabStop = true;
+            this.lnkHTMLHelp.Text = "?";
+            this.lnkHTMLHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHTMLHelp_LinkClicked);
+            // 
             // Mailer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lnkHTMLHelp);
             this.Controls.Add(this.roundedProgressBar4);
             this.Controls.Add(this.roundedProgressBar3);
             this.Controls.Add(this.roundedProgressBar2);
@@ -373,5 +386,6 @@
         private CustomControls.RoundedProgressBar roundedProgressBar2;
         private CustomControls.RoundedProgressBar roundedProgressBar3;
         private CustomControls.RoundedProgressBar roundedProgressBar4;
+        private LinkLabel lnkHTMLHelp;
     }
 }
