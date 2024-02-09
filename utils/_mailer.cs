@@ -13,37 +13,44 @@ namespace TimeCapture.utils
 
             Mail.From.Add(new MailboxAddress(_configuration.GetConfigValue("FromName"), _configuration.GetConfigValue("FromEmail")));
 
-            string[] lTo;
-            if (sTo.Contains(","))
-                lTo = sTo.Split(",");
-            else
-                lTo = sTo.Split(";");
+            string[] lTo = null, lCC = null;
 
-            string[] lCC;
-            if (sCC.Contains(","))
-                lCC = sCC.Split(",");
-            else
-                lCC = sCC.Split(";");
-
-            List<string> lAddressErrors = new List<string>();
-            if (lTo.Length > 0 && !String.IsNullOrWhiteSpace(sTo))
+            if (!sTo.isNullOrEmpty())
             {
-                foreach (string to in lTo)
+                if (sTo.Contains(","))
                 {
-                    try
-                    {
-                        Mail.To.Add(new MailboxAddress(to.Split("@")[0].ToString().Replace(" ", ""), to));
-                    }
-                    catch
-                    { lAddressErrors.Add(to); }
+                    lTo = sTo.Split(",");
                 }
-                if (lAddressErrors.Count > 0)
+                else if (sTo.Contains(",") && sTo.Contains(";"))
                 {
-                    StringBuilder sbError = new StringBuilder();
-                    sbError.AppendLine("Errors adding the following mails, please check or remove as required.");
-                    foreach (string to in lAddressErrors)
+                    MessageBox.Show("Please use either ',' or ';' in the To field, not both.");
+                    isValid = false;
+                }
+                else
+                {
+                    lTo = sTo.Split(";");
+                }
+
+                List<string> lAddressErrors = new List<string>();
+                if (lTo.Length > 0 && !String.IsNullOrWhiteSpace(sTo))
+                {
+                    foreach (string to in lTo)
                     {
-                        sbError.AppendLine($" - {to}");
+                        try
+                        {
+                            Mail.To.Add(new MailboxAddress(to.Split("@")[0].ToString().Replace(" ", ""), to));
+                        }
+                        catch
+                        { lAddressErrors.Add(to); }
+                    }
+                    if (lAddressErrors.Count > 0)
+                    {
+                        StringBuilder sbError = new StringBuilder();
+                        sbError.AppendLine("Errors adding the following mails, please check or remove as required.");
+                        foreach (string to in lAddressErrors)
+                        {
+                            sbError.AppendLine($" - {to}");
+                        }
                     }
                 }
             }
@@ -64,8 +71,23 @@ namespace TimeCapture.utils
                 isValid = false;
             }
 
-            if (lCC.Length > 0 && !String.IsNullOrWhiteSpace(sCC))
+
+            if (!String.IsNullOrWhiteSpace(sCC))
             {
+                if (sCC.Contains(","))
+                {
+                    lCC = sCC.Split(",");
+                }
+                else if (sCC.Contains(",") && sCC.Contains(";"))
+                {
+                    MessageBox.Show("Please use either ',' or ';' in the CC field, not both.");
+                    isValid = false;
+                }
+                else
+                {
+                    lCC = sCC.Split(";");
+                }
+
                 foreach (string cc in lCC)
                 {
                     Mail.Cc.Add(new MailboxAddress(cc.Split("@")[0].ToString(), cc));

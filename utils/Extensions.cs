@@ -76,6 +76,14 @@ namespace TimeCapture.utils
             return TimeStamp;
         }
 
+        public static bool isNullOrEmpty(this string sString)
+        {
+            if (String.IsNullOrEmpty(sString) || String.IsNullOrWhiteSpace(sString))
+                return true;
+            else
+                return false;
+        }
+
         #endregion Checks
 
         #region DataRow Extensions
@@ -288,40 +296,8 @@ namespace TimeCapture.utils
         /// </summary>
         public static string EncaseMailBody(this string sBody)
         {
-            string sEncasedBody = String.Format(@"
-				<div class='message' style='margin: 10px;
-		            border: 1px solid black;
-		            border-radius: 20px;'>
-                    <div class='header' style='border-top-right-radius: 20px;border-top-left-radius: 20px;text-align: center;
-		            font-size: 15px;
-		            font-family: arial;
-		            background-color: darkred;
-		            padding: 10px;
-		            color: white;
-		            border-bottom: 2px solid black;'>
-	                <h1 style='vertical-align: middle;'>
-                        Sent Via TimeCapture
-                    </h1>
-                </div>
-                <br>
-                <div style='margin-left: 10px; margin-right: 10px;font-family: arial;'>
-                	{0}
-            	</div>
-                <br>
-                <div class='header' style='border-bottom-right-radius: 20px;border-bottom-left-radius: 20px; font-size: 10; 
-                		color: lightgray !important;text-align: center;
-		                font-size: 15px;
-		                font-family: arial;
-		                background-color: darkred;
-		                padding: 10px;
-		                color: white;
-		                border-bottom: 2px solid black;'>
-	                <p>The company accepts no liability for the content of this email.</p>
-	                <p>If not recieved by the intended recipient, you are notified that disclosing, copying, distributing or taking any action in reliance on the contents of this information is strictly prohibited.</p>
-                </div>
-                </div>
-                
-                ", sBody.Replace("\r", "<br>"));
+            string sMailCasingFile = Path.GetFullPath(Directory.GetCurrentDirectory() + "utils\\files\\MailCasing.html").ToString();
+            string sEncasedBody = String.Format(System.IO.File.ReadAllText(sMailCasingFile).ToString(), sBody);
 
             return sEncasedBody;
         }
@@ -378,7 +354,6 @@ namespace TimeCapture.utils
         }
 
         #endregion Conversions
-
     }
 
     #region Classes
@@ -464,4 +439,101 @@ namespace TimeCapture.utils
 
     #endregion Classes
 
+    public static class Loader
+    {
+        public static Status oStatus = new Status();
+
+        /// <summary>
+        ///     Uses the custom control RoundedProgressBars to initialize a loading animation. Requires that the Rounded Progress Bars be left with their default names or be named in a orderable way.
+        /// </summary>
+        /// <param name="form"></param>
+        /// <returns></returns>
+        public static async Task Start(Form form)
+        {
+            List<ProgressBar> progressBars = new List<ProgressBar>();
+            oStatus = Status.Busy;
+
+            foreach (Control control in form.Controls)
+            {
+                if (control is CustomControls.RoundedProgressBar pb)
+                {
+                    pb.Invoke((MethodInvoker)delegate
+                    {
+                        pb.Maximum = 1;
+                    });
+                    progressBars.Add(pb);
+                }
+            }
+            progressBars = progressBars.OrderBy(x => x.Name).ToList();
+
+            await Task.Run(() =>
+            {
+                int i = 0;
+
+                while (oStatus == Status.Busy)
+                {
+
+                    for (i = 0; i < progressBars.Count; i++)
+                    {
+                        try
+                        {
+                            progressBars[i - 1].Invoke((MethodInvoker)delegate
+                            {
+                                progressBars[i - 1].Value = 0;
+                            });
+                        }
+                        catch
+                        {
+                            progressBars.LastOrDefault().Invoke((MethodInvoker)delegate
+                            {
+                                progressBars.LastOrDefault().Value = 0;
+                            });
+                        }
+
+                        progressBars[i].Invoke((MethodInvoker)delegate
+                        {
+                            progressBars[i].Value = 1;
+                        });
+                        Thread.Sleep(750);
+                    }
+                }
+
+                if (oStatus == Status.Idle)
+                {
+                    foreach (var oBar in progressBars)
+                    {
+                        oBar.Invoke((MethodInvoker)delegate
+                        {
+                            oBar.Value = 1;
+                        });
+                    }
+
+                    Thread.Sleep(1000);
+
+                    foreach (var oBar in progressBars)
+                    {
+                        oBar.Invoke((MethodInvoker)delegate
+                        {
+                            oBar.Value = 0;
+                        });
+                    }
+                }
+                else
+                {
+                    foreach (var oBar in progressBars)
+                    {
+                        oBar.Invoke((MethodInvoker)delegate
+                        {
+                            oBar.Value = 0;
+                        });
+                    }
+                }
+            });
+        }
+
+        public static void Stop(bool isSuccess)
+        {
+            oStatus = isSuccess ? Status.Idle : Status.Error;
+        }
+    }
 }

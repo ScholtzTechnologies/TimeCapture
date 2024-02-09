@@ -12,14 +12,19 @@ namespace TimeCapture.DB
 
         public static String GetConnectionString()
         {
+            string dbFile;
             if (!_configuration.ConnectionString.Contains("[NotImplemented]"))
                 return _configuration.ConnectionString;
 
-            string dbFile = Path.GetFullPath("../../../DB/Time.mdf");
+            if (!_configuration.GetConfigValue("DBFilePath").isNullOrEmpty())
+                dbFile = _configuration.GetConfigValue("DBFilePath");
+            else
+                dbFile = Path.GetFullPath("../../../DB/Time.mdf");
+
             return "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=" + dbFile + ";Integrated Security=True";
         }
 
-        public void TestConnection(out string Response)
+        public bool TestConnection(out string Response)
         {
             try
             {
@@ -27,25 +32,12 @@ namespace TimeCapture.DB
                 connection.Open();
                 connection.Close();
                 Response = "Connected - Welcome to TimeCapture";
+                return true;
             }
             catch
             {
                 MessageBox.Show("Failed to connect, please ensure the database file has been created and restart the app.");
                 Response = "Failed to connect, please correct and restart";
-            }
-        }
-
-        public bool isConnectionUp()
-        {
-            try
-            {
-                SqlConnection connection = new SqlConnection(GetConnectionString());
-                connection.Open();
-                connection.Close();
-                return true;
-            }
-            catch
-            {
                 return false;
             }
         }
@@ -65,7 +57,8 @@ namespace TimeCapture.DB
 
         private static void HandleTimerConTick(object source, ElapsedEventArgs e)
         {
-            bool isConnectionUp = new Access().isConnectionUp();
+            string sResponse;
+            bool isConnectionUp = new Access().TestConnection(out sResponse);
             string errorMsg = "An error has occured while connection to the database. If the issue persists please restart the app";
 
             if (!isConnectionUp)

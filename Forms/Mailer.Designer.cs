@@ -29,9 +29,6 @@
         private void InitializeComponent()
         {
             this.dgvTags = new System.Windows.Forms.DataGridView();
-            this.colTagName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTableName = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.colColumnName = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.tglUseTags = new CustomControls.ToggleSwitch();
             this.lblUseTags = new System.Windows.Forms.Label();
             this.rtbTo = new System.Windows.Forms.RichTextBox();
@@ -54,6 +51,9 @@
             this.roundedProgressBar3 = new CustomControls.RoundedProgressBar();
             this.roundedProgressBar4 = new CustomControls.RoundedProgressBar();
             this.lnkHTMLHelp = new System.Windows.Forms.LinkLabel();
+            this.roundedProgressBar5 = new CustomControls.RoundedProgressBar();
+            this.colTagName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSQL = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTags)).BeginInit();
             this.SuspendLayout();
             // 
@@ -63,35 +63,13 @@
             this.dgvTags.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvTags.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colTagName,
-            this.colTableName,
-            this.colColumnName});
+            this.colSQL});
             this.dgvTags.Location = new System.Drawing.Point(12, 250);
             this.dgvTags.Name = "dgvTags";
             this.dgvTags.RowHeadersWidth = 51;
             this.dgvTags.RowTemplate.Height = 29;
             this.dgvTags.Size = new System.Drawing.Size(415, 155);
             this.dgvTags.TabIndex = 0;
-            // 
-            // colTagName
-            // 
-            this.colTagName.HeaderText = "Tag Name";
-            this.colTagName.MinimumWidth = 6;
-            this.colTagName.Name = "colTagName";
-            this.colTagName.Width = 125;
-            // 
-            // colTableName
-            // 
-            this.colTableName.HeaderText = "Table Name";
-            this.colTableName.MinimumWidth = 6;
-            this.colTableName.Name = "colTableName";
-            this.colTableName.Width = 125;
-            // 
-            // colColumnName
-            // 
-            this.colColumnName.HeaderText = "Column Name";
-            this.colColumnName.MinimumWidth = 6;
-            this.colColumnName.Name = "colColumnName";
-            this.colColumnName.Width = 125;
             // 
             // tglUseTags
             // 
@@ -266,7 +244,7 @@
             // roundedProgressBar1
             // 
             this.roundedProgressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.roundedProgressBar1.Location = new System.Drawing.Point(293, 409);
+            this.roundedProgressBar1.Location = new System.Drawing.Point(257, 409);
             this.roundedProgressBar1.Name = "roundedProgressBar1";
             this.roundedProgressBar1.ProgressBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.roundedProgressBar1.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -278,7 +256,7 @@
             // roundedProgressBar2
             // 
             this.roundedProgressBar2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.roundedProgressBar2.Location = new System.Drawing.Point(328, 409);
+            this.roundedProgressBar2.Location = new System.Drawing.Point(292, 409);
             this.roundedProgressBar2.Name = "roundedProgressBar2";
             this.roundedProgressBar2.ProgressBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.roundedProgressBar2.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -290,7 +268,7 @@
             // roundedProgressBar3
             // 
             this.roundedProgressBar3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.roundedProgressBar3.Location = new System.Drawing.Point(363, 409);
+            this.roundedProgressBar3.Location = new System.Drawing.Point(327, 409);
             this.roundedProgressBar3.Name = "roundedProgressBar3";
             this.roundedProgressBar3.ProgressBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.roundedProgressBar3.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -302,7 +280,7 @@
             // roundedProgressBar4
             // 
             this.roundedProgressBar4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.roundedProgressBar4.Location = new System.Drawing.Point(398, 409);
+            this.roundedProgressBar4.Location = new System.Drawing.Point(362, 409);
             this.roundedProgressBar4.Name = "roundedProgressBar4";
             this.roundedProgressBar4.ProgressBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.roundedProgressBar4.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -322,11 +300,38 @@
             this.lnkHTMLHelp.Text = "?";
             this.lnkHTMLHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHTMLHelp_LinkClicked);
             // 
+            // roundedProgressBar5
+            // 
+            this.roundedProgressBar5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.roundedProgressBar5.Location = new System.Drawing.Point(397, 411);
+            this.roundedProgressBar5.Name = "roundedProgressBar5";
+            this.roundedProgressBar5.ProgressBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.roundedProgressBar5.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.roundedProgressBar5.ProgressFont = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.roundedProgressBar5.ProgressFontColor = System.Drawing.Color.Black;
+            this.roundedProgressBar5.Size = new System.Drawing.Size(29, 29);
+            this.roundedProgressBar5.TabIndex = 23;
+            // 
+            // colTagName
+            // 
+            this.colTagName.HeaderText = "Tag Name";
+            this.colTagName.MinimumWidth = 6;
+            this.colTagName.Name = "colTagName";
+            this.colTagName.Width = 125;
+            // 
+            // colSQL
+            // 
+            this.colSQL.HeaderText = "SQL";
+            this.colSQL.MinimumWidth = 6;
+            this.colSQL.Name = "colSQL";
+            this.colSQL.Width = 125;
+            // 
             // Mailer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.roundedProgressBar5);
             this.Controls.Add(this.lnkHTMLHelp);
             this.Controls.Add(this.roundedProgressBar4);
             this.Controls.Add(this.roundedProgressBar3);
@@ -379,13 +384,13 @@
         private Label lblSubject;
         private Button btnSend;
         private Button btnCancel;
-        private DataGridViewTextBoxColumn colTagName;
-        private DataGridViewComboBoxColumn colTableName;
-        private DataGridViewComboBoxColumn colColumnName;
         private CustomControls.RoundedProgressBar roundedProgressBar1;
         private CustomControls.RoundedProgressBar roundedProgressBar2;
         private CustomControls.RoundedProgressBar roundedProgressBar3;
         private CustomControls.RoundedProgressBar roundedProgressBar4;
         private LinkLabel lnkHTMLHelp;
+        private CustomControls.RoundedProgressBar roundedProgressBar5;
+        private DataGridViewTextBoxColumn colTagName;
+        private DataGridViewTextBoxColumn colSQL;
     }
 }

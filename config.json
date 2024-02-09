@@ -5,6 +5,7 @@
   "DateTimeFormat": "dd MMM yyyy",
   "key": "b14ca5898a4e4133bbce2ea2315a1916",
   "SQL": "insert into blah blah",
+  "DBFilePath": "C:\\Users\\Brayden\\Desktop\\TimeCapture.rev2\\DB\\Time.mdf",
 
   // Global Settings
   //
@@ -12,12 +13,12 @@
   "isNotifications": "0",
   "isBusiness": "0",
   "IsDirectCapture": "0",
-  "AllowNewUsers": "1",
+  "AllowNewUsers": "0",
   "IsCodeplex": "1",
   "isDefaultDarkMode": "1",
 
   // String
-  "BusinessName": "Scholtz",
+  "BusinessName": "ScholtzWeb",
   "SeleniumURL": "https://web3.searchlightsoftware.co.za/Tickets/Login.aspx",
 
   // Mail

@@ -18,7 +18,6 @@ namespace TimeCapture
         public List<CSVImport.Clients> lClients = new List<CSVImport.Clients>();
         public List<CSVImport.Tickets> lTickets = new List<CSVImport.Tickets>();
         public List<CSVImport.Settings> Settings = new List<CSVImport.Settings>();
-        public List<ProgressBar> progressBars = new List<ProgressBar>();
         public DB.Access Access = new DB.Access();
         public static string root = Directory.GetCurrentDirectory();
         public static string SettingsCsv = Path.Combine(root, "Data", "Settings.csv");
@@ -107,16 +106,6 @@ namespace TimeCapture
             bool isDefaultDarkMode = Convert.ToInt32(_configuration.GetConfigValue("isDefaultDarkMode")).ToBool();
             if (isDefaultDarkMode)
                 toggleSwitch1.Checked = true;
-
-            progressBars.Add(this.roundedProgressBar1);
-            progressBars.Add(this.roundedProgressBar2);
-            progressBars.Add(this.roundedProgressBar3);
-            progressBars.Add(this.roundedProgressBar4);
-
-            foreach (var oBar in progressBars)
-            {
-                oBar.Maximum = 1;
-            }
         }
 
         #region CheckBoxes
@@ -276,24 +265,35 @@ namespace TimeCapture
 
         private void btnCaptureTime_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            Control lblAction;
-            ShowSpinner(out lblAction);
-            try
+            string sError;
+            bool bDriverUpdated = new _nuget().UpdateChromeDriver(out sError);
+            if (!bDriverUpdated)
             {
-                timeCapture.CaptureTime(BrowserType.Chrome, lblAction);
-                new _logger().Log(LogType.Info, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
+                MessageBox.Show("Error updating chrome driver. Please restart app, if issue persists please contact support.");
+                new _logger().Log(LogType.Error, sError, "Chrome Driver Update");
             }
-            catch (Exception ex)
+            else
             {
-                new _logger().Log(LogType.Error, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
-                DialogResult error = MessageBox.Show("Failed to capture time, see exception message?", "", MessageBoxButtons.YesNo);
+                this.Hide();
+                Control lblAction;
+                ShowSpinner(out lblAction);
+                try
+                {
+                    lblAction.Text = "";
+                    timeCapture.CaptureTime(BrowserType.Chrome, lblAction);
+                    new _logger().Log(LogType.Info, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
+                }
+                catch (Exception ex)
+                {
+                    new _logger().Log(LogType.Error, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
+                    DialogResult error = MessageBox.Show("Failed to capture time, see exception message?", "", MessageBoxButtons.YesNo);
 
-                if (error == DialogResult.Yes)
-                    MessageBox.Show(ex.Message.ToString());
+                    if (error == DialogResult.Yes)
+                        MessageBox.Show(ex.Message.ToString());
+                }
+                HideSpinner();
+                this.Show();
             }
-            HideSpinner();
-            this.Show();
         }
 
         private void btnDelTicket_Click(object sender, EventArgs e)
@@ -445,6 +445,7 @@ namespace TimeCapture
 
         public void ShowSpinner(out Control lblAction)
         {
+            
             if (Spinner == null)
                 Spinner = new(out lblAction);
             else
@@ -1700,82 +1701,87 @@ namespace TimeCapture
 
         #region Loader
 
-        public async Task StartLoading()
+        public void StartLoading()
         {
-            oStatus = Status.Busy;
-
-            await Task.Run(() =>
-            {
-                int i = 0;
-                ProgressBar bar1 = progressBars[0],
-                       bar2 = progressBars[1],
-                       bar3 = progressBars[2],
-                       bar4 = progressBars[3];
-
-                while (oStatus == Status.Busy)
-                {
-
-                    for (i = 0; i < progressBars.Count; i++)
-                    {
-                        try
-                        {
-                            progressBars[i - 1].Invoke((MethodInvoker)delegate
-                            {
-                                progressBars[i - 1].Value = 0;
-                            });
-                        }
-                        catch 
-                        {
-                            progressBars.LastOrDefault().Invoke((MethodInvoker)delegate
-                            {
-                                progressBars.LastOrDefault().Value = 0;
-                            });
-                        }
-
-                        progressBars[i].Invoke((MethodInvoker)delegate
-                        {
-                            progressBars[i].Value = 1;
-                        });
-                        Thread.Sleep(750);
-                    }
-                }
-
-                if (oStatus == Status.Idle)
-                {
-                    foreach (var oBar in progressBars)
-                    {
-                        oBar.Invoke((MethodInvoker)delegate
-                        {
-                            oBar.Value = 1;
-                        });
-                    }
-                    
-                    Thread.Sleep(1000);
-
-                    foreach (var oBar in progressBars)
-                    {
-                        oBar.Invoke((MethodInvoker)delegate
-                        {
-                            oBar.Value = 0;
-                        });
-                    }
-                }
-                else
-                {
-                    foreach (var oBar in progressBars)
-                    {
-                        oBar.Invoke((MethodInvoker)delegate
-                        {
-                            oBar.Value = 0;
-                        });
-                    }
-                }
-            });
+            Loader.Start(this);
         }
+
+        //public async Task StartLoading()
+        //{
+        //    oStatus = Status.Busy;
+
+        //    await Task.Run(() =>
+        //    {
+        //        int i = 0;
+        //        ProgressBar bar1 = progressBars[0],
+        //               bar2 = progressBars[1],
+        //               bar3 = progressBars[2],
+        //               bar4 = progressBars[3];
+
+        //        while (oStatus == Status.Busy)
+        //        {
+
+        //            for (i = 0; i < progressBars.Count; i++)
+        //            {
+        //                try
+        //                {
+        //                    progressBars[i - 1].Invoke((MethodInvoker)delegate
+        //                    {
+        //                        progressBars[i - 1].Value = 0;
+        //                    });
+        //                }
+        //                catch 
+        //                {
+        //                    progressBars.LastOrDefault().Invoke((MethodInvoker)delegate
+        //                    {
+        //                        progressBars.LastOrDefault().Value = 0;
+        //                    });
+        //                }
+
+        //                progressBars[i].Invoke((MethodInvoker)delegate
+        //                {
+        //                    progressBars[i].Value = 1;
+        //                });
+        //                Thread.Sleep(750);
+        //            }
+        //        }
+
+        //        if (oStatus == Status.Idle)
+        //        {
+        //            foreach (var oBar in progressBars)
+        //            {
+        //                oBar.Invoke((MethodInvoker)delegate
+        //                {
+        //                    oBar.Value = 1;
+        //                });
+        //            }
+                    
+        //            Thread.Sleep(1000);
+
+        //            foreach (var oBar in progressBars)
+        //            {
+        //                oBar.Invoke((MethodInvoker)delegate
+        //                {
+        //                    oBar.Value = 0;
+        //                });
+        //            }
+        //        }
+        //        else
+        //        {
+        //            foreach (var oBar in progressBars)
+        //            {
+        //                oBar.Invoke((MethodInvoker)delegate
+        //                {
+        //                    oBar.Value = 0;
+        //                });
+        //            }
+        //        }
+        //    });
+        //}
 
         public void StopLoading(bool isSuccess)
         {
-            oStatus = isSuccess ? Status.Idle : Status.Error;
+            Loader.Stop(isSuccess);
         }
 
         #endregion Loader
