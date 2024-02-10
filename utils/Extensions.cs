@@ -84,6 +84,21 @@ namespace TimeCapture.utils
                 return false;
         }
 
+        public static bool isTrue(this string sString)
+        {
+            if (!sString.isNullOrEmpty())
+            {
+                if (sString == "1" || sString.ToLower() == "y" || sString.ToLower() == "yes")
+                    return true;
+                else
+                    return false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         #endregion Checks
 
         #region DataRow Extensions
@@ -296,8 +311,9 @@ namespace TimeCapture.utils
         /// </summary>
         public static string EncaseMailBody(this string sBody)
         {
-            string sMailCasingFile = Path.GetFullPath(Directory.GetCurrentDirectory() + "utils\\files\\MailCasing.html").ToString();
-            string sEncasedBody = String.Format(System.IO.File.ReadAllText(sMailCasingFile).ToString(), sBody);
+            string sMailCasingFile = Path.GetFullPath(Directory.GetCurrentDirectory() + "\\utils\\files\\MailCasing.html").ToString();
+            string sFileText = System.IO.File.ReadAllText(sMailCasingFile).ToString();
+            string sEncasedBody = sFileText.Replace("[body]", sBody);
 
             return sEncasedBody;
         }

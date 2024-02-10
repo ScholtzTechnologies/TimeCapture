@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace TimeCapture.utils
 {
     public static class _configuration
     {
         private static readonly IConfigurationRoot _config;
+        private static readonly IConfigurationRoot _userConfig;
         private static string Config = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "config.json"));
+        private static string UserConfig = Path.GetFullPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "userConfig.json"));
+        
         static _configuration()
         {
             if (_config == null)
@@ -19,7 +18,22 @@ namespace TimeCapture.utils
                     .AddJsonFile(Config)
                     .Build();
             }
+
+            if (_userConfig == null)
+            {
+                if (!File.Exists(UserConfig))
+                {
+                    using (var fileStream = File.Create(UserConfig)) { }
+                    File.WriteAllText(UserConfig, JSON.GetBase());
+                }
+
+                _userConfig = new ConfigurationBuilder()
+                    .AddJsonFile(UserConfig)
+                    .Build();
+            }
         }
+
+        #region GetGlobalConfigs
 
         public static string ConnectionString
         {
@@ -87,5 +101,77 @@ namespace TimeCapture.utils
                 return "";
             }
         }
+
+        #endregion GetGlobalConfigs
+
+        #region GetLocalConfigs
+
+        public static bool isByPassValid(out int iUserID)
+        {
+            iUserID = 0;
+            if (!_userConfig[ConfigKeys.Username].isNullOrEmpty() && !_userConfig[ConfigKeys.Password].isNullOrEmpty())
+            {
+                bool isValidLogin = new Access().Login(_userConfig[ConfigKeys.Username].Decrypt(), _userConfig[ConfigKeys.Password].Decrypt(), out iUserID);
+                string sMachineName = Environment.MachineName;
+                if (isValidLogin && _userConfig[ConfigKeys.MachineName].Decrypt() == sMachineName)
+                    return true;
+                else
+                    return false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static string GetLocalConfigValue(string Param)
+        {
+            try
+            {
+                return _userConfig[Param];
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion GetLocalConfigs
+
+        #region AlterUpdateLocalConfig
+
+        public static void UpdateLocalConfiguration(string key, string value, int iUserID)
+        {
+            var json = File.ReadAllText(UserConfig);
+            var jObject = JObject.Parse(json);
+
+            if (jObject.ContainsKey(key))
+            {
+                string sOldValue = GetLocalConfigValue(key) != null ? GetLocalConfigValue(key) : "";
+                new Access().UpdateConfigHS(key, sOldValue, value, SQLMode.Modified, iUserID);
+                jObject[key] = value;
+            }
+            else
+            {
+                new Access().UpdateConfigHS(key, "", value, SQLMode.Added, iUserID);
+                jObject.Add(key, value);
+            }
+
+            File.WriteAllText(UserConfig, jObject.ToString());
+
+            _userConfig.Reload();
+        }
+
+        /// <summary>
+        ///     This updates the configuration value used to skipped the login screen. data is Encrypted on set, and decrypted on get.
+        /// </summary>
+        public static void UpdateLocalUser(string sUsername, string sPassword, int iUserID)
+        {
+            UpdateLocalConfiguration(ConfigKeys.Username, sUsername.Encrypt(), iUserID);
+            UpdateLocalConfiguration(ConfigKeys.MachineName, Environment.MachineName.Encrypt(), iUserID);
+            UpdateLocalConfiguration(ConfigKeys.Password, sPassword.Encrypt(), iUserID);
+        }
+
+        #endregion AlterUpdateLocalConfig
     }
 }

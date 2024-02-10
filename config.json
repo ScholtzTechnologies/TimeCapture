@@ -11,15 +11,18 @@
   //
   // Bool
   "isNotifications": "0",
-  "isBusiness": "0",
+  "isBusiness": "1",
   "IsDirectCapture": "0",
   "AllowNewUsers": "0",
   "IsCodeplex": "1",
   "isDefaultDarkMode": "1",
+  "isLoginBypass": "1",
 
   // String
   "BusinessName": "ScholtzWeb",
   "SeleniumURL": "https://web3.searchlightsoftware.co.za/Tickets/Login.aspx",
+  "SeleniumPassword": "Brayden",
+  "SeleniumUsername": "Demo#1",
 
   // Mail
   "FromName": "TimeCapture",

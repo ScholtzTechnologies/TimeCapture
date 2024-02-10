@@ -74,3 +74,28 @@ public enum LogType
     Fatal,
     Trace
 }
+
+public static class ConfigKeys
+{
+    public static string Username = "Username";
+    public static string MachineName = "MachineName";
+    public static string Password = "Password";
+}
+
+public static class SQLMode
+{
+    public static string Added = "A";
+    public static string Deleted = "D";
+    public static string Modified = "M";
+}
+
+public static class JSON
+{
+    public static string GetBase()
+    {
+        StringBuilder sbJSON = new StringBuilder();
+        sbJSON.Append("{");
+        sbJSON.AppendLine("}");
+        return sbJSON.ToString();
+    }
+}

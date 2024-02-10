@@ -1,6 +1,9 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
+using Microsoft.Graph;
+using Microsoft.Identity.Client;
+using System.Net.Http.Headers;
 
 namespace TimeCapture.utils
 {
@@ -120,6 +123,68 @@ namespace TimeCapture.utils
             }
             else
                 throw new BadDataException("Mail fields", null, null);
+        }
+    }
+
+
+    public class GraphMail
+    {
+        public void SendEmail(string sSubject, string sBody, string sTo, string sCC = "")
+        {
+            string GraphMailTenantId = "b2cc3901-d499-4ea3-aff2-26625de5addd", GraphMailClientId = "d167ec17-69ee-42a8-9627-778a77f1d515",
+                GraphMailClientSecret = "QBb8Q~pN~6Te5N.8PZED440ZhLlMy53jsq~aEbyD", GraphMailUserId = "DemoCG@codeplex.co.za",
+                GraphMailScope = "https://graph.microsoft.com/.default", GraphMailUrl = "https://login.microsoftonline.com/[[tenantId]]/v2.0";
+
+            string[] scopes = new string[] { GraphMailScope };
+            List<Recipient> oToRecipients = new List<Recipient>();
+
+            Recipient recipient = new Recipient()
+            {
+                EmailAddress = new Microsoft.Graph.EmailAddress() { Address = sTo, Name = "Test" }
+            };
+            oToRecipients.Add(recipient);
+
+            var message = new Microsoft.Graph.Message
+            {
+                Subject = sSubject,
+                Body = new ItemBody
+                {
+                    ContentType = BodyType.Html,
+                    Content = sBody.EncaseMailBody()
+                },
+                ToRecipients = oToRecipients,
+            };
+
+            IConfidentialClientApplication confidentialClient = ConfidentialClientApplicationBuilder
+                .Create(GraphMailClientId)
+                .WithClientSecret(GraphMailClientSecret)
+                .WithAuthority(new Uri(GraphMailUrl.Replace("[[tenantId]]", GraphMailTenantId)))
+                .Build();
+
+            // Retrieve an access token for Microsoft Graph (gets a fresh token if needed).
+            var oAuthResult = confidentialClient
+                                .AcquireTokenForClient(scopes)
+                                .ExecuteAsync().Result;
+
+            var oToken = oAuthResult.AccessToken;
+
+            // Build the Microsoft Graph client. As the authentication provider, set an async lambda
+            // which uses the MSAL client to obtain an app-only access token to Microsoft Graph,
+            // and inserts this access token in the Authorization header of each API request.
+            GraphServiceClient oGraphServiceClient =
+                new GraphServiceClient(new DelegateAuthenticationProvider(async (requestMessage) =>
+                {
+                    // Add the access token in the Authorization header of the API request.
+                    requestMessage.Headers.Authorization =
+                            new AuthenticationHeaderValue("Bearer", oToken);
+                })
+                );
+
+            oGraphServiceClient.Users[GraphMailUserId]
+                               .SendMail(message, false)
+                               .Request()
+                               .PostAsync()
+                               .Wait();
         }
     }
 }

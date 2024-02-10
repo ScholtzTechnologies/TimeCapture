@@ -763,6 +763,9 @@ namespace TimeCapture
             bool isAdmin = Access.isAdmin(iUserID);
             if (isAdmin)
                 tsAdmin.Visible = true;
+
+            string sUsername = Access.GetUserName(iUserID);
+            this.Text = isAdmin ? this.Text + $" ( {sUsername} - Admin )" : this.Text + $" ( {sUsername} )";
         }
 
         public void isCodeplex()
@@ -1647,11 +1650,12 @@ namespace TimeCapture
                         }
                     }
 
-                    new _scriptTool().RunInScripts();
                 }
                 new _logger().Log(LogType.Info, "Database Extracted");
                 new Access().FillSettings();
             }
+
+            new _scriptTool().RunInScripts();
         }
 
         #endregion RAR Handler

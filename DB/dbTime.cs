@@ -328,13 +328,13 @@ namespace TimeCapture.DB
             ExecuteNonQuery(sSQL);
         }
 
-        public string GetUserName()
+        public string GetUserName(int iUserID)
         {
-            string sSQL = "select Value from Settings where ID = 5";
+            string sSQL = $"select Name from SystemUsers where ID = {iUserID}";
             try
             {
                 DataSet ds = ExecuteQuery(sSQL);
-                return ds.Tables[0].Rows[0]["Value"].ToString();
+                return ds.Tables[0].Rows[0]["Name"].ToString();
             }
             catch { return ""; }
         }
@@ -418,10 +418,9 @@ namespace TimeCapture.DB
         {
             if (iUserID > 0)
             {
-                string sSQL = "select Role from SystemUsers where ID = " + iUserID;
+                string sSQL = $"select Role from SystemUsers where ID = {iUserID} and Role = 'a'";
                 DataSet ds = ExecuteQuery(sSQL);
-                int Role = ds.Tables[0].Rows[0].GetDataRowIntValue("Role");
-                if (Role == 1)
+                if (ds.HasRows())
                     return true;
                 else
                     return false;
@@ -632,6 +631,16 @@ namespace TimeCapture.DB
                 where ISNULL(IsCaptured,0) <> 1";
             int iCount = ExecuteQuery(sSQL).Tables[0].Rows[0].GetDataRowIntValue("Count");
             return iCount;
+        }
+
+        public void UpdateConfigHS(string sKey, string sOldValue, string sNewValue, string Mode, int iUserID)
+        {
+            string sSQL = String.Format($@"insert into Config_HS (ConfigHSID, [Key],OldValue,NewValue,Mode, UserID)
+                                                Values(
+                                                    (select ISNULL(MAX(CONFIGHSID) + 1, 1) from Config_HS),
+                                                    '{sKey}', '{sOldValue}', '{sNewValue}', '{Mode}', {iUserID}
+                                                )");
+            ExecuteNonQuery(sSQL);
         }
 
         #endregion

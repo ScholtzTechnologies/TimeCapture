@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeCapture", "TimeCapture.csproj", "{3DBE690A-DF6C-43A6-AC15-F7859020220E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeEncryptor", "..\TimeEncryptor\TimeEncryptor.csproj", "{27D9E876-3910-4331-B1B4-DD2FC39021D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{3DBE690A-DF6C-43A6-AC15-F7859020220E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DBE690A-DF6C-43A6-AC15-F7859020220E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DBE690A-DF6C-43A6-AC15-F7859020220E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27D9E876-3910-4331-B1B4-DD2FC39021D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27D9E876-3910-4331-B1B4-DD2FC39021D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27D9E876-3910-4331-B1B4-DD2FC39021D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27D9E876-3910-4331-B1B4-DD2FC39021D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

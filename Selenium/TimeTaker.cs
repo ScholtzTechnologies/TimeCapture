@@ -5,9 +5,8 @@ namespace TimeCapture.Selenium.TimeTaker
 {
     public class TimeCapture
     {
-        
-        public string Username = new Access().GetUserName();
-        public string Password = new Access().GetPassword();
+        public string Username = _configuration.GetConfigValue("SeleniumUsername");
+        public string Password = _configuration.GetConfigValue("SeleniumPassword");
         public string URL { get; set; }
         public bool Success { get; set; }
         public bool HasTime { get; set; }
@@ -132,8 +131,8 @@ namespace TimeCapture.Selenium.TimeTaker
 
     public class TicketSystem
     {
-        public string Username = new Access().GetUserName();
-        public string Password = new Access().GetPassword();
+        public string Username = _configuration.GetConfigValue("SeleniumUsername");
+        public string Password = _configuration.GetConfigValue("SeleniumPassword");
         public string URL = new Access().GetSettingsValue(8);
         public void GetTicketURL(BrowserType browserType, string ticketNo, out string ticketURL)
         {

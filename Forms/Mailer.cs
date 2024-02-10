@@ -72,6 +72,7 @@ namespace TimeCapture.Forms
             bool isSendSeperate = tglSeperateMails.Checked,
                 isUseTags = tglUseTags.Checked;
             SendMail(sTo, sSubject, sBody, sCC, isSendSeperate, isUseTags);
+            //new GraphMail().SendEmail(sSubject, sBody, sTo, sCC);
         }
 
         public async Task SendMail(string sTo, string sSubject, string sBody, string sCC, bool isSendSeperate, bool isUseTags)

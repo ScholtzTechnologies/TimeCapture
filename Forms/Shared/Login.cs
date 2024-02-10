@@ -21,17 +21,38 @@ namespace TimeCapture.Forms.Shared
             InitializeComponent();
             time = new TimeCapture();
             time.CheckDB();
+            time.Dispose();
             string response;
             new Access().TestConnection(out response);
             new Access().InitiateKeepAlive();
             this.textBox2.PasswordChar = '*';
-            time.Disposed += Time_Disposed;
 
-            int AllowNewUsers = Convert.ToInt32(_configuration.GetConfigValue("AllowNewUsers"));
-            if (AllowNewUsers == 0)
-                linkLabel1.Visible = false;
+            if (_configuration.GetConfigValue("isLoginBypass").isTrue())
+            {
+                int iUserID;
+                if (_configuration.isByPassValid(out iUserID))
+                {
+                    time = new TimeCapture();
+                    time.UserID = iUserID;
+                    time.Show();
+                    time.LoginResponse(iUserID);
+                    time.Disposed += Time_Disposed;
+                    this.Shown += Login_Shown; ;
+                }
+            }
+            else
+            {
 
-            this.textBox2.KeyPress += TextBox2_KeyPress;
+                int AllowNewUsers = Convert.ToInt32(_configuration.GetConfigValue("AllowNewUsers"));
+                if (AllowNewUsers == 0)
+                    linkLabel1.Visible = false;
+                this.textBox2.KeyPress += TextBox2_KeyPress;
+            }
+        }
+
+        private void Login_Shown(object? sender, EventArgs e)
+        {
+            this.Hide();
         }
 
         private void TextBox2_KeyPress(object? sender, KeyPressEventArgs e)
@@ -42,11 +63,6 @@ namespace TimeCapture.Forms.Shared
             }
         }
 
-        private void Time_Disposed(object? sender, EventArgs e)
-        {
-            this.Dispose();
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             int UserID;
@@ -54,10 +70,13 @@ namespace TimeCapture.Forms.Shared
             {
                 if (new Access().Login(textBox1.Text.ToString(), textBox2.Text.ToString(), out UserID))
                 {
+                    time = new TimeCapture();
                     time.UserID = UserID;
                     time.Show();
                     this.Hide();
                     time.LoginResponse(UserID);
+                    time.Disposed += Time_Disposed;
+                    _configuration.UpdateLocalUser(textBox1.Text.ToString(), textBox2.Text.ToString(), UserID);
                 }
                 else
                 {
@@ -99,6 +118,11 @@ namespace TimeCapture.Forms.Shared
                 MessageBox.Show("Please provide a username and password on the login form first");
             }
 
+        }
+
+        private void Time_Disposed(object? sender, EventArgs e)
+        {
+            this.Dispose();
         }
     }
 }
