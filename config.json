@@ -11,12 +11,12 @@
   //
   // Bool
   "isNotifications": "0",
-  "isBusiness": "1",
+  "isBusiness": "0",
   "IsDirectCapture": "0",
   "AllowNewUsers": "0",
   "IsCodeplex": "1",
   "isDefaultDarkMode": "1",
-  "isLoginBypass": "1",
+  "isLoginBypass": "0",
 
   // String
   "BusinessName": "ScholtzWeb",
