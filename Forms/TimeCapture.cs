@@ -1,11 +1,8 @@
-﻿using TimeCapture.DB;
-using TimeCapture.Forms;
+﻿using TimeCapture.Forms;
 using TimeCapture.utils;
 using TimeCapture.Forms.Shared;
 using SharpCompress.Archives;
 using SharpCompress.Common;
-using Microsoft.Toolkit.Uwp.Notifications;
-using ScottPlot.Palettes;
 using Uno.Extensions;
 
 namespace TimeCapture
@@ -50,6 +47,7 @@ namespace TimeCapture
         public string TotalTime { get; set; }
         #endregion Properties
 
+        #region TimeCapture
         public TimeCapture()
         {
             InitializeComponent();
@@ -107,6 +105,7 @@ namespace TimeCapture
             if (isDefaultDarkMode)
                 toggleSwitch1.Checked = true;
         }
+        #endregion TimeCapture
 
         #region CheckBoxes
         private void rbNonCharge_CheckedChanged(object sender, EventArgs e)
@@ -274,26 +273,30 @@ namespace TimeCapture
             }
             else
             {
-                this.Hide();
-                Control lblAction;
-                ShowSpinner(out lblAction);
+                CaptureTime().Start();
+            }
+        }
+
+        public async Task CaptureTime()
+        {
+            await Task.Run(() =>
+            {
+                StartLoading();
                 try
                 {
-                    lblAction.Text = "";
-                    timeCapture.CaptureTime(BrowserType.Chrome, lblAction);
-                    new _logger().Log(LogType.Info, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
+                    responseMessage.Text = "";
+                    timeCapture.CaptureTime(BrowserType.Chrome, responseMessage);
+                    StopLoading(true);
                 }
                 catch (Exception ex)
                 {
-                    new _logger().Log(LogType.Error, "Time for " + DateTime.Now.ToString("dd MMM yyyy") + " captured");
                     DialogResult error = MessageBox.Show("Failed to capture time, see exception message?", "", MessageBoxButtons.YesNo);
 
                     if (error == DialogResult.Yes)
                         MessageBox.Show(ex.Message.ToString());
+                    StopLoading(false);
                 }
-                HideSpinner();
-                this.Show();
-            }
+            });
         }
 
         private void btnDelTicket_Click(object sender, EventArgs e)
@@ -427,19 +430,20 @@ namespace TimeCapture
         {
             try
             {
-                dataGridView1.Rows.Remove(dataGridView1.Rows[rowIndex]);
                 if (iTimeID != -1)
                 {
-                    DialogResult result = MessageBox.Show("Would you like to delete the record entirely?", "", MessageBoxButtons.YesNoCancel);
+                    DialogResult result = MessageBox.Show("Are you sure you want to delete the record?", "", MessageBoxButtons.YesNoCancel);
                     if (result == DialogResult.Yes)
                     {
                         new Access().DeleteTime(iTimeID);
+                        dataGridView1.Rows.Remove(dataGridView1.Rows[rowIndex]);
                     }
                 }
             }
-            catch
+            catch (Exception exception)
             {
                 MessageBox.Show("Failed to delete time");
+                responseMessage.Text = exception.Message;
             }
         }
 

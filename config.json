@@ -21,8 +21,8 @@
   // String
   "BusinessName": "ScholtzWeb",
   "SeleniumURL": "https://web3.searchlightsoftware.co.za/Tickets/Login.aspx",
-  "SeleniumPassword": "Brayden",
-  "SeleniumUsername": "Demo#1",
+  "SeleniumUsername": "Brayden",
+  "SeleniumPassword": "Demo#1",
 
 
   // Mail
