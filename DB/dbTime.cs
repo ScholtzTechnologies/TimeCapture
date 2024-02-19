@@ -19,7 +19,7 @@ namespace TimeCapture.DB
             if (!_configuration.GetConfigValue("DBFilePath").isNullOrEmpty())
                 dbFile = _configuration.GetConfigValue("DBFilePath");
             else
-                dbFile = Path.GetFullPath("../../../DB/Time.mdf");
+                dbFile = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "DB/Time.mdf"));
 
             return "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=" + dbFile + ";Integrated Security=True";
         }

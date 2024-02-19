@@ -10,7 +10,7 @@ namespace TimeCapture.utils
     {
         public void RunInScripts()
         {
-            string scriptsFolder = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\..\\DB", "Scripts"));
+            string scriptsFolder = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "DB", "Scripts"));
 
             Dictionary<string, string> dSQLFiles = CollectSQLFromFiles(scriptsFolder);
             List<string> lErrors = new List<string>();

@@ -11,7 +11,7 @@ namespace TimeCapture.Selenium.TimeTaker
         public bool Success { get; set; }
         public bool HasTime { get; set; }
         public List<String> Failed { get; set; }
-        public void CaptureTime(BrowserType browserType, Control lblAction)
+        public void CaptureTime(BrowserType browserType)
         {
             URL = new Access().GetSettingsValue(8);
             Failed = new();
@@ -45,7 +45,6 @@ namespace TimeCapture.Selenium.TimeTaker
                         string sDate = time.GetDataRowStringValue("Date");
                         try
                         {
-                            lblAction.Text = "Capturing " + sDate;
                             driver.FindElement(By.XPath("//div[1]/div[1]/div/div/div[3]/div[1]/input")).Clear();
                             driver.FindElement(By.XPath("//div[1]/div[1]/div/div/div[3]/div[1]/input")).SendKeys(time.GetDataRowStringValue("TicketNo"));
                             js.ExecuteScript("arguments[0].click()", driver.FindElement(By.XPath("//div[1]/div/div/div[3]/div[4]/a")));

@@ -265,7 +265,7 @@ namespace TimeCapture
             txtTotalTime.Text = "00:00";
         }
 
-        private void btnCaptureTime_Click(object sender, EventArgs e)
+        private async void btnCaptureTime_Click(object sender, EventArgs e)
         {
             string sError;
             bool bDriverUpdated = new _nuget().UpdateChromeDriver(out sError);
@@ -276,7 +276,7 @@ namespace TimeCapture
             }
             else
             {
-                CaptureTime().Start();
+                await CaptureTime();
             }
         }
 
@@ -284,12 +284,21 @@ namespace TimeCapture
         {
             await Task.Run(() =>
             {
-                StartLoading();
                 try
                 {
-                    responseMessage.Text = "";
-                    timeCapture.CaptureTime(BrowserType.Chrome, responseMessage);
-                    StopLoading(true);
+                    int iCountTime = Access.GetUncapturedTimeCount();
+                    if (iCountTime > 0)
+                    {
+                        StartLoading();
+                        PushNofication_Async($"Capturing {iCountTime} records", NotificationType.Info);
+                        timeCapture.CaptureTime(BrowserType.Chrome);
+                        StopLoading(true);
+                        PushNofication_Async("Time Captured!", NotificationType.Success);
+                    }
+                    else
+                    {
+                        PushNofication_Async("No time to capture", NotificationType.Info);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -901,12 +910,9 @@ namespace TimeCapture
             DataSet dsTime = new Access().getTime(1, UserID);
             if (dsTime.HasRows())
             {
-                foreach (DataRow time in dsTime.Tables[0].Rows)
-                {
-                    dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
-                        time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
-                        time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
-                }
+                StartLoading();
+                InsertIntoTimeTable(dsTime);
+                StopLoading(true);
             }
         }
 
@@ -915,12 +921,9 @@ namespace TimeCapture
             DataSet dsTime = new Access().getTime(2, UserID);
             if (dsTime.HasRows())
             {
-                foreach (DataRow time in dsTime.Tables[0].Rows)
-                {
-                    dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
-                        time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
-                        time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
-                }
+                StartLoading();
+                InsertIntoTimeTable(dsTime);
+                StopLoading(true);
             }
         }
 
@@ -929,12 +932,9 @@ namespace TimeCapture
             DataSet dsTime = new Access().getTime(3, UserID);
             if (dsTime.HasRows())
             {
-                foreach (DataRow time in dsTime.Tables[0].Rows)
-                {
-                    dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
-                        time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
-                        time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
-                }
+                StartLoading();
+                InsertIntoTimeTable(dsTime);
+                StopLoading(true);
             }
         }
 
@@ -966,12 +966,9 @@ namespace TimeCapture
                 DataSet dsTime = new Access().getTimeByDay(sDate, UserID);
                 if (dsTime.HasRows())
                 {
-                    foreach (DataRow time in dsTime.Tables[0].Rows)
-                    {
-                        dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
-                            time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
-                            time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
-                    }
+                    StartLoading();
+                    InsertIntoTimeTable(dsTime);
+                    StopLoading(true);
                 }
             }
         }
@@ -987,12 +984,9 @@ namespace TimeCapture
                 DataSet dsTime = new Access().GetTimeByDateRange(sStart, sEnd, UserID);
                 if (dsTime.HasRows())
                 {
-                    foreach (DataRow time in dsTime.Tables[0].Rows)
-                    {
-                        dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
-                            time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
-                            time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
-                    }
+                    StartLoading();
+                    InsertIntoTimeTable(dsTime);
+                    StopLoading(true);
                 }
             }
         }
@@ -1008,12 +1002,9 @@ namespace TimeCapture
                 DataSet dsTime = new Access().GetTimeByDateRange(sStart, null, UserID);
                 if (dsTime.HasRows())
                 {
-                    foreach (DataRow time in dsTime.Tables[0].Rows)
-                    {
-                        dataGridView1.Rows.Add(time.GetDataRowIntValue("TimeID"), time.GetDataRowStringValue("Item"), time.GetDataRowStringValue("TicketNo"), time.GetDataRowStringValue("Start"),
-                            time.GetDataRowStringValue("End"), time.GetDataRowStringValue("Total"), time.GetDataRowStringValue("TimeType"),
-                            time.GetDataRowStringValue("Description"), time.GetDataRowStringValue("TicketType"), time.GetDataRowStringValue("Date"), "Delete", "Continue");
-                    }
+                    StartLoading();
+                    InsertIntoTimeTable(dsTime);
+                    StopLoading(true);
                 }
             }
         }
@@ -1028,7 +1019,11 @@ namespace TimeCapture
             {
                 DataSet ds = new Access().GetTimeByString(sValue);
                 if (ds.HasRows())
+                {
+                    StartLoading();
                     InsertIntoTimeTable(ds);
+                    StopLoading(true);
+                }
             }
         }
 
@@ -1656,10 +1651,11 @@ namespace TimeCapture
         {
             string rarFilePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "DB.rar"));
             string extractPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "DB"));
-            string existingDB = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "DB", "Time.mdf"));
+            string existingDB = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "DB", "Time.mdf"));
 
             if (!File.Exists(existingDB))
             {
+                PushNofication("Welcome to Time Capture", NotificationType.Info, "We are just setting some things up for you!");
                 using (var archive = ArchiveFactory.Open(rarFilePath))
                 {
                     foreach (var entry in archive.Entries)
@@ -1689,6 +1685,16 @@ namespace TimeCapture
         public void PushNofication(string Message, NotificationType Type, string AdditionalMessage = "")
         {
             new Notifications().SendNotification(Message, Type, AdditionalMessage);
+            responseMessage.Text = DateTime.Now.ToString("[hh:mm]") + " " + Message;
+        }
+
+        public void PushNofication_Async(string Message, NotificationType Type, string AdditionalMessage = "")
+        {
+            new Notifications().SendNotification(Message, Type, AdditionalMessage);
+            responseMessage.Invoke((MethodInvoker)delegate
+                {
+                    responseMessage.Text = DateTime.Now.ToString("[hh:mm]") + " " + Message;
+                });
             responseMessage.Text = DateTime.Now.ToString("[hh:mm]") + " " + Message;
         }
 
@@ -1733,79 +1739,6 @@ namespace TimeCapture
         {
             Loader.Start(this);
         }
-
-        //public async Task StartLoading()
-        //{
-        //    oStatus = Status.Busy;
-
-        //    await Task.Run(() =>
-        //    {
-        //        int i = 0;
-        //        ProgressBar bar1 = progressBars[0],
-        //               bar2 = progressBars[1],
-        //               bar3 = progressBars[2],
-        //               bar4 = progressBars[3];
-
-        //        while (oStatus == Status.Busy)
-        //        {
-
-        //            for (i = 0; i < progressBars.Count; i++)
-        //            {
-        //                try
-        //                {
-        //                    progressBars[i - 1].Invoke((MethodInvoker)delegate
-        //                    {
-        //                        progressBars[i - 1].Value = 0;
-        //                    });
-        //                }
-        //                catch 
-        //                {
-        //                    progressBars.LastOrDefault().Invoke((MethodInvoker)delegate
-        //                    {
-        //                        progressBars.LastOrDefault().Value = 0;
-        //                    });
-        //                }
-
-        //                progressBars[i].Invoke((MethodInvoker)delegate
-        //                {
-        //                    progressBars[i].Value = 1;
-        //                });
-        //                Thread.Sleep(750);
-        //            }
-        //        }
-
-        //        if (oStatus == Status.Idle)
-        //        {
-        //            foreach (var oBar in progressBars)
-        //            {
-        //                oBar.Invoke((MethodInvoker)delegate
-        //                {
-        //                    oBar.Value = 1;
-        //                });
-        //            }
-                    
-        //            Thread.Sleep(1000);
-
-        //            foreach (var oBar in progressBars)
-        //            {
-        //                oBar.Invoke((MethodInvoker)delegate
-        //                {
-        //                    oBar.Value = 0;
-        //                });
-        //            }
-        //        }
-        //        else
-        //        {
-        //            foreach (var oBar in progressBars)
-        //            {
-        //                oBar.Invoke((MethodInvoker)delegate
-        //                {
-        //                    oBar.Value = 0;
-        //                });
-        //            }
-        //        }
-        //    });
-        //}
 
         public void StopLoading(bool isSuccess)
         {
