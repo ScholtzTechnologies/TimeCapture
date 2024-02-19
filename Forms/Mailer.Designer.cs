@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.dgvTags = new System.Windows.Forms.DataGridView();
+            this.colTagName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSQL = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tglUseTags = new CustomControls.ToggleSwitch();
             this.lblUseTags = new System.Windows.Forms.Label();
             this.rtbTo = new System.Windows.Forms.RichTextBox();
@@ -52,8 +54,6 @@
             this.roundedProgressBar4 = new CustomControls.RoundedProgressBar();
             this.lnkHTMLHelp = new System.Windows.Forms.LinkLabel();
             this.roundedProgressBar5 = new CustomControls.RoundedProgressBar();
-            this.colTagName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colSQL = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTags)).BeginInit();
             this.SuspendLayout();
             // 
@@ -70,6 +70,20 @@
             this.dgvTags.RowTemplate.Height = 29;
             this.dgvTags.Size = new System.Drawing.Size(415, 155);
             this.dgvTags.TabIndex = 0;
+            // 
+            // colTagName
+            // 
+            this.colTagName.HeaderText = "Tag Name";
+            this.colTagName.MinimumWidth = 6;
+            this.colTagName.Name = "colTagName";
+            this.colTagName.Width = 125;
+            // 
+            // colSQL
+            // 
+            this.colSQL.HeaderText = "SQL";
+            this.colSQL.MinimumWidth = 6;
+            this.colSQL.Name = "colSQL";
+            this.colSQL.Width = 125;
             // 
             // tglUseTags
             // 
@@ -303,7 +317,7 @@
             // roundedProgressBar5
             // 
             this.roundedProgressBar5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.roundedProgressBar5.Location = new System.Drawing.Point(397, 411);
+            this.roundedProgressBar5.Location = new System.Drawing.Point(397, 409);
             this.roundedProgressBar5.Name = "roundedProgressBar5";
             this.roundedProgressBar5.ProgressBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.roundedProgressBar5.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -311,20 +325,6 @@
             this.roundedProgressBar5.ProgressFontColor = System.Drawing.Color.Black;
             this.roundedProgressBar5.Size = new System.Drawing.Size(29, 29);
             this.roundedProgressBar5.TabIndex = 23;
-            // 
-            // colTagName
-            // 
-            this.colTagName.HeaderText = "Tag Name";
-            this.colTagName.MinimumWidth = 6;
-            this.colTagName.Name = "colTagName";
-            this.colTagName.Width = 125;
-            // 
-            // colSQL
-            // 
-            this.colSQL.HeaderText = "SQL";
-            this.colSQL.MinimumWidth = 6;
-            this.colSQL.Name = "colSQL";
-            this.colSQL.Width = 125;
             // 
             // Mailer
             // 

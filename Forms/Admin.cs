@@ -41,7 +41,7 @@ namespace TimeCapture.Forms
             {
                 new Access().DeleteUser(dataGridView1.Rows[e.RowIndex].GetDataGridViewIntValue("ID"));
                 dataGridView1.Rows.Remove(dataGridView1.Rows[e.RowIndex]);
-                new Notifications().SendNotification("User Deleted", NotificationType.Success);
+                new Notifications().SendNotification("User Deleted", NotificationType.Success, "Please note this action is not reversable.");
             }
             if (dataGridView1.Columns[e.ColumnIndex] is DataGridViewButtonColumn
                 && e.RowIndex >= 0 && e.ColumnIndex == 5)

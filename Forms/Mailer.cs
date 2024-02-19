@@ -101,17 +101,17 @@ namespace TimeCapture.Forms
                                         sSubject = sSubject.Replace(sName, dsResponse.Tables[0].Rows[0][0].ToString());
                                     }
                                     else
-                                        MessageBox.Show($"No Results returned for tag: {sName}");
+                                        new Notifications().SendNotification($"No Results returned for tag: {sName}", NotificationType.Error, "Please ensure tag is correct");
                                 }
                                 catch (Exception exception)
                                 {
-                                    MessageBox.Show($"Error: \n {exception}");
+                                    new Notifications().SendNotification("Send mail failed.", NotificationType.Error, $"Error: \n {exception}");
                                 }
                             }
                         }
                         else
                         {
-                            MessageBox.Show($"Query for {sName} contains potential security risks.");
+                            new Notifications().SendNotification($"Query for {sName} contains potential security risks.", NotificationType.Error);
                         }
                     }
                 }
@@ -136,12 +136,12 @@ namespace TimeCapture.Forms
                         new _mailer().SendMail(sSubject, sBody, sTo, sCC);
                     }
                     Loader.Stop(true);
-                    MessageBox.Show("Mail(s) sent!", "Mail Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    new Notifications().SendNotification("Mail(s) sent!", NotificationType.Success);
                 }
                 catch
                 {
                     Loader.Stop(false);
-                    MessageBox.Show("Failed to send mail(s)", "Mail Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    new Notifications().SendNotification("Failed to send mail(s)", NotificationType.Success);
                 }
                 return;
             });

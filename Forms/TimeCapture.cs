@@ -104,7 +104,10 @@ namespace TimeCapture
             bool isDefaultDarkMode = Convert.ToInt32(_configuration.GetConfigValue("isDefaultDarkMode")).ToBool();
             if (isDefaultDarkMode)
                 toggleSwitch1.Checked = true;
+
+            this.btnMeeting.MouseDown += BtnMeeting_MouseDown;
         }
+
         #endregion TimeCapture
 
         #region CheckBoxes
@@ -319,6 +322,23 @@ namespace TimeCapture
             rbNonCharge.Checked = true;
         }
 
+        private void BtnMeeting_MouseDown(object? sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                bool bOK;
+                string sValue;
+                ShowInputDialog("Please provide the title", out bOK, out sValue);
+                if (bOK)
+                {
+                    btnMeeting_Click(null, null);
+                    txtCurrent.Text = sValue;
+                    txtCurrent_TextChanged(null, null);
+                    PushNofication($"Time capture for {sValue} has started", NotificationType.Info);
+                }
+            }
+        }
+
         private void btnSendMail_Click(object sender, EventArgs e)
         {
             Mailer frmMailer = new Mailer(this);
@@ -442,7 +462,7 @@ namespace TimeCapture
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Failed to delete time");
+                PushNofication("Failed to delete record.", NotificationType.Error, "Please try again.");
                 responseMessage.Text = exception.Message;
             }
         }
@@ -1666,9 +1686,9 @@ namespace TimeCapture
 
         #region Notifications
 
-        public void PushNofication(string Message, NotificationType Type)
+        public void PushNofication(string Message, NotificationType Type, string AdditionalMessage = "")
         {
-            new Notifications().SendNotification(Message, Type);
+            new Notifications().SendNotification(Message, Type, AdditionalMessage);
             responseMessage.Text = DateTime.Now.ToString("[hh:mm]") + " " + Message;
         }
 
