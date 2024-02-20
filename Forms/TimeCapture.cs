@@ -25,6 +25,7 @@ namespace TimeCapture
         public System.Drawing.Point txtDescLocal { get; set; }
         public System.Drawing.Size txtDescSize { get; set; }
         public bool isTaskRunning { get; set; }
+        public bool isTodaysTimeExecuted { get; set; }
         #region priorTime
         public string ptName { get; set; }
         public int ptTicketNumber { get; set; }
@@ -106,6 +107,7 @@ namespace TimeCapture
                 toggleSwitch1.Checked = true;
 
             this.btnMeeting.MouseDown += BtnMeeting_MouseDown;
+            this.pictureBox1.Height = this.containerControl1.Height;
         }
 
         #endregion TimeCapture
