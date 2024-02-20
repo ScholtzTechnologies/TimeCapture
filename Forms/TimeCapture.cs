@@ -409,7 +409,7 @@ namespace TimeCapture
                 }
             }
 
-            if (Access.GetSettingValue(7))
+            if (Access.GetSettingValue(7) || _configuration.GetConfigValue("IsCodeplex") == "1")
             {
                 btnCaptureTime.Visible = true;
             }
