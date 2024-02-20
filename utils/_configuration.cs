@@ -10,6 +10,14 @@ namespace TimeCapture.utils
         private static string Config = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "config.json"));
         private static string UserConfig = Path.GetFullPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "userConfig.json"));
         
+        public static string GetConfigFile
+        {
+            get
+            {
+                return Config;
+            }
+        }
+
         static _configuration()
         {
             if (_config == null)
@@ -160,6 +168,28 @@ namespace TimeCapture.utils
             File.WriteAllText(UserConfig, jObject.ToString());
 
             _userConfig.Reload();
+        }
+
+        public static void UpdateConfiguration(string key, string value, int iUserID)
+        {
+            var json = File.ReadAllText(Config);
+            var jObject = JObject.Parse(json);
+
+            if (jObject.ContainsKey(key))
+            {
+                string sOldValue = GetConfigValue(key) != null ? GetConfigValue(key) : "";
+                new Access().UpdateConfigHS(key, sOldValue, value, SQLMode.Modified, -1);
+                jObject[key] = value;
+            }
+            else
+            {
+                new Access().UpdateConfigHS(key, "", value, SQLMode.Added, -1);
+                jObject.Add(key, value);
+            }
+
+            File.WriteAllText(Config, jObject.ToString());
+
+            _config.Reload();
         }
 
         /// <summary>

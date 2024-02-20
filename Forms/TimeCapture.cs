@@ -4,6 +4,7 @@ using TimeCapture.Forms.Shared;
 using SharpCompress.Archives;
 using SharpCompress.Common;
 using Uno.Extensions;
+using System.Diagnostics;
 
 namespace TimeCapture
 {
@@ -271,14 +272,36 @@ namespace TimeCapture
         {
             string sError;
             bool bDriverUpdated = new _nuget().UpdateChromeDriver(out sError);
-            if (!bDriverUpdated)
+            if (!bDriverUpdated)    
             {
                 MessageBox.Show("Error updating chrome driver. Please restart app, if issue persists please contact support.");
                 new _logger().Log(LogType.Error, sError, "Chrome Driver Update");
             }
             else
             {
-                await CaptureTime();
+                if (!_configuration.GetConfigValue("SeleniumUsername").IsNullOrEmpty() && !_configuration.GetConfigValue("SeleniumPassword").IsNullOrEmpty())
+                {
+                    await CaptureTime();
+                }
+                else
+                {
+                    string sValue1, sValue2;
+                    bool bOK;
+                    ShowDoubleInputDialog("Please provide username and password", out bOK, out sValue1, out sValue2);
+                    if (sValue1.isNullOrEmpty() && sValue2.isNullOrEmpty())
+                        PushNofication("Username and Password required", NotificationType.Error, "These fields are used when signing into the Ticket System");
+                    else if (sValue1.isNullOrEmpty())
+                        PushNofication("Username required", NotificationType.Error, "These fields are used when signing into the Ticket System");
+                    else if (sValue1.isNullOrEmpty())
+                        PushNofication("Password required", NotificationType.Error, "These fields are used when signing into the Ticket System");
+                    else
+                    {
+                        _configuration.UpdateConfiguration("SeleniumUsername", sValue1, UserID);
+                        _configuration.UpdateConfiguration("SeleniumPassword", sValue2, UserID);
+                        PushNofication("Credentials Updated", NotificationType.Success, "The app will begin capturing time with the provided credentials.");
+                        await CaptureTime();
+                    }
+                }
             }
         }
 
@@ -354,6 +377,16 @@ namespace TimeCapture
         {
             Mailer frmMailer = new Mailer(this);
             frmMailer.Show();
+        }
+
+        private void btnConfig_Click(object sender, EventArgs e)
+        {
+            using Process fileopener = new Process();
+
+            fileopener.StartInfo.FileName = "notepad";
+            fileopener.StartInfo.Arguments = "\"" + _configuration.GetConfigFile + "\"";
+            fileopener.Start();
+
         }
 
         #endregion Buttons
@@ -551,6 +584,72 @@ namespace TimeCapture
                 sValue = "";
             }
         }
+
+        public void ShowDoubleInputDialog(string sContext, out bool OK, out string sValue1, out string sValue2)
+        {
+            // Create a custom input box form
+            Form inputBoxForm = new Form();
+            inputBoxForm.Text = "";
+            inputBoxForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+            inputBoxForm.StartPosition = FormStartPosition.CenterParent;
+            inputBoxForm.Width = 240;
+            inputBoxForm.Height = 200;
+
+            // Create the label and text box for input
+            Label label = new Label();
+            label.Text = sContext;
+            label.AutoSize = true;
+            label.Location = new System.Drawing.Point(10, 10);
+
+            TextBox textBox1 = new TextBox();
+            textBox1.Location = new System.Drawing.Point(10, 30);
+            textBox1.Size = new System.Drawing.Size(200, 20);
+
+            TextBox textBox2 = new TextBox();
+            textBox2.Location = new System.Drawing.Point(10, 60);
+            textBox2.Size = new System.Drawing.Size(200, 20);
+
+            // Create the OK and Cancel buttons
+            Button okButton = new Button();
+            okButton.Text = "OK";
+            okButton.DialogResult = DialogResult.OK;
+            okButton.Location = new System.Drawing.Point(10, 90);
+            okButton.Height = 25;
+            okButton.Click += (sender, e) => inputBoxForm.Close();
+
+            Button cancelButton = new Button();
+            cancelButton.Text = "Cancel";
+            cancelButton.DialogResult = DialogResult.Cancel;
+            cancelButton.Location = new System.Drawing.Point(90, 90);
+            cancelButton.Height = 25;
+            cancelButton.Click += (sender, e) => inputBoxForm.Close();
+
+            // Add the controls to the form
+            inputBoxForm.Controls.AddRange(new Control[] { label, textBox1, textBox2, okButton, cancelButton });
+
+            // Show the input box form as a dialog
+            if (inputBoxForm.ShowDialog() == DialogResult.OK)
+            {
+                OK = true;
+                if (!textBox1.Text.isNullOrEmpty() && !textBox2.Text.IsNullOrEmpty())
+                {
+                    sValue1 = textBox1.Text.ToString();
+                    sValue2 = textBox2.Text.ToString();
+                }
+                else
+                {
+                    sValue1 = "";
+                    sValue2 = "";
+                }
+            }
+            else
+            {
+                OK = false;
+                sValue1 = "";
+                sValue2 = "";
+            }
+        }
+
 
         public void ShowDateInputDialog(string sContext, out bool OK, out string sValue)
         {
@@ -1765,5 +1864,6 @@ namespace TimeCapture
         }
 
         #endregion Mails
+
     }
 }

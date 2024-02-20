@@ -101,6 +101,7 @@
             this.roundedProgressBar3 = new CustomControls.RoundedProgressBar();
             this.roundedProgressBar4 = new CustomControls.RoundedProgressBar();
             this.btnSendMail = new System.Windows.Forms.Button();
+            this.btnConfig = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.containerControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -749,7 +750,7 @@
             // roundedProgressBar1
             // 
             this.roundedProgressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.roundedProgressBar1.Location = new System.Drawing.Point(228, 546);
+            this.roundedProgressBar1.Location = new System.Drawing.Point(230, 546);
             this.roundedProgressBar1.Name = "roundedProgressBar1";
             this.roundedProgressBar1.ProgressBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.roundedProgressBar1.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -761,7 +762,7 @@
             // roundedProgressBar2
             // 
             this.roundedProgressBar2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.roundedProgressBar2.Location = new System.Drawing.Point(261, 546);
+            this.roundedProgressBar2.Location = new System.Drawing.Point(263, 546);
             this.roundedProgressBar2.Name = "roundedProgressBar2";
             this.roundedProgressBar2.ProgressBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.roundedProgressBar2.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -773,7 +774,7 @@
             // roundedProgressBar3
             // 
             this.roundedProgressBar3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.roundedProgressBar3.Location = new System.Drawing.Point(294, 545);
+            this.roundedProgressBar3.Location = new System.Drawing.Point(296, 546);
             this.roundedProgressBar3.Name = "roundedProgressBar3";
             this.roundedProgressBar3.ProgressBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.roundedProgressBar3.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -805,12 +806,24 @@
             this.btnSendMail.UseVisualStyleBackColor = true;
             this.btnSendMail.Click += new System.EventHandler(this.btnSendMail_Click);
             // 
+            // btnConfig
+            // 
+            this.btnConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnConfig.Location = new System.Drawing.Point(144, 546);
+            this.btnConfig.Name = "btnConfig";
+            this.btnConfig.Size = new System.Drawing.Size(45, 29);
+            this.btnConfig.TabIndex = 56;
+            this.btnConfig.Text = "...";
+            this.btnConfig.UseVisualStyleBackColor = true;
+            this.btnConfig.Click += new System.EventHandler(this.btnConfig_Click);
+            // 
             // TimeCapture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.ClientSize = new System.Drawing.Size(896, 585);
+            this.Controls.Add(this.btnConfig);
             this.Controls.Add(this.btnSendMail);
             this.Controls.Add(this.roundedProgressBar3);
             this.Controls.Add(this.roundedProgressBar4);
@@ -938,6 +951,7 @@
         private CustomControls.RoundedProgressBar roundedProgressBar3;
         private CustomControls.RoundedProgressBar roundedProgressBar4;
         private Button btnSendMail;
+        private Button btnConfig;
     }
 }
 
