@@ -192,6 +192,12 @@ namespace TimeCapture.utils
             _config.Reload();
         }
 
+        public static void ReloadConfigs()
+        {
+            _config.Reload();
+            _userConfig.Reload();
+        }
+
         /// <summary>
         ///     This updates the configuration value used to skipped the login screen. data is Encrypted on set, and decrypted on get.
         /// </summary>

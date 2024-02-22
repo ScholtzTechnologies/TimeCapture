@@ -383,10 +383,18 @@ namespace TimeCapture
         {
             using Process fileopener = new Process();
 
-            fileopener.StartInfo.FileName = "notepad";
+            fileopener.StartInfo.FileName = "notepad.exe";
             fileopener.StartInfo.Arguments = "\"" + _configuration.GetConfigFile + "\"";
+
             fileopener.Start();
 
+            PushNofication("Changing Config", NotificationType.Info, "Please ensure the reload button is clicked after config is saved.");
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            _configuration.ReloadConfigs();
+            PushNofication("Configs Updated", NotificationType.Success);
         }
 
         #endregion Buttons
