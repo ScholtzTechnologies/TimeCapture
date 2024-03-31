@@ -22,10 +22,12 @@ namespace TimeCapture.Forms
         public static string root = Directory.GetCurrentDirectory();
         public static string fNotes = Path.Combine(root, "Data", "Notes.txt");
         public static string fTasks = Path.Combine(root, "Data", "Todo.csv");
+        public bool isAutosave { get; set; }
         public DB.Access Access = new DB.Access();
         public List<CSVImport.Tasks> lTasks = new List<CSVImport.Tasks>();
         public bool isDarkMode { get; set; }
         public TimeCapture time { get; set; }
+        private static System.Timers.Timer TimerConn = null;
 
         #endregion Properties
 
@@ -234,6 +236,8 @@ namespace TimeCapture.Forms
                     access.SaveTask(row.GetDataGridViewIntValue("TaskID"), row.GetDataGridViewStringValue("Task"), row.GetDataGridViewCheckBoxAsInt("Status"));
                 }
             }
+            dgTasks.Rows.Clear();
+            getTasks();
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -243,7 +247,8 @@ namespace TimeCapture.Forms
                 DataGridViewRow selectedRow = dgTasks.SelectedRows[0];
                 int TaskID = Convert.ToInt32(selectedRow.Cells["TaskID"].Value);
                 Access access = new();
-                access.DeleteTask(TaskID);
+                if (TaskID != -1)
+                    access.DeleteTask(TaskID);
                 dgTasks.Rows.Remove(selectedRow);
             }
             catch (Exception ex)
@@ -396,5 +401,48 @@ namespace TimeCapture.Forms
         }
 
         #endregion DarkMode
+
+        private void tglAutosave_CheckedChanged(object sender, EventArgs e)
+        {
+            isAutosave = tglAutosave.Checked;
+            if (isAutosave)
+            {
+                new Notifications().SendNotification("Autosave On", NotificationType.Info, "The app will now save Tasks and notes every 30 seconds");
+                Autosave();
+            }
+            else
+            {
+                new Notifications().SendNotification("Autosave Off", NotificationType.Info);
+            }
+        }
+
+        private async Task Autosave()
+        {
+            await System.Threading.Tasks.Task.Run(() =>
+            {
+                while (isAutosave)
+                {
+                    if (TimerConn == null)
+                    {
+                        if (TimerConn != null)
+                        {
+                            TimerConn.Enabled = false;
+                        }
+                        TimerConn = new System.Timers.Timer();
+                        TimerConn.Interval = 30000;
+                        TimerConn.Elapsed += TimerConn_Elapsed;
+
+                        TimerConn.Enabled = true;
+                    }
+                }
+                TimerConn = null;
+            });
+        }
+
+        private void TimerConn_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            btnSaveTask_Click(null, null);
+            new Notifications().SendNotification("Tasks Saved", NotificationType.Success);
+        }
     }
 }
