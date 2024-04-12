@@ -70,10 +70,9 @@ namespace TimeCapture.Forms
                 if (e.ColumnIndex == 2)
                 {
                     int TicketID = dataGridView1.Rows[e.RowIndex].GetDataGridViewIntValue("ID");
-                    string Name = dataGridView1.Rows[e.RowIndex].GetDataGridViewStringValue("Name");
+                    string Name = dataGridView1.Rows[e.RowIndex].GetDataGridViewStringValue("sName");
                     new Access().DelTicket(TicketID);
-                    dataGridView1.Rows.Clear();
-                    GetTickets();
+                    dataGridView1.Rows[e.RowIndex].Visible = false;
                     frmCapture.getTickets();
                     MessageBox.Show(Name + " was deleted");
                 }

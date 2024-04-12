@@ -108,7 +108,6 @@ namespace TimeCapture
                 toggleSwitch1.Checked = true;
 
             this.btnMeeting.MouseDown += BtnMeeting_MouseDown;
-            this.pictureBox1.Height = this.containerControl1.Height;
         }
 
         #endregion TimeCapture
@@ -1758,30 +1757,37 @@ namespace TimeCapture
 
         public void CheckDB()
         {
-            string rarFilePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "DB.rar"));
-            string extractPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "DB"));
-            string existingDB = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "DB", "Time.mdf"));
-
-            if (!File.Exists(existingDB))
+            if (!_configuration.GetConfigValue("DBFilePath").isNullOrEmpty())
             {
-                PushNofication("Welcome to Time Capture", NotificationType.Info, "We are just setting some things up for you!");
-                using (var archive = ArchiveFactory.Open(rarFilePath))
-                {
-                    foreach (var entry in archive.Entries)
-                    {
-                        if (!entry.IsDirectory)
-                        {
-                            entry.WriteToDirectory(extractPath, new ExtractionOptions()
-                            {
-                                ExtractFullPath = true,
-                                Overwrite = false
-                            });
-                        }
-                    }
+                string rarFilePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "DB.rar"));
+                string extractPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "DB"));
+                string existingDB = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "DB", "Time.mdf"));
 
+                if (!File.Exists(existingDB))
+                {
+                    PushNofication("Welcome to Time Capture", NotificationType.Info, "We are just setting some things up for you!");
+                    using (var archive = ArchiveFactory.Open(rarFilePath))
+                    {
+                        foreach (var entry in archive.Entries)
+                        {
+                            if (!entry.IsDirectory)
+                            {
+                                entry.WriteToDirectory(extractPath, new ExtractionOptions()
+                                {
+                                    ExtractFullPath = true,
+                                    Overwrite = false
+                                });
+                            }
+                        }
+
+                    }
+                    new _logger().Log(LogType.Info, "Database Extracted");
+                    new Access().FillSettings();
                 }
-                new _logger().Log(LogType.Info, "Database Extracted");
-                new Access().FillSettings();
+            }
+            else
+            {
+
             }
 
             new _scriptTool().RunInScripts();
