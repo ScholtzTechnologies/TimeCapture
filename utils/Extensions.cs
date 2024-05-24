@@ -368,6 +368,19 @@ namespace TimeCapture.utils
         }
 
         #endregion Conversions
+
+        #region Message Box Addtions
+
+        // Make helper
+        public static void ShowMessageBoxWithOptionalExceptionMessage(string sMessage, string sCaption, Exception oException)
+        {
+            DialogResult oMessageBox = MessageBox.Show(sMessage, sCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (oMessageBox == DialogResult.Yes)
+                MessageBox.Show("Exception: " + oException.Message.ToString());
+        }
+
+        #endregion Message Box Addtions
     }
 
     #region Classes

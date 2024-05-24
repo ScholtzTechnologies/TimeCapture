@@ -326,10 +326,7 @@ namespace TimeCapture
                 }
                 catch (Exception ex)
                 {
-                    DialogResult error = MessageBox.Show("Failed to capture time, see exception message?", "", MessageBoxButtons.YesNo);
-
-                    if (error == DialogResult.Yes)
-                        MessageBox.Show(ex.Message.ToString());
+                    Extensions.ShowMessageBoxWithOptionalExceptionMessage("Failed to capture time, see exception message?", "TimeCapture", ex);
                     StopLoading(false);
                 }
             });
